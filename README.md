@@ -1,4 +1,4 @@
-DSE Cohort 1 - Traffic Capstone Project
+DSE Cohort 2 - Traffic Capstone Project
 ====
 
 Traffic modeling and prediction is a field that has been researched and studied for many years. With the 
@@ -15,9 +15,11 @@ inform business decision makers and the general public of traffic patterns that 
 being that additional insight can guide solutions to address high traffic volume. 
 
 Group Members
-* John Gill
-* Kevin Dyer
-* Conway Wong
+* Miki Hardisty
+* Josh Duclos
+* CJ Stevens
+* Chris Sanders
+* Abe Hart
 
 Advisor:
 * Yoav Freund
@@ -26,16 +28,17 @@ Reports
 ---------
 | Location      | Description   
 | ------------- | -------------  
-| final/doc/FinalReport.pdf | Final Report
-| final/doc/FinalPresentation.pdf | Final Presentation      
+| TBD | Final Report
+| TBD | Final Presentation      
 
 Buckets
 ---------
 | Location      | Description   
 | ------------- | -------------  
-| s3://dse-team2-2014/dse_traffic | Directory containing original downloaded traffic files
+| s3://dse-team2-2014/dse_traffic | Directory containing original downloaded traffic files for 2008 to 2015
 | s3://dse-team2-2014/pivot_output_#{year} | Directory containing Pivot Output Files from parsing downloaded traffic files      
 | s3://dse-team2-2014/regression | Directory containing files used for Elastic Net Regression      
+| s3://dse-team1-2015/dse_traffic | Directory containing original downloaded traffic files for 2016
 
 Source Code
 ------------
@@ -47,3 +50,5 @@ Source Code
 | traffic/src/scraper.py | Web Scraper Python Source Code
 | traffic/jsg_test | Directory Containing CloverETL graphs, transformers for Postgres DB ETL
 | traffic/traffic_etl_spark.py | PySpark Job to extract traffic data from S3 into Postrgres DB
+
+
