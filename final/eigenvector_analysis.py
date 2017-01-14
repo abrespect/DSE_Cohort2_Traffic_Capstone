@@ -5,7 +5,7 @@ type into the title text box to update the title of the plot.
 
 Use the ``bokeh serve`` command to run the example by executing from the local directory (ex: /home/dyerke/Documents/DSE/kdyer/dse_capstone_final/dse_capstone/final):
 
-    bokeh serve eigenvector_analysis.py
+    bokeh serve final/eigenvector_analysis.py
 
 at your command prompt. Then navigate to the URL
 
@@ -22,7 +22,6 @@ from bokeh.models import ColumnDataSource, HBox, VBox
 from bokeh.models.widgets import Slider, Button
 from bokeh.plotting import Figure
 
-
 def get_reconstruction(eigenvectors, m_projection, Mean):
     k = len(m_projection)
     U = eigenvectors[:k]
@@ -32,10 +31,11 @@ def get_reconstruction(eigenvectors, m_projection, Mean):
     return rec
 
 
-eigfilepath= './data/weekday/total_flow_weekday_eigenvectors.pivot_2009_grouping_pca_tmp.csv'
-meanvecpath= './data/weekday/total_flow_weekday_mean_vector.pivot_2009_grouping_pca_tmp.csv'
-sourcetranspath= './data/weekday/total_flow_transformed.pivot_2009_grouping_weekday_pca_transform_tmp.csv.tar.gz'
+eigfilepath= './final/data/weekday/total_flow_weekday_eigenvectors.pivot_2009_grouping_pca_tmp.csv'
+meanvecpath= './final/data/weekday/total_flow_weekday_mean_vector.pivot_2009_grouping_pca_tmp.csv'
+sourcetranspath= './final/data/weekday/total_flow_transformed.pivot_2009_grouping_weekday_pca_transform_tmp.csv.tar.gz'
 transpath= './total_flow_transformed.pivot_2009_grouping_weekday_pca_transform_tmp.csv'
+
 
 with tarfile.open(sourcetranspath) as tar:
     tar.extractall()
