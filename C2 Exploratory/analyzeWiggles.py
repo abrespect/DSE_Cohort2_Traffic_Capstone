@@ -3,7 +3,19 @@ import pandas as pd
 import numpy as np
 import datetime as dt
 from scipy.interpolate import interp1d, Akima1DInterpolator
+import datetime
 
+def strTimestampToWeekdayNum(ts):
+    mydate = datetime.date(int(ts[0:4]), int(ts[5:7]), int(ts[8:10]))
+    return mydate.weekday()
+
+def strTimestampToWeekDayEnd(ts):
+    mydate = datetime.date(int(ts[0:4]), int(ts[5:7]), int(ts[8:10]))
+    if mydate.weekday() < 5:
+        mydatetype = 'Weekday'
+    else:
+        mydatetype = 'Weekend'
+    return mydatetype
 
 def interpolate(meanVector, type, factor):
     y = meanVector
@@ -80,7 +92,14 @@ def smooth_vector(vector, type='akima', factor=6):
 
     return vectors
 
-
+from datetime import datetime as dt
+def strTimestampToWeekdayWeekend(ts):
+    mydate = datetime.date(int(ts[0:4]), int(ts[5:7]), int(ts[8:10]))
+    if mydate.weekday() < 5:
+        mydatetype = 'Weekday'
+    else:
+        mydatetype = 'Weekend'
+    return mydate.weekday(), mydatetype
 
 
 
