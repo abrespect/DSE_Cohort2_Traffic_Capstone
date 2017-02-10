@@ -69,6 +69,17 @@ def smooth(mvpath, type='akima', factor=6):
 
     return vectors
 
+def smooth_vector(vector, type='akima', factor=6):
+    meanVector = vector
+    smoothedVector = interpolate(meanVector, type, factor )[1]
+    diff = meanVector - smoothedVector #Wiggle magnitude
+    diffVector = diff/np.sqrt(sum([i**2 for i in diff])) # Normalize vector
+    timelabels = interpolate(meanVector, type, factor )[0]
+
+    vectors = {'meanVector': meanVector, 'smoothedVector': smoothedVector, 'diffVector': diffVector, 'timelabels':timelabels}
+
+    return vectors
+
 
 
 
