@@ -33,3 +33,7 @@ eclipse conf file
 *.dat
 
 *.gz
+
+*.csv
+
+C2 Exploratory/wigglesSpeedFlowOccupancy.ipynb
