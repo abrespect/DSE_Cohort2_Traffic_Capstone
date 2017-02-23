@@ -50,8 +50,13 @@ Source Code
 | cohort1/traffic/src/scraper.py | Web Scraper Python Source Code
 | cohort1/traffic/jsg_test | Directory Containing CloverETL graphs, transformers for Postgres DB ETL
 | cohort1/traffic/traffic_etl_spark.py | PySpark Job to extract traffic data from S3 into Postrgres DB
-| cohort2/exploration | collection of exploratory notebooks, visualizations, etc
-| cohort2/data | directory to hold smaller datasets
-| cohort2/documents | directory to hold documents
-| cohort2/trafficpassion | directory for python code related to final presentations, papers, and other files not related to exploration. Things considered final project
+
+Directory Structure: See Wiki for more information:
+---------------------------------------------------
+| Path | Description
+| cohort1/ | Cohort 1's Efforts
+| cohort2/exploration/ | collection of exploratory notebooks, visualizations, etc. first word_ in name signifies effort area
+| cohort2/data/ | directory to hold smaller datasets
+| cohort2/documents/ | directory to hold documents
+| cohort2/trafficpassion/ | directory for python code related to final presentations, papers, and other files not related to exploration. Things considered final project
 | cohort2/config | directory for virtualenv configurations, anaconda environments, etc
