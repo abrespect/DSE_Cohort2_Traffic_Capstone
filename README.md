@@ -51,7 +51,7 @@ Source Code
 | cohort1/traffic/jsg_test | Directory Containing CloverETL graphs, transformers for Postgres DB ETL
 | cohort1/traffic/traffic_etl_spark.py | PySpark Job to extract traffic data from S3 into Postrgres DB
 
-Directory Structure: See Wiki for more information:
+Directory Structure: See Wiki for more information
 ---------------------------------------------------
 | Path   | Description
 |--------|--------------
