@@ -28,8 +28,8 @@ Reports
 ---------
 | Location      | Description   
 | ------------- | -------------  
-| TBD | Final Report
-| TBD | Final Presentation      
+| cohort2/documents/final_report.pdf | Final Report
+| cohort2/documents/final_report.? | Final Presentation      
 
 Buckets
 ---------
@@ -53,5 +53,5 @@ Source Code
 | cohort2/exploration | collection of exploratory notebooks, visualizations, etc
 | cohort2/data | directory to hold smaller datasets
 | cohort2/documents | directory to hold documents
-| cohort2/trafficpassion | directory for python code and other source files not related to exploration. Will be files used for final deliverables
+| cohort2/trafficpassion | directory for python code related to final presentations, papers, and other files not related to exploration. Things considered final project
 | cohort2/config | directory for virtualenv configurations, anaconda environments, etc
