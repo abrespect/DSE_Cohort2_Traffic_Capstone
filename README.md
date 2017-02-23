@@ -53,7 +53,8 @@ Source Code
 
 Directory Structure: See Wiki for more information:
 ---------------------------------------------------
-| Path | Description
+| Path   | Description
+|--------|--------------
 | cohort1/ | Cohort 1's Efforts
 | cohort2/exploration/ | collection of exploratory notebooks, visualizations, etc. first word_ in name signifies effort area
 | cohort2/data/ | directory to hold smaller datasets
