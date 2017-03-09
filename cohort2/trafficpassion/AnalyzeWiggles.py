@@ -94,7 +94,6 @@ def smooth_vector(vector, type='akima', factor=6):
     for i in timelabels:
         prettyTime.append(prettytime(i))
 
-    
     meanVector_scaled = preprocessing.scale(meanVector)
     smoothedVector_scaled = preprocessing.scale(smoothedVector)
     
@@ -130,7 +129,7 @@ def chartMetrics(_df, title, type='akima', factor=8, days='All', metrics='All', 
         _df = _df[_df['WeekdayWeekend'] == 'Weekend']  
 
     if metrics == 'All':
-        metrics = ['AvgOccupancy', 'TotalFlow', 'AvgSpeed']
+        metrics = ['AvgDensity', 'AvgOccupancy', 'TotalFlow', 'AvgSpeed']
         tick_count = 36
         subplot_height = 10
     else:
@@ -163,8 +162,8 @@ def subplotMeanWiggle(dftemp, metrics, type, factor, title, tick_count, subplot_
         vectors = smooth_vector(mv, type, factor)
 
         ax = fig.add_subplot(2, len(metrics), i+1)
-        plt.plot(vectors['meanVector'], linewidth=.4, color="black")
-        plt.plot(vectors['timelabels'], vectors['smoothedVector'], linewidth=.6)
+        plt.plot(vectors['meanVector_scaled'], linewidth=.4, color="black")
+        plt.plot(vectors['timelabels'], vectors['smoothedVector_scaled'], linewidth=.6)
         for j in range(0,288,12):
             plt.axvline(x=i, linewidth=.3, color='gray')
         ax.set_xticks(range(0,288,tick_count))
@@ -174,7 +173,7 @@ def subplotMeanWiggle(dftemp, metrics, type, factor, title, tick_count, subplot_
         ax = fig.add_subplot(2, len(metrics), i+len(metrics)+1)
         plt.plot( vectors['timelabels']   ,vectors['diffVector'], color="blue", linewidth=.5)
         plt.title(m + ": Normalized Wiggle Magnitude")
-        plt.ylim((-.25,.25))
+        plt.ylim(-.5,.5)
         for i in range(0,288,12):
             plt.axvline(x=i, linewidth=.3, color='gray')
         #plt.yaxis(vectors['prettyTime'])
@@ -192,6 +191,9 @@ def subplotByStation(dftemp, metrics, type, factor, title, tick_count, subplot_h
     df = {}
     for s in list(dftemp['Station'].unique()):
         data = dftemp[dftemp['Station'] == s]
+        
+        my_max = data[metrics].max()
+        my_min = data[metrics].min()
         mv = np.array(
             data[['Time',metrics]].groupby(['Time']).mean()[metrics])
         vectors = smooth_vector(mv, type, factor)
@@ -210,7 +212,7 @@ def subplotByStation(dftemp, metrics, type, factor, title, tick_count, subplot_h
         ax = fig.add_subplot(2, 1, 2)
         plt.plot(df_temp['timelabels'],df_temp['diffVector'], label=s, linewidth=.5)
         plt.title("Normalized Wiggles Magnitude (diff from mean)")
-        plt.ylim((-.25,.25))
+        plt.ylim(-.5,.5)
         for i in range(0,288,12):
             plt.axvline(x=i, linewidth=.1, color='gray')
         ax.set_xticks(range(0,288,tick_count))
@@ -224,13 +226,11 @@ def showstationGrid(dftemp, metrics, type, factor, title, tick_count, subplot_he
     fig = plt.figure(figsize = (30,subplot_height))
 
     df = {}
-    
-    #stations = list( dftemp['Station'].sort_values('Latitude').unique() )
-    
-    stations = list(dftemp.sort_values(['Latitude'])['Station'].unique())
-    #print stations
-    
+        
+    stations = list(dftemp.sort_values(['Latitude'], ascending=False)['Station'].unique())    
     l = len(stations)
+ 
+    my_max = dftemp[dftemp['Station'].isin(stations)][metrics].mean()*5
     
     k=1
     for s in stations:
@@ -238,8 +238,6 @@ def showstationGrid(dftemp, metrics, type, factor, title, tick_count, subplot_he
         lat = data['Latitude'].min()
         lon = data['Longitude'].min()
 
-        #print s, lat, lon
-        
         mv = np.array(
             data[['Time',metrics]].groupby(['Time']).mean()[metrics])
         vectors = smooth_vector(mv, type, factor)
@@ -251,7 +249,7 @@ def showstationGrid(dftemp, metrics, type, factor, title, tick_count, subplot_he
         plt.plot(df_temp['timelabels'], df_temp['smoothedVector'], label=s)
         for i in range(0,288,12):
             plt.axvline(x=i, linewidth=.3, color='gray')
-        ax.set_ylim(0,1000)
+        ax.set_ylim(0,my_max)
         ax.set_xticks(range(0,288,tick_count))
         ax.set_xticklabels(vectors['prettyTime'][::tick_count])
         plt.title("Latitude:" + str(lat))
