@@ -20,7 +20,8 @@ for i, item in enumerate(items):
     pb.update( i )
 """
 
-def timestr( t, prefix='', suffix='' ):
+
+def timestr(t, prefix='', suffix=''):
     """
     Convert given time in seconds into a string (with sec/min/hrs)
     @params:
@@ -30,13 +31,13 @@ def timestr( t, prefix='', suffix='' ):
     """
     if t > 60:
         if t > 3600:
-            return '{0}{1:.2f} hrs{2}'.format(prefix, t/3600, suffix)
-        return '{0}{1:.2f} min{2}'.format(prefix, t/60, suffix)
+            return '{0}{1:.2f} hrs{2}'.format(prefix, t / 3600, suffix)
+        return '{0}{1:.2f} min{2}'.format(prefix, t / 60, suffix)
     return '{0}{1:.2f} sec{2}'.format(prefix, t, suffix)
 
-class ProgressBar(object):
 
-    def __init__( self, total, prefix='', suffix='', decimals=1, bar_length=50, timer=False ):
+class ProgressBar(object):
+    def __init__(self, total, prefix='', suffix='', decimals=1, bar_length=50, timer=False):
         """
         @params:
             total       - Required  : total iterations (Int)
@@ -53,7 +54,7 @@ class ProgressBar(object):
         self.timer = timer
         self.start = time.time()
 
-    def update( self, iteration, prefix=None, suffix=None, timer=None ):
+    def update(self, iteration, prefix=None, suffix=None, timer=None):
         """
         Call in a loop to create terminal progress bar
         For optional parameters, None means use current values
@@ -63,11 +64,11 @@ class ProgressBar(object):
             suffix      - Optional  : suffix string (Str)
             timer       - Optional  : include time (bool)
         """
-        if prefix != None:
+        if prefix is not None:
             self.prefix = prefix
-        if suffix != None:
+        if suffix is not None:
             self.suffix = suffix
-        if timer != None:
+        if timer is not None:
             self.timer = timer
             self.start = time.time()
 
@@ -76,7 +77,7 @@ class ProgressBar(object):
         filled_length = int(round(self.bar_length * iteration / float(self.total)))
         bar = '█' * filled_length + '-' * (self.bar_length - filled_length)
 
-        elapsed = '' if timer==False else timestr(time.time()-self.start, prefix='[', suffix=']')
+        elapsed = '' if timer == False else timestr(time.time() - self.start, prefix='[', suffix=']')
         sys.stdout.write('\r%s |%s| %s%s %s %s' % (self.prefix, bar, percents, '%', self.suffix, elapsed)),
 
         if iteration == self.total:
