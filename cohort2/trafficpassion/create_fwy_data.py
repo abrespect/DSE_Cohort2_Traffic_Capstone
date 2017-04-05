@@ -4,42 +4,126 @@ import pandas as pd
 import datetime
 import time
 
+# Set global variables
+metric_colnames =  ['Total Flow', 'Avg Occupancy', 'Avg Speed']
+index_colnames = ['timeOfDay', 'Abs_PM']
+helper_colnames = ['Weekday']
+
+# Define Functions
+
+##### reduce_data_by_dict
+# This function is a universal function that takes a dict and selects dataframes based on the identified key value pair
 def reduce_data_by_dict(df, keyval_dict):
     for key, val in keyval_dict.iteritems():
         df = df[df[key] == val]
     return df
 
 
-def create_freeway_stats_df(_df, _meta_redux):
-    # Get the Station's Absolute marker by merging meta
-    freeway = _df.merge(_meta_redux, 
-                              left_on=['Station', 'District','Freeway #', 'Direction'], 
+##### get_fwy_data
+# This function loads the raw, minute data (takes a LONG time to load).  From this it selects only 1 freeway and direction.
+# It may make sense to run this only once, but the data for each freeway could get rather large.
+# There's an opportunity to use spark RDD's to increase performance
+def get_fwy_data(_fwy,_dir, overwrite=False, output_csv=False, nimportrows=-1):
+    # Ensure proper naming convention for file
+    myname = "".join([ "i",
+                  str(_fwy),
+                  str(_dir)])
+    filepath = "".join(["../data/metric_statistics/",myname,".csv"])
+
+    # Check to see if the file should be overwritten or if it is not available.
+    try:
+        if overwrite == False:
+            freeway = pd.read_csv(filepath, sep='\t')
+    except:
+        overwrite = True
+
+    if overwrite:
+        # import raw data
+        raw_5_min_filepath = '../../../five_min_frame.csv'
+
+        if nimportrows == -1:
+            raw_5_min_data = pd.read_csv(raw_5_min_filepath, nrows=nimportrows)
+        else:
+            raw_5_min_data = pd.read_csv(raw_5_min_filepath)
+
+        raw_meta_filepath = '../../../d11_traffic_data/meta/d11/d11_text_meta_2015_01_01.txt'
+        meta = pd.read_csv(raw_meta_filepath, sep='\t')
+
+        # Filter raw and meta datasets by freeway and direction
+        # Reduce raw_5_min data
+        keyval_dict = {"District": 11, 
+                   "Freeway #": _fwy, 
+                   "Lane Type": 'ML', 
+                   "Direction": _dir}
+        redux_5_min = reduce_data_by_dict(raw_5_min_data, keyval_dict)
+        
+        #Reduce meta
+        keyval_dict = {"District": 11, 
+                   "Fwy": _fwy, 
+                   "Dir": _dir}
+        redux_meta = reduce_data_by_dict(meta, keyval_dict)
+        
+        # Create helper columns
+        raw_5_min_data['time'] = pd.to_datetime(raw_5_min_data['Timestamp'], format="%m/%d/%Y %H:%M:%S")
+        raw_5_min_data['timeOfDay'] = raw_5_min_data['time'].apply(lambda x: x.strftime("%H:%M")) 
+        raw_5_min_data['Weekday'] = raw_5_min_data['time'].dt.weekday
+        
+        # Keep only columns used
+        redux_5_min = raw_5_min_data[metric_colnames + helper_colnames +  ['Station', 'timeOfDay', 'District','Freeway #', 'Direction']]
+        redux_meta = redux_meta[['ID', 'Fwy','District', 'Dir','Abs_PM']]
+        
+        # Get the Station's Absolute marker by merging meta
+        freeway = redux_5_min.merge(redux_meta, 
+                              left_on=['Station', 'District','Freeway #', 'Direction'],
                               right_on=['ID', 'District', 'Fwy', 'Dir'])
+
+        # Export for later use
+        if output_csv:
+            freeway.to_csv(filepath)
     
-    #print "freeway and meta merged"
+    return freeway
+
+##### get_fwy_dataByDay
+# Using the existing freeway, this function restricts the dataset to a specific day of the week and writes the results to a csv
+def get_fwy_dataByDay(df, _daynum, overwrite=False, output_csv=False): 
+    weekday = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    myname = "".join([ "i",
+                str(_fwy),
+                str(_dir), 
+                "_", 
+                weekday[_daynum]])
     
-    #print freeway[:5]
-    #print freeway[:-5]
+    # Check to see if the file should be overwritten or if it is not available.
+    try:
+        if overwrite == False:
+            freewayByDay = pd.read_csv(filepath, sep='\t')
+    except:
+        overwrite = True
     
-    #freeway = freeway[freeway['% Observed'] > 95 ]
+    if overwrite:
+        keyval_dict = {"Weekday": _daynum} 
+        freewayByDay = reduce_data_by_dict(df, keyval_dict)
     
-    index_fields = ['timeOfDay', 'Abs_PM']
+    if output_csv:
+        freewayByDay.to_csv(filepath)
+
+    return freewayByDay
+
+
+
+# Still working on this
+def create_freeway_stats(df):
+    index_fields = index_colnames()
     stats = ['mean','std']
     
     #Reduce columns of dataset only to columns of interest
-    freeway_metrics = freeway[['Total Flow', 'Avg Occupancy', 'Avg Speed', 'timeOfDay', 'Abs_PM'] ]
+    fwy_grouping = df[['Total Flow', 'Avg Occupancy', 'Avg Speed', 'timeOfDay', 'Abs_PM'] ].groupby(index_fields)
 
-    fwy_grouping = freeway_metrics[['Total Flow', 
-                                    'Avg Occupancy', 'Avg Speed', 
-                                    'timeOfDay', 'Abs_PM'] ].groupby(index_fields)
-    
     metrics = fwy_grouping.agg([np.mean, np.std])
-    
-    metric_names = set([a[0] for a in metrics.columns if a[0] not in index_fields])
     metric_stats = ['mean+std', 'mean', 'mean-std']
     
     new_cols = []
-    for a in metric_names:
+    for a in metric_colnames():
         for b in metric_stats:
             name = "_".join([a.replace(" ", ""),b])
             #print name
@@ -53,73 +137,7 @@ def create_freeway_stats_df(_df, _meta_redux):
                 
     fields = new_cols+index_fields
     
-    #print fields
-    
     metrics = metrics.reset_index()
-    #print metrics.columns
     metrics = metrics[fields]
 
     return metrics
-
-
-
-
-def import_fwy_data(_fwy,_dir,_daynum):
-    raw_5_min_filepath = '../../../five_min_frame.csv'
-    raw_meta_filepath = '../../../d11_traffic_data/meta/d11/d11_text_meta_2015_01_01.txt'
-    
-    weekday = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    myname = "".join([ "i",
-                      str(_fwy),
-                      str(_dir), 
-                      "_", 
-                      weekday[_daynum]])
-    filepath = "".join(["../data/metric_statistics/",myname,".csv"])
-
-    meta = pd.read_csv(raw_meta_filepath, sep='\t')
-    meta = meta[['ID', 'Fwy','District', 'Dir','Abs_PM']]
-
-    raw_5_min_data = pd.read_csv(raw_5_min_filepath, nrows=10000000)
-
-    #print 'traffic data import complete'
-
-    raw_5_min_data['time'] = pd.to_datetime(raw_5_min_data['Timestamp'], format="%m/%d/%Y %H:%M:%S")
-    raw_5_min_data['timeOfDay'] = raw_5_min_data['time'].apply(lambda x: x.strftime("%H:%M")) 
-    raw_5_min_data['Weekday'] = raw_5_min_data['time'].dt.weekday
-
-    #print "traffic data processed"  
-
-    keyval_dict = {"District": 11, 
-                   "Freeway #": _fwy, 
-                   "Lane Type": 'ML', 
-                   "Direction": _dir}
-    thresholds_alldays = {"Total Flow": [reduce_data_by_dict(raw_5_min_data, keyval_dict)['Total Flow'].mean(), 
-     reduce_data_by_dict(raw_5_min_data, keyval_dict)['Total Flow'].std()],
-"Avg Speed": [reduce_data_by_dict(raw_5_min_data, keyval_dict)['Avg Speed'].mean(),
-      reduce_data_by_dict(raw_5_min_data, keyval_dict)['Avg Speed'].std()],
-"Avg Occupancy": [reduce_data_by_dict(raw_5_min_data, keyval_dict)['Avg Occupancy'].mean(),
-        reduce_data_by_dict(raw_5_min_data, keyval_dict)['Avg Occupancy'].std()]}
-    
-    #print thresholds_alldays
-
-    keyval_dict = {"District": 11, 
-                   "Freeway #": _fwy, 
-                   "Lane Type": 'ML', 
-                   "Direction": _dir,
-                   "Weekday": _daynum} 
-
-    freeway_redux = reduce_data_by_dict(raw_5_min_data, keyval_dict)
-    #print "freeway data reduced"
-
-    meta_dict= {"District": 11, "Fwy": _fwy,  "Dir": _dir}
-    meta_redux = reduce_data_by_dict(meta, meta_dict)
-    #print "meta data reduced"
-
-    df = create_freeway_stats_df(freeway_redux, meta_redux)
-    #print "stats created"
-
-    df.to_csv(filepath)
-
-    return df, thresholds_alldays
-
-
