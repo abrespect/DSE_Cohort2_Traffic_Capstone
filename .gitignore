@@ -8,6 +8,8 @@
 **/*.idea
 **/*.swp
 
+**UCH_FILES.txt
+
 # building
 target
 build
@@ -23,6 +25,10 @@ eclipse conf file
 .classpath
 .project
 .manager
+*.lck
+*.ctrl
+*.properties
+
 .scala_dependencies
 
 # misc
