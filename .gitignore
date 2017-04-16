@@ -2,7 +2,7 @@
 **/data-out/*
 **/meta/*
 **/*.class
-**/*.ipynb_checkpoints
+
 **/*.pkl
 **/*.pyc
 **/*.idea
@@ -27,21 +27,15 @@ eclipse conf file
 .manager
 *.lck
 *.ctrl
-*.properties
+**/*.ipynb_checkpoints
 
 .scala_dependencies
 
 # misc
 .cache-main
-
 *.log
-
 *.dat
-
 *.gz
-
 *.csv
-
+*.properties
 .DS_Store
-
-cohort2/images/i5 Southbound Mon_thru_Sun.pdf
