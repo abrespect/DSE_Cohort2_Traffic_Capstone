@@ -39,3 +39,4 @@ eclipse conf file
 *.csv
 *.properties
 .DS_Store
+cohort2/exploration/wiggle_statistics.ipynb
