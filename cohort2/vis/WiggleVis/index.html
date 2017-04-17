@@ -96,7 +96,7 @@
 </style>
 
 <head>
-    <title>DSE241 Final Project: Traffic Visualization</title>
+    <title>Capstone Traffic Wiggle Visualization</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
@@ -175,8 +175,8 @@
                         <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
                     </h1>
 
-                    <h3>Final Project for DSE241</h3>
-                    <p class="lorem">Author: Chris Sanders</p>
+                    <h3>DSE260A Traffic Capstone</h3>
+                    <p>Wiggle Wiggle Wiggle</p>
 
                     <p>Visualization of Traffic for San Diego (d11) using average main line station day data for 2015.</p>
 
@@ -927,19 +927,31 @@
 //            }
 //        });
 
+        let wiggle_data = {'smooth': [], 'wt': []};
+        d3.csv('data/stations/1100270.csv', function(error, data) {
+            data.forEach(function(row) {
+                let smooth = +row.smooth;
+                let wt = +row.wt;
+
+                wiggle_data['smooth'].push(smooth);
+                wiggle_data['wt'].push(wt);
+            });
+        });
+
         if (freeways_select.length != 0) {
             chart1 = c3.generate({
                 bindto: '#chart1',
                 data: {
-                    json: top_data,
+//                    json: wiggle_data,
+                    url: '/data/stations/1100270.csv',
                     colors: chart1_colors,
                     onclick: function (d, i) {
                         //console.log("onclick", d, i);
 //                        console.log('clicked on: ' + d.id + ' ' + d.x);
-                        let freeway_meta_data = meta_data_points[d.id];
+//                        let freeway_meta_data = meta_data_points[d.id];
 //                        console.log(freeway_meta_data.data.features);
-                        let coordinates = freeway_meta_data.data.features[d.x].geometry.coordinates;
-                        map.setView([coordinates[1], coordinates[0]], map.getZoom());
+//                        let coordinates = freeway_meta_data.data.features[d.x].geometry.coordinates;
+//                        map.setView([coordinates[1], coordinates[0]], map.getZoom());
                     }
                     //onmouseover: function (d, i) { console.log("onmouseover", d, i); }
                 },
@@ -954,11 +966,12 @@
                 },
                 axis: {
                     x: {
-                        label: 'Freeway Start (S or W) to End (N or E)'
-                    },
-                    y: {
-                        label: top_input
+                        label: 'Each 5 minute interval scaled 5 times'
                     }
+//                    },
+//                    y: {
+//                        label: top_input
+//                    }
                 }
             });
 
