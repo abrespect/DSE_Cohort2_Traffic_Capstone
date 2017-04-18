@@ -42,7 +42,7 @@
         width:60%;
     }
     #chart1, #chart2 {
-        position:absolute;
+        position:relative;
     }
     #chart1 {
         top: 0;
@@ -123,9 +123,10 @@
     <script src="js/jquery/jquery-3.2.0.min.js"></script>
     <script src="js/jqueryui/jquery-ui.js"></script>
 
-    <!-- load d3/c3 -->
+    <!-- load d3/c3/plotly -->
     <script src="d3.v3.min.js" charset="utf-8"></script>
     <script src="c3-0.4.11/c3.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
 <body>
@@ -331,6 +332,8 @@
                         }
                         $('.btn').click(function(){
                             let answer= $(this).attr('id');
+                            last_freeway_select = answer;
+                            console.log(answer);
                             if($(this).hasClass('btn-default')) {
                                 if (freeways_select.length < max_freeway_count) {
                                     activate_button(this);
@@ -511,7 +514,9 @@
     //global variables used throughout
     let top_data = {}, bottom_data = {}, marker_data = {}, to_draw = {},
         elevation_to_draw = {}, top_input = '', bottom_input = '', marker_input = '',
-        freeways_select = [];
+        freeways_select = [],
+        selected_station = '',
+        last_freeway_select = '';
     const max_freeway_count = 4;
 
     //define a boundary box around CA to limit the map to
@@ -703,10 +708,18 @@
             .attr('r', 2.5);
     }
 
+    function clickFeature(e) {
+//        console.log(e);
+        selected_station = e.target.feature.properties.ID;
+        console.log(selected_station);
+        update_vis();
+    }
+
     function onEachFeature(feature, layer) {
         layer.on({
             mouseover: highlightFeature,
-            mouseout: resetHighlight
+            mouseout: resetHighlight,
+            click: clickFeature,
         });
     }
 
@@ -783,6 +796,9 @@
 //                update_output();
 
                 let stations = to_draw[fwy_dir]['stations'];
+                if (selected_station == '') {
+                    selected_station = stations[0];
+                }
 
                 stations.forEach(function (id) {
                     let raw_top_data = [];
@@ -942,16 +958,16 @@
             chart1 = c3.generate({
                 bindto: '#chart1',
                 data: {
-//                    json: wiggle_data,
-                    url: '/data/stations/1100270.csv',
+                    //                    json: wiggle_data,
+                    url: '/data/stations/' + selected_station + '.csv',
                     colors: chart1_colors,
                     onclick: function (d, i) {
                         //console.log("onclick", d, i);
-//                        console.log('clicked on: ' + d.id + ' ' + d.x);
-//                        let freeway_meta_data = meta_data_points[d.id];
-//                        console.log(freeway_meta_data.data.features);
-//                        let coordinates = freeway_meta_data.data.features[d.x].geometry.coordinates;
-//                        map.setView([coordinates[1], coordinates[0]], map.getZoom());
+                        //                        console.log('clicked on: ' + d.id + ' ' + d.x);
+                        //                        let freeway_meta_data = meta_data_points[d.id];
+                        //                        console.log(freeway_meta_data.data.features);
+                        //                        let coordinates = freeway_meta_data.data.features[d.x].geometry.coordinates;
+                        //                        map.setView([coordinates[1], coordinates[0]], map.getZoom());
                     }
                     //onmouseover: function (d, i) { console.log("onmouseover", d, i); }
                 },
@@ -968,10 +984,13 @@
                     x: {
                         label: 'Each 5 minute interval scaled 5 times'
                     }
-//                    },
-//                    y: {
-//                        label: top_input
-//                    }
+                    //                    },
+                    //                    y: {
+                    //                        label: top_input
+                    //                    }
+                },
+                title: {
+                    text: 'Station: ' + selected_station
                 }
             });
 
@@ -981,38 +1000,106 @@
             d3.select('#chart1').select('.background')
                 .style({'opacity': '.6', 'fill': innerColors[0], 'visibility': null});
 
-            chart2 = c3.generate({
-                bindto: '#chart2',
-                data: {
-                    xs: {
+//            chart2 = c3.generate({
+//                bindto: '#chart2',
+//                data: {
+//                    xs: {
+//
+//                    },
+//                    json: bottom_data,
+//                    colors: chart2_colors,
+//                    onclick: function (d, i) {
+//                        let freeway_meta_data = meta_data_points[d.id];
+//                        let coordinates = freeway_meta_data.data.features[d.x].geometry.coordinates;
+//                        map.setView([coordinates[1], coordinates[0]], map.getZoom());
+//                    }
+//                },
+//                legend: {
+//                    position: 'right'
+//                },
+//                zoom: {
+//                    enabled: true
+//                },
+//                subchart: {
+//                    show: true
+//                },
+//                axis: {
+//                    x: {
+//                        label: 'Freeway Start (S or W) to End (N or E)'
+//                    },
+//                    y: {
+//                        label: bottom_input
+//                    }
+//                }
+//            });
+            let i = 0,
+                to_graph = [],
+                rowLabel = [];
 
-                    },
-                    json: bottom_data,
-                    colors: chart2_colors,
-                    onclick: function (d, i) {
-                        let freeway_meta_data = meta_data_points[d.id];
-                        let coordinates = freeway_meta_data.data.features[d.x].geometry.coordinates;
-                        map.setView([coordinates[1], coordinates[0]], map.getZoom());
+            Plotly.d3.csv("data/heatmaps/wiggle_analysis_" + last_freeway_select + ".csv",
+                function(error, data) {
+                    //console.log(data);
+
+//            let header = d3.keys(data[0]);
+//            console.log(header);
+
+                    let keys = d3.keys(data[0]).filter(function (key) {
+                        return key !== "Station";
+                    });
+//            console.log(keys);
+
+                    to_graph = data.map(function(row) {
+                        rowLabel.push(row.Station);
+                        return keys.map(function (key) {
+                            return row[key];
+
+                        });
+                    });
+//                    console.log(to_graph);
+
+                    let heatmap_data = [
+                        {
+                            //z: [[1, 20, 30], [20, 1, 60], [30, 60, 1]],
+                            z: to_graph,
+                            type: 'heatmap'
+                        }
+                    ];
+
+                    let layout = {
+                        title: 'Heatmap for ' + last_freeway_select,
+                        xaxis: {
+                            title: 'Time scaled 5x',
+                            titlefont: {
+                                family: 'Courier New, monospace',
+                                size: 18,
+                                color: '#7f7f7f'
+                            }
+                        },
+                        yaxis: {
+                            title: 'Stations in order',
+                            titlefont: {
+                                family: 'Courier New, monospace',
+                                size: 18,
+                                color: '#7f7f7f'
+                            }
+                        }
+                    };
+
+                    if (chart2) {
+                        chart2 = Plotly.newPlot('chart2', heatmap_data, layout);
+                    } else {
+                        chart2 = Plotly.plot('chart2', heatmap_data, layout);
                     }
-                },
-                legend: {
-                    position: 'right'
-                },
-                zoom: {
-                    enabled: true
-                },
-                subchart: {
-                    show: true
-                },
-                axis: {
-                    x: {
-                        label: 'Freeway Start (S or W) to End (N or E)'
-                    },
-                    y: {
-                        label: bottom_input
-                    }
+
+
+                    // todo: add the hover over lines
+                    // http://stackoverflow.com/questions/38398342/how-to-hide-values-information-on-hover-while-keeping-hover-events-firing
+                    // note: don't suppress the hover over text
+
+                    // todo: animate the heatmap
+                    // https://plot.ly/javascript/animations/
                 }
-            });
+            );
 
             //update the background colors using d3 since c3 doesn't support it
             d3.select('#chart2').select('.c3-zoom-rect')
@@ -1022,7 +1109,9 @@
         } else {
             if (chart1) {
                 chart1.destroy();
-                chart2.destroy();
+            }
+            if (chart2) {
+                Plotly.purge('chart2');
             }
         }
 
