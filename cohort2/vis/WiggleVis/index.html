@@ -107,6 +107,7 @@
     <link rel="stylesheet" href="leaflet-sidebar-v2/leaflet-sidebar.css"/>
     <link rel="stylesheet" href="Leaflet.markercluster-1.0.3/dist/MarkerCluster.css"/>
     <link rel="stylesheet" href="Leaflet.markercluster-1.0.3/dist/MarkerCluster.Default.css"/>
+    <link rel="stylesheet" href="leaflet_vector_markers/leaflet-vector-markers.css">
 
     <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">-->
     <link rel="stylesheet" href="js/jqueryui/jquery-ui.css">
@@ -226,53 +227,53 @@
                         </script>
                     </p>
 
-                    <p>
-                        <h3 align="center">Time Control</h3>
-                        <label for="time">Time range:</label>
-                        <input type="text" id="time" readonly style="border:0; color:#f6931f; font-weight:bold;" value="00:00 to 23:55">
-                    </p>
+                    <!--<p>-->
+                        <!--<h3 align="center">Time Control</h3>-->
+                        <!--<label for="time">Time range:</label>-->
+                        <!--<input type="text" id="time" readonly style="border:0; color:#f6931f; font-weight:bold;" value="00:00 to 23:55">-->
+                    <!--</p>-->
 
                     <!-- js for jquery control in leaflet sidebar -->
-                    <script>
-                        $(function() {
-                            function calc_time(input) {
-                                let hours = Math.floor(input * 5 / 60);
-                                let minutes = (input - (hours * 60 / 5)) * 5;
-                                if(hours.toString().length == 1) hours = '0' + hours;
-                                if(minutes.toString().length == 1) minutes = '0' + minutes;
+                    <!--<script>-->
+                        <!--$(function() {-->
+                            <!--function calc_time(input) {-->
+                                <!--let hours = Math.floor(input * 5 / 60);-->
+                                <!--let minutes = (input - (hours * 60 / 5)) * 5;-->
+                                <!--if(hours.toString().length == 1) hours = '0' + hours;-->
+                                <!--if(minutes.toString().length == 1) minutes = '0' + minutes;-->
 
-                                return hours.toString()+':'+minutes.toString();
-                            }
+                                <!--return hours.toString()+':'+minutes.toString();-->
+                            <!--}-->
 
-                            $("#slider-range").slider({
-                                range: true,
-                                min: 0,
-                                max: 287,
-                                step: 1,
-                                values: [0, 287],
-                                slide: function(event, ui) {
-                                    if(ui.values[1] - ui.values[0] < 1){
-                                        ui.values[1] += 1;
-                                        $( "#slider-range" ).slider( "values", [ui.values[0], ui.values[1]] );
-                                    }
-                                    $("#time").val( calc_time(ui.values[0])  + " to " + calc_time(ui.values[1]));
-                                    time = calc_time(ui.values[0])  + " to " + calc_time(ui.values[1]);
-                                },
-                                stop: function(event, ui) {
-                                    if(ui.values[1] - ui.values[0] < 1){
-                                        ui.values[1] += 1;
-                                        $( "#slider-range" ).slider( "values", [ui.values[0], ui.values[1]] );
-                                    }
-//                                    update_output();
-                                    update_vis();
-                                }
-                            });
-                            $("#time").val( calc_time($( "#slider-range" ).slider( "values", 0 ))  + " to " +
-                                calc_time($( "#slider-range" ).slider( "values", 1 )));
-//                            console.log($("#time").val());
-                        });
-                    </script>
-                    <div id="slider-range"></div>
+                            <!--$("#slider-range").slider({-->
+                                <!--range: true,-->
+                                <!--min: 0,-->
+                                <!--max: 287,-->
+                                <!--step: 1,-->
+                                <!--values: [0, 287],-->
+                                <!--slide: function(event, ui) {-->
+                                    <!--if(ui.values[1] - ui.values[0] < 1){-->
+                                        <!--ui.values[1] += 1;-->
+                                        <!--$( "#slider-range" ).slider( "values", [ui.values[0], ui.values[1]] );-->
+                                    <!--}-->
+                                    <!--$("#time").val( calc_time(ui.values[0])  + " to " + calc_time(ui.values[1]));-->
+                                    <!--time = calc_time(ui.values[0])  + " to " + calc_time(ui.values[1]);-->
+                                <!--},-->
+                                <!--stop: function(event, ui) {-->
+                                    <!--if(ui.values[1] - ui.values[0] < 1){-->
+                                        <!--ui.values[1] += 1;-->
+                                        <!--$( "#slider-range" ).slider( "values", [ui.values[0], ui.values[1]] );-->
+                                    <!--}-->
+<!--//                                    update_output();-->
+                                    <!--update_vis();-->
+                                <!--}-->
+                            <!--});-->
+                            <!--$("#time").val( calc_time($( "#slider-range" ).slider( "values", 0 ))  + " to " +-->
+                                <!--calc_time($( "#slider-range" ).slider( "values", 1 )));-->
+<!--//                            console.log($("#time").val());-->
+                        <!--});-->
+                    <!--</script>-->
+                    <!--<div id="slider-range"></div>-->
 
                     <div id="freeway_controls" data-toggle="buttons">
                         <h3 align="center">Freeway Controls</h3>
@@ -369,90 +370,6 @@
                     </script>
 
                 </div>
-
-                <!--<div class="sidebar-pane" id="marker_settings">-->
-                    <!--<h1 class="sidebar-header">Marker Settings-->
-                        <!--<span class="sidebar-close"><i class="fa fa-caret-left"></i></span>-->
-                    <!--</h1>-->
-
-                    <!--<script>-->
-                        <!--$( function() {-->
-                            <!--$( $(':radio[name=inner_control]') ).checkboxradio();-->
-                            <!--$( $(':radio[name=outer_control]') ).checkboxradio();-->
-                            <!--$( $(':radio[name=marker_control]') ).checkboxradio();-->
-                            <!--$( "#radio_group" ).controlgroup();-->
-                        <!--} );-->
-                    <!--</script>-->
-
-                    <!--<form id="control_form">-->
-                    <!--<div>-->
-                        <!--<h3 align="center">Inner Marker / Top Graph</h3>-->
-                        <!--<fieldset id="inner_control">-->
-                            <!--&lt;!&ndash;<legend>Select a dimension: </legend>&ndash;&gt;-->
-                            <!--<label for="inner_flow">Flow</label>-->
-                            <!--<input type="radio" name="inner_control" id="inner_flow" value="Flow">-->
-                            <!--<label for="inner_occu">Occupancy</label>-->
-                            <!--<input type="radio" name="inner_control" id="inner_occu" value="Occu">-->
-                            <!--<label for="inner_obser">Health</label>-->
-                            <!--<input type="radio" name="inner_control" id="inner_obser" value="Obser">-->
-                            <!--<label for="inner_speed">Speed</label>-->
-                            <!--<input type="radio" name="inner_control" id="inner_speed" value="Speed">-->
-                            <!--<label for="inner_elev">Elevation</label>-->
-                            <!--<input type="radio" name="inner_control" id="inner_elev" value="elevation"-->
-                                   <!--checked="checked">-->
-                        <!--</fieldset>-->
-                    <!--</div>-->
-
-                    <!--<div>-->
-                        <!--<h3 align="center">Outer Marker / Bottom Graph</h3>-->
-                        <!--<fieldset id="outer_control">-->
-                            <!--&lt;!&ndash;<legend>Select a dimension: </legend>&ndash;&gt;-->
-                            <!--<label for="outer_flow">Flow</label>-->
-                            <!--<input type="radio" name="outer_control" id="outer_flow" value="Flow"-->
-                                   <!--checked="checked">-->
-                            <!--<label for="outer_occu">Occupancy</label>-->
-                            <!--<input type="radio" name="outer_control" id="outer_occu" value="Occu">-->
-                            <!--<label for="outer_obser">Health</label>-->
-                            <!--<input type="radio" name="outer_control" id="outer_obser" value="Obser">-->
-                            <!--<label for="outer_speed">Speed</label>-->
-                            <!--<input type="radio" name="outer_control" id="outer_speed" value="Speed">-->
-                            <!--<label for="outer_elev">Elevation</label>-->
-                            <!--<input type="radio" name="outer_control" id="outer_elev" value="elevation">-->
-                        <!--</fieldset>                        -->
-                    <!--</div>-->
-
-                    <!--<div>-->
-                        <!--<h3 align="center">Marker Size</h3>-->
-                        <!--<fieldset id="marker_control">-->
-                            <!--&lt;!&ndash;<legend>Select a dimension: </legend>&ndash;&gt;-->
-                            <!--<label for="marker_flow">Flow</label>-->
-                            <!--<input type="radio" name="marker_control" id="marker_flow" value="Flow">-->
-                            <!--<label for="marker_occu">Occupancy</label>-->
-                            <!--<input type="radio" name="marker_control" id="marker_occu" value="Occu">-->
-                            <!--<label for="marker_obser">Health</label>-->
-                            <!--<input type="radio" name="marker_control" id="marker_obser" value="Obser"-->
-                                   <!--checked="checked">-->
-                            <!--<label for="marker_speed">Speed</label>-->
-                            <!--<input type="radio" name="marker_control" id="marker_speed" value="Speed">-->
-                            <!--<label for="marker_elev">Elevation</label>-->
-                            <!--<input type="radio" name="marker_control" id="marker_elev" value="elevation">-->
-                        <!--</fieldset>-->
-                    <!--</div>-->
-                    <!--</form>-->
-
-                    <!--<script>-->
-                        <!--function check() {-->
-                            <!--console.log('inner: ' + $('input[name=inner_control]:checked', '#control_form').val());-->
-                            <!--console.log('outer: ' + $('input[name=outer_control]:checked', '#control_form').val());-->
-                            <!--console.log('marker: ' + $('input[name=marker_control]:checked', '#control_form').val());-->
-                        <!--}-->
-<!--//                        check();-->
-                        <!--$( $("[type=radio]") ).change(function() {-->
-<!--//                            check();-->
-                            <!--update_vis();-->
-                        <!--});-->
-                    <!--</script>-->
-                <!--</div>-->
             </div>
         </div>
 
@@ -475,6 +392,7 @@
 <script src='js/mapbox_v3.0.1/mapbox.js'></script>
 <script src="leaflet-sidebar-v2/leaflet-sidebar.min.js"></script>
 <script src="Leaflet.markercluster-1.0.3/dist/leaflet.markercluster-src.js"></script>
+<script src="leaflet_vector_markers/leaflet-vector-markers.js"></script>
 <!--<link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />-->
 
 <!-- load meta_data variable -->
@@ -493,12 +411,12 @@
     L.mapbox.accessToken = 'pk.eyJ1IjoiYzZzYW5kZXIiLCJhIjoiY2l6ZWpmaHl3MXYwYTJ3cXBlaXBqeXJwcyJ9.QbYtu1dpRdbLFxfhOkqMmA';
 
     //global variables used throughout
-    let top_data = {}, bottom_data = {}, marker_data = {}, to_draw = {},
-        elevation_to_draw = {}, top_input = '', bottom_input = '', marker_input = '',
+    let top_data = {}, x_axis = [], to_draw = {},
+        elevation_to_draw = {}, top_input = '',
         freeways_select = [],
         selected_station = '',
         last_freeway_select = '';
-    const max_freeway_count = 4;
+    const max_freeway_count = 1;
 
     //define a boundary box around CA to limit the map to
     let bounds = new L.LatLngBounds(new L.LatLng(33.627056, -117.943720), new L.LatLng(32.226014, -116.5608));
@@ -526,6 +444,45 @@
     };
 
     L.control.layers(baseLayers).addTo(map);
+
+    let entranceIcon = L.icon({
+        iconUrl: 'data/icons/entrance.jpeg',
+//        shadowUrl: 'leaf-shadow.png',
+
+        iconSize:     [38, 95], // size of the icon
+//        shadowSize:   [50, 64], // size of the shadow
+        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+//        shadowAnchor: [4, 62],  // the same for the shadow
+        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
+
+    let exitIcon = L.icon({
+        iconUrl: 'data/icons/exit.png',
+    //        shadowUrl: 'leaf-shadow.png',
+
+        iconSize:     [38, 95], // size of the icon
+    //        shadowSize:   [50, 64], // size of the shadow
+        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    //        shadowAnchor: [4, 62],  // the same for the shadow
+        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
+
+    let enterMarker = L.VectorMarkers.icon({
+        icon: 'sign-in',
+//        markerColor: 'blue'
+    });
+
+    let exitMarker = L.VectorMarkers.icon({
+        icon: 'sign-out',
+//        markerColor: 'red'
+    });
+
+    Plotly.d3.csv("data/heatmaps/x_axis.csv",
+        function(error, data) {
+            data.forEach(function (d) {
+                x_axis.push(d.x);
+            });
+    });
 
     let sidebar = L.control.sidebar('sidebar').addTo(map);
     sidebar.open('home');
@@ -580,27 +537,6 @@
 
     //let inner_scale = d3.scale.ordinal().range(innerColors);
 
-    // outerColors for the outer marker / bottom OrRd 5 multi-hue sequential
-//    let outerColors = ['#fef0d9','#fdcc8a','#fc8d59','#e34a33','#b30000'];
-//    let outer_bins;
-//    function outer_scale(d) {
-//        return d >= outer_bins[3] ? outerColors[4] :
-//            d >= outer_bins[2] ? outerColors[3] :
-//                d >= outer_bins[1] ? outerColors[2] :
-//                    d >= outer_bins[0] ? outerColors[1] :
-//                        outerColors[0];
-//    }
-
-//    let markerSizes = [4, 6, 8, 10, 12];
-//    let marker_bins;
-//    function marker_scale(d) {
-//        return d >= marker_bins[3] ? markerSizes[4] :
-//            d >= marker_bins[2] ? markerSizes[3] :
-//                d >= marker_bins[1] ? markerSizes[2] :
-//                    d >= marker_bins[0] ? markerSizes[1] :
-//                        markerSizes[0];
-//    }
-
     function create_bins(source_data) {
         let keys = d3.keys(source_data);
         let mins = [];
@@ -647,9 +583,10 @@
             fillOpacity: 0.7
         });
 
-        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-            layer.bringToFront();
-        }
+//        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+//            //layer.bringToFront();
+//            layer.bringToBack();
+//        }
 
         info.update(layer.feature.properties);
 
@@ -666,21 +603,41 @@
             .attr('r', 7.5);
     }
 
+    function updateStyle(feature) {
+        let color = '';
+        let radius = '';
+        let type = feature.properties.Type;
+        if (type == 'ML') {
+            color = 'blue';
+            radius = 10;
+        } else if (type == 'OR') {
+            color = 'red';
+            radius = 20;
+        } else if (type == 'FR') {
+            color = 'black';
+            radius = 20;
+        } else {
+            color = 'brown';
+            radius = 20;
+        }
+
+        return {
+//                            "color": outer_scale(feature.properties.bottom_input),
+            "color": color,
+            "fillColor": inner_scale(feature.properties.top_input),
+//                            "radius": marker_scale(feature.properties.marker),
+            "radius": radius,
+            "opacity": 1,
+            "weight": 3,
+            "smoothFactor": 1,
+            "fillOpacity": 1
+        }
+    }
     function resetHighlight(e) {
         let layer = e.target;
         let feature = layer.feature;
 
-        layer.setStyle({
-//            color: outer_scale(feature.properties.bottom_input),
-            color: inner_scale(feature.properties.top_input),
-            fillColor: inner_scale(feature.properties.top_input),
-//            radius: marker_scale(feature.properties.marker),
-            radius: 10,
-            opacity: 1,
-            weight: 3,
-            smoothFactor: 1,
-            fillOpacity: 1
-        });
+        layer.setStyle(updateStyle(feature));
 
         //call update to clear the info box
         info.update();
@@ -689,20 +646,25 @@
         let fwy_dir = layer.feature.properties.key;
         let new_fwy_dir = fwy_dir.replace('_', '-');
 
-        d3.select('#chart1')
-            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
-            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
-            .attr('r', 2.5);
-        d3.select('#chart2')
-            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
-            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
-            .attr('r', 2.5);
+//        d3.select('#chart1')
+//            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
+//            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
+//            .attr('r', 2.5);
+//        d3.select('#chart2')
+//            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
+//            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
+//            .attr('r', 2.5);
     }
 
     function clickFeature(e) {
 //        console.log(e);
-        selected_station = e.target.feature.properties.ID;
+        let layer = e.target;
+        selected_station = layer.feature.properties.ID;
         console.log(selected_station);
+        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+            //layer.bringToBack();
+            layer.bringToFront();
+        }
         update_vis();
     }
 
@@ -744,26 +706,22 @@
     function fetch_data() {
         //jqueryui slider gets added after everything else, so check the slider, and if it's not there
         //catch the exception and set the default values
-        let start_time, end_time;
-        try {
-            start_time = $( "#slider-range" ).slider( "values", 0 );
-            end_time = $( "#slider-range" ).slider( "values", 1 );
-        }
-        catch (e) {
-            start_time = 0;
-            end_time = 287;
-        }
+//        let start_time, end_time;
+//        try {
+//            start_time = $( "#slider-range" ).slider( "values", 0 );
+//            end_time = $( "#slider-range" ).slider( "values", 1 );
+//        }
+//        catch (e) {
+//            start_time = 0;
+//            end_time = 287;
+//        }
 
         elevation_to_draw = {};
         top_data = {};
-//        bottom_data = {};
-//        marker_data = {};
         console.log(meta_keys);
         meta_keys.forEach(function (fwy_dir) {
             elevation_to_draw[fwy_dir] = [];
             top_data[fwy_dir] = [];
-//            bottom_data[fwy_dir] = [];
-//            marker_data[fwy_dir] = [];
             if (meta_data_points[fwy_dir].visible) {
                 to_draw[fwy_dir] = { 'stations': [] };
 
@@ -792,51 +750,26 @@
 
                 stations.forEach(function (id) {
                     let raw_top_data = [];
-//                    let raw_bottom_data = [];
-//                    let raw_marker_data = [];
 
                     partition_keys.forEach(function (part) {
                         if (raw_top_data.length == 0 && top_input != 'elevation' && id in data_array[fwy_dir][part][top_input]) {
-                            raw_top_data = data_array[fwy_dir][part][top_input][id].slice(start_time, end_time + 1);
+//                            raw_top_data = data_array[fwy_dir][part][top_input][id].slice(start_time, end_time + 1);
+                            raw_top_data = data_array[fwy_dir][part][top_input][id];
                         } else if (top_input != 'elevation' && id in data_array[fwy_dir][part][top_input]) {
-                            let new_data = data_array[fwy_dir][part][top_input][id].slice(start_time, end_time + 1);
+//                            let new_data = data_array[fwy_dir][part][top_input][id].slice(start_time, end_time + 1);
+                            let new_data = data_array[fwy_dir][part][top_input][id];
                             raw_top_data = raw_top_data.concat(new_data);
                         }
 
-//                        if (raw_bottom_data.length == 0 && bottom_input != 'elevation') {
-//                            raw_bottom_data = data_array[fwy_dir][part][bottom_input][id].slice(start_time, end_time + 1);
-//                        } else if (bottom_input != 'elevation') {
-//                            let new_data = data_array[fwy_dir][part][bottom_input][id].slice(start_time, end_time + 1);
-//                            raw_bottom_data = raw_bottom_data.concat(new_data);
-//                        }
-
-//                        if (raw_marker_data.length == 0 && marker_input != 'elevation') {
-//                            raw_marker_data = data_array[fwy_dir][part][marker_input][id].slice(start_time, end_time + 1);
-//                        } else if (marker_input != 'elevation') {
-//                            let new_data = data_array[fwy_dir][part][marker_input][id].slice(start_time, end_time + 1);
-//                            raw_marker_data = raw_marker_data.concat(new_data);
-//                        }
                     });
                     if (top_input != 'elevation') {
                         top_data[fwy_dir].push(d3.round(d3.mean(raw_top_data, function(d) { return +d; }), 1));
                     }
-//                    if (bottom_input != 'elevation') {
-//                        bottom_data[fwy_dir].push(d3.round(d3.mean(raw_bottom_data, function(d) { return +d; }), 1));
-//                    }
-//                    if (marker_input != 'elevation') {
-//                        marker_data[fwy_dir].push(d3.round(d3.mean(raw_marker_data, function(d) { return +d; }), 1));
-//                    }
                 });
 //                console.log("top_data");
 //                console.log(top_data);
-//                console.log("bottom_data");
-//                console.log(bottom_data);
-//                console.log("marker_data");
-//                console.log(marker_data);
             } else {
                 delete top_data[fwy_dir];
-//                delete bottom_data[fwy_dir];
-//                delete marker_data[fwy_dir];
             }
         });
     }
@@ -851,9 +784,9 @@
 
         fetch_data();
 
-        if (top_input == 'elevation') {
-            top_data = elevation_to_draw;
-        }
+//        if (top_input == 'elevation') {
+//            top_data = elevation_to_draw;
+//        }
 //        if (bottom_input == 'elevation') {
 //            bottom_data = elevation_to_draw;
 //        }
@@ -878,19 +811,20 @@
 
                 new_layer = L.geoJSON(meta_data_points[fwy_dir].data, {
                     style: function (feature) {
-                        return {
-//                            "color": outer_scale(feature.properties.bottom_input),
-                            "color": inner_scale(feature.properties.top_input),
-                            "fillColor": inner_scale(feature.properties.top_input),
-//                            "radius": marker_scale(feature.properties.marker),
-                            "radius": 10,
-                            "opacity": 1,
-                            "weight": 3,
-                            "smoothFactor": 1,
-                            "fillOpacity": 1
-                        }
+                        return updateStyle(feature)
                     },
                     pointToLayer: function (feature, latlng) {
+//                        console.log(feature.properties.Type);
+//                        let type = feature.properties.Type;
+//                        if (type == 'ML') {
+//                            return L.circleMarker(latlng);
+//                        } else if (type == 'OR') {
+//                            return L.marker(latlng, {icon: enterMarker})
+//                        } else if (type == 'FR') {
+//                            return L.marker(latlng, {icon: exitMarker})
+//                        } else {
+//                            return L.circleMarker(latlng);
+//                        }
                         return L.circleMarker(latlng);
                     },
                     onEachFeature: onEachFeature
@@ -898,7 +832,7 @@
 
                 meta_data_points[fwy_dir].layer = new_layer;
 
-                console.log(meta_data_points[fwy_dir].data);
+//                console.log(meta_data_points[fwy_dir].data);
 //                for (let i = 0; i < meta_data_points[fwy_dir].data.feature.properties.bottom_input; i++){
 //
 //                }
@@ -958,22 +892,17 @@
 //            }
 //        });
 
-//        let wiggle_data = {'smooth': [], 'wt': []};
-//        d3.csv('data/stations/1100270.csv', function(error, data) {
-//            data.forEach(function(row) {
-//                let smooth = +row.smooth;
-//                let wt = +row.wt;
-//
-//                wiggle_data['smooth'].push(smooth);
-//                wiggle_data['wt'].push(wt);
-//            });
-//        });
 
         if (freeways_select.length != 0) {
             chart1 = c3.generate({
                 bindto: '#chart1',
                 data: {
                     url: '/data/stations/' + selected_station + '.csv',
+//                    mimeType: 'csv',
+//                    keys: {
+//                        x: 'x',
+//                        value: ['original', 'wt']
+//                    },
                     colors: chart1_colors,
                     onclick: function (d, i) {
                         //console.log("onclick", d, i);
@@ -996,7 +925,18 @@
                 },
                 axis: {
                     x: {
-                        label: 'Each 5 minute interval scaled 5 times'
+                        label: 'Each 5 minute interval scaled 5 times',
+                        type: 'category',
+                        categories: x_axis,
+                        tick: {
+                            centered: true,
+                            culling: {
+                                max: 23 // the number of tick texts will be adjusted to less than this value
+                            },
+                            fit: true,
+                            rotate: 45,
+                            multiline: false,
+                        }
                     }
                     //                    },
                     //                    y: {
@@ -1014,38 +954,6 @@
 //            d3.select('#chart1').select('.background')
 //                .style({'opacity': '.6', 'fill': innerColors[0], 'visibility': null});
 
-//            chart2 = c3.generate({
-//                bindto: '#chart2',
-//                data: {
-//                    xs: {
-//
-//                    },
-//                    json: bottom_data,
-//                    colors: chart2_colors,
-//                    onclick: function (d, i) {
-//                        let freeway_meta_data = meta_data_points[d.id];
-//                        let coordinates = freeway_meta_data.data.features[d.x].geometry.coordinates;
-//                        map.setView([coordinates[1], coordinates[0]], map.getZoom());
-//                    }
-//                },
-//                legend: {
-//                    position: 'right'
-//                },
-//                zoom: {
-//                    enabled: true
-//                },
-//                subchart: {
-//                    show: true
-//                },
-//                axis: {
-//                    x: {
-//                        label: 'Freeway Start (S or W) to End (N or E)'
-//                    },
-//                    y: {
-//                        label: bottom_input
-//                    }
-//                }
-//            });
             let i = 0,
                 to_graph = [],
                 rowLabel = [];
@@ -1073,36 +981,46 @@
 
                     let heatmap_data = [
                         {
-                            //z: [[1, 20, 30], [20, 1, 60], [30, 60, 1]],
                             z: to_graph,
+                            x: x_axis,
                             type: 'heatmap'
                         }
                     ];
 
                     let layout = {
+                        modeBarButtonsToRemove: ['pan2d'],
                         title: 'Heatmap for ' + last_freeway_select,
                         xaxis: {
                             title: 'Time scaled 5x',
                             titlefont: {
-                                family: 'Courier New, monospace',
-                                size: 18,
-                                color: '#7f7f7f'
-                            }
+                                family: 'Times',
+                                size: 14,
+                                color: '#7f7f7f',
+                                fixedrange: true
+                            },
+                            range: [0, 1439],
+                            autotick: false,
+                            ticks: 'outside',
+                            dtick: 60,
                         },
                         yaxis: {
                             title: 'Stations in order',
                             titlefont: {
-                                family: 'Courier New, monospace',
-                                size: 18,
-                                color: '#7f7f7f'
+                                family: 'Times',
+                                size: 14,
+                                color: '#7f7f7f',
+                                fixedrange: true
                             }
                         }
                     };
 
+                    let defaultPlotlyConfiguration = { modeBarButtonsToRemove: ['sendDataToCloud', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d'],
+                        displaylogo: false, showTips: true };
+
                     if (chart2) {
-                        chart2 = Plotly.newPlot('chart2', heatmap_data, layout);
+                        chart2 = Plotly.newPlot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
                     } else {
-                        chart2 = Plotly.plot('chart2', heatmap_data, layout);
+                        chart2 = Plotly.plot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
                     }
 
 
@@ -1139,49 +1057,28 @@
 
                 let default_style = 'width: 20px; height: 20px; background:';
                 let inner_precision = d3.min(inner_bins) < 1 ? 2 : 1;
-//                console.log('precision: ' + inner_precision);
-//                console.log('inner_bins :' + inner_bins);
-//                let outer_precision = d3.min(outer_bins) < 1 ? 2 : 1;
-//                let marker_precision = d3.min(marker_bins) < 1 ? 2 : 1;
                 for (let i = 0; i <= inner_bins.length; i++) {
                     if (i == 0) {
                         let inner_value = d3.round(inner_bins[i], inner_precision);
-//                        let outer_value = d3.round(outer_bins[i], outer_precision);
-//                        console.log('inner_value: ' + inner_value);
 
                         html_data = 'Legend: <br>';
-//                        html_data += '<table><tr><th>Inner/Top</th><th>Outer/Bottom</th><th>Marker</th></tr>';
-                        html_data += '<table><tr><th>Inner/Top</th></tr>';
+                        html_data += '<table><tr><th>Average Flow</th></tr>';
                         html_data += '<tr>' +
                             '<td><i style="' + default_style + inner_scale(inner_value - .1) + '"></i> < ' + inner_value + '</td>' +
-//                            '<td><i style="' + default_style + outer_scale(outer_value - .1) + '"></i> < ' + outer_value + '</td>' +
-//                            '<td><i class="circle1"></i> < ' + d3.round(marker_bins[i] - .1, marker_precision) + '</td>' +
                             '</tr>';
 
                     } else if (i == inner_bins.length) {
                         let inner_value = d3.round(inner_bins[i - 1], 1);
-//                        let outer_value = d3.round(outer_bins[i - 1], outer_precision);
-//                        console.log('inner_value: ' + inner_value);
 
                         html_data += '<tr>' +
                             '<td><i style="' + default_style + inner_scale(inner_value) + '"></i> > ' + inner_value + '</td>' +
-//                            '<td><i style="' + default_style + outer_scale(outer_value) + '"></i> > ' + outer_value + '</td>' +
-//                            '<td><i class="circle' + (i + 1) + '"></i> > ' + d3.round(marker_bins[i - 1], marker_precision) + '</td>' +
                             '</tr>';
                     } else {
                         let inner_from = d3.round(inner_bins[i - 1], inner_precision);
                         let inner_to = d3.round(inner_bins[i], inner_precision);
-//                        console.log('inner_from: ' + inner_from);
-//                        console.log('inner_to: ' + inner_to);
-//                        let outer_from = d3.round(outer_bins[i - 1], outer_precision);
-//                        let outer_to = d3.round(outer_bins[i], outer_precision);
-//                        let marker_from = d3.round(marker_bins[i - 1], marker_precision);
-//                        let marker_to = d3.round(marker_bins[i], marker_precision);
 
                         html_data += '<tr>' +
                             '<td><i style="' + default_style + inner_scale(inner_from) + '"></i> [' + inner_from + (inner_to ? '&ndash;' + inner_to : '+') + ')</td>' +
-//                            '<td><i style="' + default_style + outer_scale(outer_from) + '"></i> [' + outer_from + (outer_to ? '&ndash;' + outer_to : '+') + ')</td>' +
-//                            '<td><i class="circle' + (i + 1) + '"></i> [' + marker_from + (marker_to ? '&ndash;' + marker_to : '+') + ')</td>' +
                             '</tr>';
                     }
                 }
