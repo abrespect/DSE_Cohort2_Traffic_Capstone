@@ -322,6 +322,7 @@
                             $(obj).addClass('btn-primary');
                             $(obj).addClass('active');
                             meta_data_points[answer].visible = true;
+                            order = 0;
                         }
 
                         function deactivate_button(obj) {
@@ -365,6 +366,7 @@
                                 deactivate_button(d[1]);
                             });
                             freeways_select = [];
+                            order = 0;
                             update_vis();
                         }
                     </script>
@@ -396,7 +398,8 @@
 <!--<link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />-->
 
 <!-- load meta_data variable -->
-<script type="text/javascript" src="data/2015_d11_geojson_points.js"></script>
+<!--<script type="text/javascript" src="data/2015_ML_d11_geojson_points.js"></script>-->
+<script type="text/javascript" src="data/2015_to_2008_ML_d11_geojson_points.js"></script>
 
 <script>
 //    let partition = 'All';
@@ -415,7 +418,8 @@
         elevation_to_draw = {}, top_input = '',
         freeways_select = [],
         selected_station = '',
-        last_freeway_select = '';
+        last_freeway_select = '',
+        order = 0;
     const max_freeway_count = 1;
 
     //define a boundary box around CA to limit the map to
@@ -445,37 +449,37 @@
 
     L.control.layers(baseLayers).addTo(map);
 
-    let entranceIcon = L.icon({
-        iconUrl: 'data/icons/entrance.jpeg',
-//        shadowUrl: 'leaf-shadow.png',
-
-        iconSize:     [38, 95], // size of the icon
-//        shadowSize:   [50, 64], // size of the shadow
-        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-//        shadowAnchor: [4, 62],  // the same for the shadow
-        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-    });
-
-    let exitIcon = L.icon({
-        iconUrl: 'data/icons/exit.png',
-    //        shadowUrl: 'leaf-shadow.png',
-
-        iconSize:     [38, 95], // size of the icon
-    //        shadowSize:   [50, 64], // size of the shadow
-        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-    //        shadowAnchor: [4, 62],  // the same for the shadow
-        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-    });
-
-    let enterMarker = L.VectorMarkers.icon({
-        icon: 'sign-in',
-//        markerColor: 'blue'
-    });
-
-    let exitMarker = L.VectorMarkers.icon({
-        icon: 'sign-out',
-//        markerColor: 'red'
-    });
+//    let entranceIcon = L.icon({
+//        iconUrl: 'data/icons/entrance.jpeg',
+////        shadowUrl: 'leaf-shadow.png',
+//
+//        iconSize:     [38, 95], // size of the icon
+////        shadowSize:   [50, 64], // size of the shadow
+//        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+////        shadowAnchor: [4, 62],  // the same for the shadow
+//        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+//    });
+//
+//    let exitIcon = L.icon({
+//        iconUrl: 'data/icons/exit.png',
+//    //        shadowUrl: 'leaf-shadow.png',
+//
+//        iconSize:     [38, 95], // size of the icon
+//    //        shadowSize:   [50, 64], // size of the shadow
+//        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+//    //        shadowAnchor: [4, 62],  // the same for the shadow
+//        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+//    });
+//
+//    let enterMarker = L.VectorMarkers.icon({
+//        icon: 'sign-in',
+////        markerColor: 'blue'
+//    });
+//
+//    let exitMarker = L.VectorMarkers.icon({
+//        icon: 'sign-out',
+////        markerColor: 'red'
+//    });
 
     Plotly.d3.csv("data/heatmaps/x_axis.csv",
         function(error, data) {
@@ -642,9 +646,9 @@
         //call update to clear the info box
         info.update();
 
-        let value = layer.feature.properties.Order;
-        let fwy_dir = layer.feature.properties.key;
-        let new_fwy_dir = fwy_dir.replace('_', '-');
+//        let value = layer.feature.properties.Order;
+//        let fwy_dir = layer.feature.properties.key;
+//        let new_fwy_dir = fwy_dir.replace('_', '-');
 
 //        d3.select('#chart1')
 //            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
@@ -661,11 +665,25 @@
         let layer = e.target;
         selected_station = layer.feature.properties.ID;
         console.log(selected_station);
+        order = layer.feature.properties.Order;
+        console.log(layer.feature.properties);
+        console.log(order);
         if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
             //layer.bringToBack();
             layer.bringToFront();
         }
         update_vis();
+//        let trace_line = {
+//            x: [x_axis[0], x_axis[1439]],
+//            y: [order, order],
+//            type: 'scatter',
+//            line : {
+//                dash: 'dash',
+//                color: 'rgb(0, 0, 0)',
+//                width: 5
+//            }
+//        };
+//        Plotly.addTraces('chart2', trace_line);
     }
 
     function onEachFeature(feature, layer) {
@@ -678,14 +696,6 @@
 
     let markers, legend, chart1, chart2;
     let meta_keys = d3.keys(meta_data_points);
-    meta_keys.forEach(function (key) {
-        if (key.indexOf('S') > -1 || key.indexOf('W') > -1) {
-//            console.log('updating: ' + key);
-//            console.log(meta_data_points[key].data.features);
-            meta_data_points[key].data.features.reverse();
-//            console.log(meta_data_points[key].data.features);
-        }
-    });
 
     function remove_layers() {
         meta_keys.forEach(function(meta_key) {
@@ -718,7 +728,7 @@
 
         elevation_to_draw = {};
         top_data = {};
-        console.log(meta_keys);
+//        console.log(meta_keys);
         meta_keys.forEach(function (fwy_dir) {
             elevation_to_draw[fwy_dir] = [];
             top_data[fwy_dir] = [];
@@ -745,7 +755,7 @@
 
                 let stations = to_draw[fwy_dir]['stations'];
                 if (selected_station == '') {
-                    selected_station = stations[0];
+                    selected_station = stations[order];
                 }
 
                 stations.forEach(function (id) {
@@ -962,18 +972,18 @@
                 function(error, data) {
                     //console.log(data);
 
-//            let header = d3.keys(data[0]);
-//            console.log(header);
+//                    let header = d3.keys(data[0]);
+//                    console.log(header);
 
                     let keys = d3.keys(data[0]).filter(function (key) {
-                        return key !== "Station";
+                        return (key !== "Station") & (key !== 'ID');
                     });
-//            console.log(keys);
+//                    console.log(keys);
 
                     to_graph = data.map(function(row) {
                         rowLabel.push(row.Station);
                         return keys.map(function (key) {
-                            return row[key];
+                            return +row[key];
 
                         });
                     });
@@ -991,12 +1001,12 @@
                         modeBarButtonsToRemove: ['pan2d'],
                         title: 'Heatmap for ' + last_freeway_select,
                         xaxis: {
+                            fixedrange: true,
                             title: 'Time scaled 5x',
                             titlefont: {
                                 family: 'Times',
                                 size: 14,
-                                color: '#7f7f7f',
-                                fixedrange: true
+                                color: '#7f7f7f'
                             },
                             range: [0, 1439],
                             autotick: false,
@@ -1004,12 +1014,12 @@
                             dtick: 60,
                         },
                         yaxis: {
+//                            fixedrange: true,
                             title: 'Stations in order',
                             titlefont: {
                                 family: 'Times',
                                 size: 14,
-                                color: '#7f7f7f',
-                                fixedrange: true
+                                color: '#7f7f7f'
                             }
                         }
                     };
@@ -1018,12 +1028,53 @@
                         displaylogo: false, showTips: true };
 
                     if (chart2) {
+                        Plotly.deleteTraces('chart2', 1);
                         chart2 = Plotly.newPlot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
                     } else {
                         chart2 = Plotly.plot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
                     }
 
-
+                    let trace_line = {
+                        x: [x_axis[0], x_axis[1439]],
+                        y: [order, order],
+                        type: 'scatter',
+                        line : {
+                            dash: 'dash',
+                            color: 'rgb(0, 0, 0)',
+                            width: 5
+                        }
+                    };
+                    Plotly.addTraces('chart2', trace_line);
+//                    Plotly.addTraces('chart2', {x: [0, 1440],y: []});
+//                    myPlot.on('chart2', function(data){
+//                        var pn='',
+//                            tn='',
+//                            colors=[];
+//                        for(var i=0; i < data.points.length; i++){
+//                            pn = data.points[i].pointNumber;
+//                            tn = data.points[i].curveNumber;
+//                            colors = data.points[i].data.marker.color;
+//                        };
+//                        colors[pn] = '#C54C82';
+//
+//                        var update = {'marker':{color: colors, size:16}};
+//                        Plotly.restyle('chart2', update, [tn]);
+//                    });
+//
+//                    myPlot.on('chart2', function(data){
+//                        var pn='',
+//                            tn='',
+//                            colors=[];
+//                        for(var i=0; i < data.points.length; i++){
+//                            pn = data.points[i].pointNumber;
+//                            tn = data.points[i].curveNumber;
+//                            colors = data.points[i].data.marker.color;
+//                        };
+//                        colors[pn] = '#00000';
+//
+//                        var update = {'marker':{color: colors, size:16}};
+//                        Plotly.restyle('chart2', update, [tn]);
+//                    });
                     // todo: add the hover over lines
                     // http://stackoverflow.com/questions/38398342/how-to-hide-values-information-on-hover-while-keeping-hover-events-firing
                     // note: don't suppress the hover over text
