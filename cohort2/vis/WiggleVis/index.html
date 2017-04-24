@@ -196,36 +196,36 @@
                         <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
                     </h1>
 
-                    <p>
-                        <h3 align="center">Partition Control</h3>
-                        <div align="center">
-                            <fieldset>
-                                <label for="Weekdays">Weekdays</label>
-                                <input type="checkbox" name="checkbox-1" id="Weekdays" checked="checked">
-                                <label for="Weekends">Weekends</label>
-                                <input type="checkbox" name="checkbox-2" id="Weekends" checked="checked">
-                            </fieldset>
-                        </div>
-                        <script type="text/javascript">
-                            $( function() {
-                                $( $('input[type=checkbox]') ).checkboxradio();
-                            } );
-                            $(document).ready(function () {
-                                $( $('input[type=checkbox]') ).click(function() {
-                                    let checked = $("input[type=checkbox]:checked").length;
+                    <!--<p>-->
+                        <!--<h3 align="center">Partition Control</h3>-->
+                        <!--<div align="center">-->
+                            <!--<fieldset>-->
+                                <!--<label for="Weekdays">Weekdays</label>-->
+                                <!--<input type="checkbox" name="checkbox-1" id="Weekdays" checked="checked">-->
+                                <!--<label for="Weekends">Weekends</label>-->
+                                <!--<input type="checkbox" name="checkbox-2" id="Weekends" checked="checked">-->
+                            <!--</fieldset>-->
+                        <!--</div>-->
+                        <!--<script type="text/javascript">-->
+                            <!--$( function() {-->
+                                <!--$( $('input[type=checkbox]') ).checkboxradio();-->
+                            <!--} );-->
+                            <!--$(document).ready(function () {-->
+                                <!--$( $('input[type=checkbox]') ).click(function() {-->
+                                    <!--let checked = $("input[type=checkbox]:checked").length;-->
 
-                                    if(!checked) {
-                                        alert("Weekends or Weekdays must be checked");
-                                        return false;
-                                    } else {
-                                        update_vis();
-                                    }
+                                    <!--if(!checked) {-->
+                                        <!--alert("Weekends or Weekdays must be checked");-->
+                                        <!--return false;-->
+                                    <!--} else {-->
+                                        <!--update_vis();-->
+                                    <!--}-->
 
-                                });
-                            });
+                                <!--});-->
+                            <!--});-->
 
-                        </script>
-                    </p>
+                        <!--</script>-->
+                    <!--</p>-->
 
                     <!--<p>-->
                         <!--<h3 align="center">Time Control</h3>-->
@@ -399,7 +399,8 @@
 
 <!-- load meta_data variable -->
 <!--<script type="text/javascript" src="data/2015_ML_d11_geojson_points.js"></script>-->
-<script type="text/javascript" src="data/2015_to_2008_ML_d11_geojson_points.js"></script>
+<script type="text/javascript" src="data/2015_to_2008_ML_d11_geojson_points2.js"></script>
+<script type="text/javascript" src="data/2015_to_2008_ML_d11_geojson_lines.js"></script>
 
 <script>
 //    let partition = 'All';
@@ -419,7 +420,7 @@
         freeways_select = [],
         selected_station = '',
         last_freeway_select = '',
-        order = 0;
+        order = 0, time = 0;
     const max_freeway_count = 1;
 
     //define a boundary box around CA to limit the map to
@@ -448,38 +449,6 @@
     };
 
     L.control.layers(baseLayers).addTo(map);
-
-//    let entranceIcon = L.icon({
-//        iconUrl: 'data/icons/entrance.jpeg',
-////        shadowUrl: 'leaf-shadow.png',
-//
-//        iconSize:     [38, 95], // size of the icon
-////        shadowSize:   [50, 64], // size of the shadow
-//        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-////        shadowAnchor: [4, 62],  // the same for the shadow
-//        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-//    });
-//
-//    let exitIcon = L.icon({
-//        iconUrl: 'data/icons/exit.png',
-//    //        shadowUrl: 'leaf-shadow.png',
-//
-//        iconSize:     [38, 95], // size of the icon
-//    //        shadowSize:   [50, 64], // size of the shadow
-//        iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-//    //        shadowAnchor: [4, 62],  // the same for the shadow
-//        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-//    });
-//
-//    let enterMarker = L.VectorMarkers.icon({
-//        icon: 'sign-in',
-////        markerColor: 'blue'
-//    });
-//
-//    let exitMarker = L.VectorMarkers.icon({
-//        icon: 'sign-out',
-////        markerColor: 'red'
-//    });
 
     Plotly.d3.csv("data/heatmaps/x_axis.csv",
         function(error, data) {
@@ -510,18 +479,10 @@
         return this._div;
     };
     info.update = function (props) {
-//        this._div.innerHTML = '<h4>Station</h4>' +  (props ?
-//                '<b>' + props.Name + '</b><br />ID: ' + props.ID + ' <br />Freeway/Dir: ' + props.key + '<br/>' +
-//                'Lanes: ' + props.Lanes + '<br />Abs_PM: ' +
-//                props.Abs_PM + '<br />inner/top ' + top_input + ': ' + props.top_input + '<br />bottom/outer '
-//                + bottom_input + ': ' + props.bottom_input + '<br />marker ' + marker_input + ': ' + props.marker
-//                + '<br/>Freeway Station Order: ' + props.Order
-//                : 'Hover over a Station');
-
         this._div.innerHTML = '<h4>Station</h4>' +  (props ?
                 '<b>' + props.Name + '</b><br />ID: ' + props.ID + ' <br />Freeway/Dir: ' + props.key + '<br/>' +
                 'Lanes: ' + props.Lanes + '<br />Abs_PM: ' +
-                props.Abs_PM + '<br />inner/top ' + top_input + ': ' + props.top_input +
+                props.Abs_PM + '<br />Average Flow: ' + props.Flow[time] +
                 '<br/>Type: ' + props.Type +
                 '<br/>Freeway Station Order: ' + props.Order
                 : 'Hover over a Station');
@@ -539,7 +500,15 @@
                         innerColors[0];
     }
 
-    //let inner_scale = d3.scale.ordinal().range(innerColors);
+    let segmentColors = ['#ca0020','#f4a582','#f7f7f7','#92c5de','#0571b0'];
+    let segment_bins = [1, .5, 0, -5, -1];
+    function segment_scale(d) {
+        return d >= segment_bins[3] ? segmentColors[4] :
+            d >= segment_bins[2] ? segmentColors[3] :
+                d >= segment_bins[1] ? segmentColors[2] :
+                    d >= segment_bins[0] ? segmentColors[1] :
+                        segmentColors[0];
+    }
 
     function create_bins(source_data) {
         let keys = d3.keys(source_data);
@@ -594,17 +563,17 @@
 
         info.update(layer.feature.properties);
 
-        let value = layer.feature.properties.Order;
-        let fwy_dir = layer.feature.properties.key;
-        let new_fwy_dir = fwy_dir.replace('_', '-');
-        d3.select('#chart1')
-            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
-            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
-            .attr('r', 7.5);
-        d3.select('#chart2')
-            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
-            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
-            .attr('r', 7.5);
+//        let value = layer.feature.properties.Order;
+//        let fwy_dir = layer.feature.properties.key;
+//        let new_fwy_dir = fwy_dir.replace('_', '-');
+//        d3.select('#chart1')
+//            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
+//            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
+//            .attr('r', 7.5);
+//        d3.select('#chart2')
+//            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
+//            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
+//            .attr('r', 7.5);
     }
 
     function updateStyle(feature) {
@@ -628,7 +597,7 @@
         return {
 //                            "color": outer_scale(feature.properties.bottom_input),
             "color": color,
-            "fillColor": inner_scale(feature.properties.top_input),
+            "fillColor": inner_scale(feature.properties.Flow[time]),
 //                            "radius": marker_scale(feature.properties.marker),
             "radius": radius,
             "opacity": 1,
@@ -637,6 +606,14 @@
             "fillOpacity": 1
         }
     }
+
+    function updateSegStyle(feature) {
+        return {
+            "color": segment_scale(feature.properties.wiggles[time]),
+            "opacity": 1,
+        }
+    }
+
     function resetHighlight(e) {
         let layer = e.target;
         let feature = layer.feature;
@@ -673,17 +650,6 @@
             layer.bringToFront();
         }
         update_vis();
-//        let trace_line = {
-//            x: [x_axis[0], x_axis[1439]],
-//            y: [order, order],
-//            type: 'scatter',
-//            line : {
-//                dash: 'dash',
-//                color: 'rgb(0, 0, 0)',
-//                width: 5
-//            }
-//        };
-//        Plotly.addTraces('chart2', trace_line);
     }
 
     function onEachFeature(feature, layer) {
@@ -702,6 +668,7 @@
             if (meta_data_points[meta_key].layer) {
                 if (markers.hasLayer(meta_data_points[meta_key].layer)) {
                     markers.removeLayer(meta_data_points[meta_key].layer);
+                    markers.removeLayer(meta_data_points[meta_key].seg_layer);
                 }
             }
         });
@@ -726,11 +693,11 @@
 //            end_time = 287;
 //        }
 
-        elevation_to_draw = {};
+//        elevation_to_draw = {};
         top_data = {};
 //        console.log(meta_keys);
         meta_keys.forEach(function (fwy_dir) {
-            elevation_to_draw[fwy_dir] = [];
+//            elevation_to_draw[fwy_dir] = [];
             top_data[fwy_dir] = [];
             if (meta_data_points[fwy_dir].visible) {
                 to_draw[fwy_dir] = { 'stations': [] };
@@ -738,16 +705,17 @@
                 //get station ids in order
                 meta_data_points[fwy_dir].data.features.forEach(function (item) {
                     to_draw[fwy_dir]['stations'].push(item.properties.ID);
-                    elevation_to_draw[fwy_dir].push(d3.round(item.properties.Elevation, 1));
+                    top_data[fwy_dir].push(item.properties.Flow[time]);
+//                    elevation_to_draw[fwy_dir].push(d3.round(item.properties.Elevation, 1));
                 });
 
-                let partition_keys = [];
-                if ($('#Weekdays').prop('checked')) {
-                    partition_keys.push('Weekdays');
-                }
-                if ($('#Weekends').prop('checked')) {
-                    partition_keys.push('Weekends');
-                }
+//                let partition_keys = [];
+//                if ($('#Weekdays').prop('checked')) {
+//                    partition_keys.push('Weekdays');
+//                }
+//                if ($('#Weekends').prop('checked')) {
+//                    partition_keys.push('Weekends');
+//                }
 //                if ($('#Weekdays').prop('checked') && $('#Weekends').prop('checked')) {
 //                    partition = 'All';
 //                }
@@ -758,24 +726,26 @@
                     selected_station = stations[order];
                 }
 
-                stations.forEach(function (id) {
-                    let raw_top_data = [];
+//                stations.forEach(function (id) {
+//                    let raw_top_data = [];
 
-                    partition_keys.forEach(function (part) {
-                        if (raw_top_data.length == 0 && top_input != 'elevation' && id in data_array[fwy_dir][part][top_input]) {
-//                            raw_top_data = data_array[fwy_dir][part][top_input][id].slice(start_time, end_time + 1);
-                            raw_top_data = data_array[fwy_dir][part][top_input][id];
-                        } else if (top_input != 'elevation' && id in data_array[fwy_dir][part][top_input]) {
-//                            let new_data = data_array[fwy_dir][part][top_input][id].slice(start_time, end_time + 1);
-                            let new_data = data_array[fwy_dir][part][top_input][id];
-                            raw_top_data = raw_top_data.concat(new_data);
-                        }
-
-                    });
-                    if (top_input != 'elevation') {
-                        top_data[fwy_dir].push(d3.round(d3.mean(raw_top_data, function(d) { return +d; }), 1));
-                    }
-                });
+//                    partition_keys.forEach(function (part) {
+//                        if (raw_top_data.length == 0 && top_input != 'elevation' && id in data_array[fwy_dir][part][top_input]) {
+////                            raw_top_data = data_array[fwy_dir][part][top_input][id].slice(start_time, end_time + 1);
+//                            raw_top_data = data_array[fwy_dir][part][top_input][id];
+//                        } else if (top_input != 'elevation' && id in data_array[fwy_dir][part][top_input]) {
+////                            let new_data = data_array[fwy_dir][part][top_input][id].slice(start_time, end_time + 1);
+//                            let new_data = data_array[fwy_dir][part][top_input][id];
+//                            raw_top_data = raw_top_data.concat(new_data);
+//                        }
+//
+//                    });
+//                    if (top_input != 'elevation') {
+//                        top_data[fwy_dir].push(d3.round(d3.mean(raw_top_data, function(d) { return +d; }), 1));
+//                    }
+//                    meta_data_points[fwy_dir]
+//                    top_data[fwy_dir].push()
+//                });
 //                console.log("top_data");
 //                console.log(top_data);
             } else {
@@ -788,7 +758,7 @@
         remove_layers();
 
 //        top_input = $('input[name=inner_control]:checked', '#control_form').val();
-        top_input = "Flow";
+//        top_input = "Flow";
 //        bottom_input = $('input[name=outer_control]:checked', '#control_form').val();
 //        marker_input = $('input[name=marker_control]:checked', '#control_form').val();
 
@@ -812,12 +782,12 @@
         meta_keys.forEach(function (fwy_dir) {
             if (meta_data_points[fwy_dir].visible) {
 
-                for (let index = 0; index < meta_data_points[fwy_dir].data.features.length; index++) {
-                    let insert_point = meta_data_points[fwy_dir].data.features[index].properties;
-                    insert_point['top_input'] = top_data[fwy_dir][index];
-//                    insert_point['bottom_input'] = bottom_data[fwy_dir][index];
-//                    insert_point['marker'] = marker_data[fwy_dir][index];
-                }
+//                for (let index = 0; index < meta_data_points[fwy_dir].data.features.length; index++) {
+//                    let insert_point = meta_data_points[fwy_dir].data.features[index].properties;
+//                    insert_point['top_input'] = top_data[fwy_dir][index];
+////                    insert_point['bottom_input'] = bottom_data[fwy_dir][index];
+////                    insert_point['marker'] = marker_data[fwy_dir][index];
+//                }
 
                 new_layer = L.geoJSON(meta_data_points[fwy_dir].data, {
                     style: function (feature) {
@@ -841,28 +811,30 @@
                 });
 
                 meta_data_points[fwy_dir].layer = new_layer;
-
-//                console.log(meta_data_points[fwy_dir].data);
-//                for (let i = 0; i < meta_data_points[fwy_dir].data.feature.properties.bottom_input; i++){
-//
-//                }
-//                line_layer = L.geoJSON(meta_data_points[fwy_dir].data, {
-//                    style: function (feature) {
-//                        return {
-//                            "color": outer_scale(feature.properties.bottom_input),
-//                            "fillColor": inner_scale(feature.properties.top_input),
-//                            "radius": marker_scale(feature.properties.marker),
-//                            "opacity": 1,
-//                            "weight": 3,
-//                            "smoothFactor": 1,
-//                            "fillOpacity": 1
-//                        }
-//                    },
+                console.log(meta_data_points[fwy_dir].data);
+                console.log(segment_data[fwy_dir]);
+                let seg_layer = L.geoJSON(segment_data[fwy_dir], {
+                    style: function (feature) {
+                        return updateSegStyle(feature)
+                    },
 //                    pointToLayer: function (feature, latlng) {
+//                        console.log(feature.properties.Type);
+//                        let type = feature.properties.Type;
+//                        if (type == 'ML') {
+//                            return L.circleMarker(latlng);
+//                        } else if (type == 'OR') {
+//                            return L.marker(latlng, {icon: enterMarker})
+//                        } else if (type == 'FR') {
+//                            return L.marker(latlng, {icon: exitMarker})
+//                        } else {
+//                            return L.circleMarker(latlng);
+//                        }
 //                        return L.circleMarker(latlng);
 //                    },
 //                    onEachFeature: onEachFeature
-//                });
+                });
+                meta_data_points[fwy_dir].seg_layer = seg_layer;
+                console.log(d3.keys(meta_data_points[fwy_dir]));
             }
         });
     }
@@ -873,7 +845,8 @@
         markers = L.markerClusterGroup({ disableClusteringAtZoom: 13 });
         meta_keys.forEach(function(meta_key) {
             if (meta_data_points[meta_key].visible) {
-                markers.addLayer(meta_data_points[meta_key].layer)
+                markers.addLayer(meta_data_points[meta_key].layer);
+                markers.addLayer(meta_data_points[meta_key].seg_layer);
             }
         });
         map.addLayer(markers);
@@ -1045,42 +1018,6 @@
                         }
                     };
                     Plotly.addTraces('chart2', trace_line);
-//                    Plotly.addTraces('chart2', {x: [0, 1440],y: []});
-//                    myPlot.on('chart2', function(data){
-//                        var pn='',
-//                            tn='',
-//                            colors=[];
-//                        for(var i=0; i < data.points.length; i++){
-//                            pn = data.points[i].pointNumber;
-//                            tn = data.points[i].curveNumber;
-//                            colors = data.points[i].data.marker.color;
-//                        };
-//                        colors[pn] = '#C54C82';
-//
-//                        var update = {'marker':{color: colors, size:16}};
-//                        Plotly.restyle('chart2', update, [tn]);
-//                    });
-//
-//                    myPlot.on('chart2', function(data){
-//                        var pn='',
-//                            tn='',
-//                            colors=[];
-//                        for(var i=0; i < data.points.length; i++){
-//                            pn = data.points[i].pointNumber;
-//                            tn = data.points[i].curveNumber;
-//                            colors = data.points[i].data.marker.color;
-//                        };
-//                        colors[pn] = '#00000';
-//
-//                        var update = {'marker':{color: colors, size:16}};
-//                        Plotly.restyle('chart2', update, [tn]);
-//                    });
-                    // todo: add the hover over lines
-                    // http://stackoverflow.com/questions/38398342/how-to-hide-values-information-on-hover-while-keeping-hover-events-firing
-                    // note: don't suppress the hover over text
-
-                    // todo: animate the heatmap
-                    // https://plot.ly/javascript/animations/
                 }
             );
 
@@ -1148,41 +1085,6 @@
 
 
     //map.on('moveend', mapmove);
-</script>
-<script>
-    //index order for data_array
-    //fwy_dir, partition, <dimension>, time, ID
-    let data_array = {};
-    let columns = ['Flow', 'Speed', 'Occu', 'Obser'];
-
-    //read in the station day information
-    //note: data is sorted in fwy_dir and then time
-    d3.csv('data/2015_station_days_mod.csv', function(error, data) {
-        data.forEach(function(row) {
-            let fwy_dir = row.Fwy_Dir;
-            let partition = row.Partition;
-            let id = row.Station;
-
-            //initialize data structure
-            if (!(fwy_dir in data_array)) {
-                data_array[fwy_dir] = {'Weekdays': {'Flow': {}, 'Speed': {}, 'Occu': {}, 'Obser': {}},
-                                       'Weekends': {'Flow': {}, 'Speed': {}, 'Occu': {}, 'Obser': {}}};
-            }
-
-            //since data is sorted "time" is the index of the array
-            for (let index = 0; index < columns.length; index++) {
-                let insert_point = data_array[fwy_dir][partition][columns[index]];
-                if (!(id in insert_point)) {
-                    insert_point[id] = [];
-                }
-                insert_point[id].push(+row[columns[index]]);
-            }
-        });
-    });
-
-    //calculate data
-//    console.log(meta_data_points);
-//    console.log(data_array);
 </script>
 
 
