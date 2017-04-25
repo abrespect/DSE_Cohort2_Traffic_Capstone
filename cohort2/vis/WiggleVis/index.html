@@ -782,7 +782,7 @@
 
         if (freeways_select.length != 0) {
 //            let chart1_data = {'original': [], 'wt': []};
-//            d3.csv('/data/stations/' + selected_station + '.csv', function(error, data) {
+//            d3.csv('data/stations/' + selected_station + '.csv', function(error, data) {
 //                data.forEach(function(row) {
 ////                    console.log(row);
 ////                    chart2_data.push([row.original, row.wt]);
@@ -796,8 +796,9 @@
             let wt_line = [];
 //            let x_values = [];
 //            let counter = 0;
+            console.log(selected_station);
 
-            Plotly.d3.csv('/data/stations/' + selected_station + '.csv',
+            Plotly.d3.csv('data/stations/' + selected_station + '.csv',
                 function(error, data) {
                     data.forEach(function (row) {
 //                        x_values.push(counter);
@@ -854,7 +855,7 @@
 //                    json: chart1_data,
 //                    mimeType: 'json'
 //                },
-//                    url: '/data/stations/' + selected_station + '.csv',
+//                    url: 'data/stations/' + selected_station + '.csv',
 //                    mimeType: 'csv',
 //                    keys: {
 //                        x: 'x',
