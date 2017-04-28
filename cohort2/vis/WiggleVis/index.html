@@ -24,7 +24,6 @@
         /*cursor: pointer;*/
         border: medium solid;
     }
-
 </style>
 <style>
     #wrapper
@@ -60,6 +59,7 @@
         clear:both;
         position: relative;
         left: 30px;
+        width: 600px;
     }
 
     .info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(214, 141, 141, 0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; }
@@ -163,6 +163,12 @@
     .sidebar-content {
         overflow-y:hidden;
     }
+
+    /*.ui-slider .ui-slider-handle {*/
+        /*height: 35px;*/
+        /*width: 5px;*/
+        /*padding-left: 5px; //add this*/
+    /*}*/
 </style>
 
 <div>
@@ -267,11 +273,13 @@
                                 if (freeways_select.length < max_freeway_count) {
                                     activate_button(this);
                                     freeways_select.push([answer, this]);
+                                    selected_station = '';
                                 } else {
                                     let to_delete = freeways_select.shift();
                                     deactivate_button(to_delete[1]);
                                     freeways_select.push([answer, this]);
                                     activate_button(this);
+                                    selected_station = '';
                                 }
                             } else {
                                 deactivate_button(this);
@@ -306,7 +314,8 @@
             <p>
                 <h3 align="center">Time Control</h3>
                 <label for="time">Time</label>
-                <input type="text" id="time" readonly style="border:0; color:#f6931f; font-weight:bold;" value="00:00 to 23:55">
+                <input type="text" id="time" style="border:0; color:#f6931f; font-weight:bold;" value="00:00">
+                <!--<input id="time_input">-->
             </p>
              <!--js for jquery control in leaflet sidebar -->
             <script>
@@ -314,6 +323,7 @@
                 function calc_time(input) {
                     let hours = Math.floor(input / 60);
                     let minutes = (input - (hours * 60 ));
+                    if(input == 0) return("00:00");
                     if(hours.toString().length == 1) hours = '0' + hours;
                     if(minutes.toString().length == 1) minutes = '0' + minutes;
                     return hours.toString()+':'+minutes.toString();
@@ -325,7 +335,8 @@
                     step: 1,
                     value: 0,
                     slide: function(event, ui) {
-                        $("#time").val( calc_time(ui.value) );
+                        chart_time = calc_time(ui.value);
+                        $("#time").val( chart_time );
                         time = Math.floor(ui.value/5);
                         wiggle_time = ui.value;
 
@@ -335,7 +346,23 @@
                         update_vis(false);
                     }
                 });
-                $("#time").val( $( "#slider-range" ).slider( "value" ) );
+
+                function calc_int(input) {
+                    let pieces = input.split(":");
+                    return parseInt(pieces[0])*60 + parseInt(pieces[1]);
+                }
+
+                $("#time").change(function () {
+//                    console.log(this.value);
+                    chart_time = this.value;
+                    let update = calc_int(this.value);
+                    time = update;
+                    console.log(update);
+                    $("#slider-range").slider("value", update);
+                });
+
+                chart_time = calc_time($( "#slider-range" ).slider( "value" ));
+                $("#time").val( chart_time );
             });
             </script>
             <div id="slider-range"></div>
@@ -375,7 +402,7 @@
         freeways_select = [],
         selected_station = '',
         last_freeway_select = '',
-        order = 0, time = 0, wiggle_time = 0;
+        order = 0, time = 0, wiggle_time = 0, chart_time = '';
     const max_freeway_count = 1;
 
     //define a boundary box around CA to limit the map to
@@ -536,13 +563,13 @@
         let radius = '';
         let type = feature.properties.Type;
         if (type == 'ML') {
-            color = 'blue';
+            color = 'black';
             radius = 10;
         } else if (type == 'OR') {
             color = 'red';
             radius = 20;
         } else if (type == 'FR') {
-            color = 'black';
+            color = 'blue';
             radius = 20;
         } else {
             color = 'brown';
@@ -550,7 +577,7 @@
         }
 
         return {
-//                            "color": outer_scale(feature.properties.bottom_input),
+//            "color": inner_scale(feature.properties.Flow[time]),
             "color": color,
             "fillColor": inner_scale(feature.properties.Flow[time]),
 //                            "radius": marker_scale(feature.properties.marker),
@@ -603,10 +630,10 @@
 //        console.log(e);
         let layer = e.target;
         selected_station = layer.feature.properties.ID;
-        console.log(selected_station);
+//        console.log(selected_station);
         order = layer.feature.properties.Order;
-        console.log(layer.feature.properties);
-        console.log(order);
+//        console.log(layer.feature.properties);
+//        console.log(order);
         if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
             //layer.bringToBack();
             layer.bringToFront();
@@ -674,29 +701,6 @@
                 if (selected_station == '') {
                     selected_station = stations[order];
                 }
-
-//                stations.forEach(function (id) {
-//                    let raw_top_data = [];
-
-//                    partition_keys.forEach(function (part) {
-//                        if (raw_top_data.length == 0 && top_input != 'elevation' && id in data_array[fwy_dir][part][top_input]) {
-////                            raw_top_data = data_array[fwy_dir][part][top_input][id].slice(start_time, end_time + 1);
-//                            raw_top_data = data_array[fwy_dir][part][top_input][id];
-//                        } else if (top_input != 'elevation' && id in data_array[fwy_dir][part][top_input]) {
-////                            let new_data = data_array[fwy_dir][part][top_input][id].slice(start_time, end_time + 1);
-//                            let new_data = data_array[fwy_dir][part][top_input][id];
-//                            raw_top_data = raw_top_data.concat(new_data);
-//                        }
-//
-//                    });
-//                    if (top_input != 'elevation') {
-//                        top_data[fwy_dir].push(d3.round(d3.mean(raw_top_data, function(d) { return +d; }), 1));
-//                    }
-//                    meta_data_points[fwy_dir]
-//                    top_data[fwy_dir].push()
-//                });
-//                console.log("top_data");
-//                console.log(top_data);
             } else {
                 delete top_data[fwy_dir];
             }
@@ -712,14 +716,6 @@
 
         meta_keys.forEach(function (fwy_dir) {
             if (meta_data_points[fwy_dir].visible) {
-
-//                for (let index = 0; index < meta_data_points[fwy_dir].data.features.length; index++) {
-//                    let insert_point = meta_data_points[fwy_dir].data.features[index].properties;
-//                    insert_point['top_input'] = top_data[fwy_dir][index];
-////                    insert_point['bottom_input'] = bottom_data[fwy_dir][index];
-////                    insert_point['marker'] = marker_data[fwy_dir][index];
-//                }
-
                 new_layer = L.geoJSON(meta_data_points[fwy_dir].data, {
                     style: function (feature) {
                         return updateStyle(feature)
@@ -781,28 +777,15 @@
         }
 
         if (freeways_select.length != 0) {
-//            let chart1_data = {'original': [], 'wt': []};
-//            d3.csv('data/stations/' + selected_station + '.csv', function(error, data) {
-//                data.forEach(function(row) {
-////                    console.log(row);
-////                    chart2_data.push([row.original, row.wt]);
-//                    chart1_data['original'].push(+row.original);
-//                    chart1_data['wt'].push(+row.wt);
-//                });
-//            });
-//            console.log(chart1_data);
-
             let original_line = [];
             let wt_line = [];
-//            let x_values = [];
-//            let counter = 0;
-            console.log(selected_station);
+//            console.log(selected_station);
 
+            let max_value = 0;
             Plotly.d3.csv('data/stations/' + selected_station + '.csv',
                 function(error, data) {
                     data.forEach(function (row) {
-//                        x_values.push(counter);
-//                        counter += 1;
+                        max_value = Math.max(max_value, +row.original, +row.wt);
                         original_line.push(+row.original);
                         wt_line.push(+row.wt);
                     });
@@ -845,66 +828,28 @@
                         }
                     };
 
-                    Plotly.newPlot('chart1', chart_data, layout);
+                    let time_line = {
+                        x: [chart_time, chart_time],
+                        y: [-max_value, max_value],
+                        type: 'scatter',
+                        line : {
+                            dash: 'dash',
+                            color: 'rgb(0, 0, 0)',
+                            width: 5
+                        },
+                        name: 'time line'
+                    };
+
+                    if (chart1) {
+                        Plotly.deleteTraces('chart1', [-1]);
+                        chart1 = Plotly.newPlot('chart1', chart_data, layout);
+                        Plotly.addTraces('chart1', [time_line]);
+                    } else {
+                        chart1 = Plotly.plot('chart1', chart_data, layout);
+                        Plotly.addTraces('chart1', [time_line]);
+                    }
                 }
             );
-
-//            chart1 = c3.generate({
-//                bindto: '#chart1',
-//                data: {
-//                    json: chart1_data,
-//                    mimeType: 'json'
-//                },
-//                    url: 'data/stations/' + selected_station + '.csv',
-//                    mimeType: 'csv',
-//                    keys: {
-//                        x: 'x',
-//                        value: ['original', 'wt']
-//                    },
-//                colors: chart1_colors,
-//                onclick: function (d, i) {
-//                        //console.log("onclick", d, i);
-//                        //                        console.log('clicked on: ' + d.id + ' ' + d.x);
-//                        //                        let freeway_meta_data = meta_data_points[d.id];
-//                        //                        console.log(freeway_meta_data.data.features);
-//                        //                        let coordinates = freeway_meta_data.data.features[d.x].geometry.coordinates;
-//                        //                        map.setView([coordinates[1], coordinates[0]], map.getZoom());
-//                    }
-//                    //onmouseover: function (d, i) { console.log("onmouseover", d, i); }
-//                },
-//                legend: {
-//                    position: 'right'
-//                },
-//                zoom: {
-//                    enabled: true
-//                },
-//                subchart: {
-//                    show: true
-//                },
-//                axis: {
-//                    x: {
-//                        label: 'Each 5 minute interval scaled 5 times',
-//                        type: 'category',
-//                        categories: x_axis,
-//                        tick: {
-//                            centered: true,
-//                            culling: {
-//                                max: 23 // the number of tick texts will be adjusted to less than this value
-//                            },
-//                            fit: true,
-//                            rotate: 45,
-//                            multiline: false,
-//                        }
-//                    }
-//                    //                    },
-//                    //                    y: {
-//                    //                        label: top_input
-//                    //                    }
-//                },
-//                title: {
-//                    text: 'Station: ' + selected_station
-//                }
-//            });
 
             //update the background colors using d3 since c3 doesn't support it
 //            d3.select('#chart1').select('.c3-zoom-rect')
@@ -918,7 +863,7 @@
 
             Plotly.d3.csv("data/heatmaps/wiggle_analysis_" + last_freeway_select + ".csv",
                 function(error, data) {
-                    //console.log(data);
+//                    console.log(data);
 
 //                    let header = d3.keys(data[0]);
 //                    console.log(header);
@@ -936,7 +881,7 @@
                         });
                     });
 //                    console.log(to_graph);
-
+//                    console.log(rowLabel.length - 1);
                     let heatmap_data = [
                         {
                             z: to_graph,
@@ -968,20 +913,16 @@
                                 family: 'Times',
                                 size: 14,
                                 color: '#7f7f7f'
-                            }
-                        }
+                            },
+                            range: [0, rowLabel.length - 1]
+                        },
+                        showlegend: false
                     };
 
                     let defaultPlotlyConfiguration = { modeBarButtonsToRemove: ['sendDataToCloud', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d'],
                         displaylogo: false, showTips: true };
 
-                    if (chart2) {
-                        Plotly.deleteTraces('chart2', 1);
-                        chart2 = Plotly.newPlot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
-                    } else {
-                        chart2 = Plotly.plot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
-                    }
-
+//                    console.log('chart_time: ' + chart_time);
                     let trace_line = {
                         x: [x_axis[0], x_axis[1439]],
                         y: [order, order],
@@ -992,7 +933,27 @@
                             width: 5
                         }
                     };
-                    Plotly.addTraces('chart2', trace_line);
+
+                    time_line = {
+//                        x: [time, time],
+                        x: [chart_time, chart_time],
+                        y: [0, rowLabel.length - 1],
+                        type: 'scatter',
+                        line : {
+                            dash: 'dash',
+                            color: 'rgb(0, 0, 0)',
+                            width: 5
+                        }
+                    };
+
+                    if (chart2) {
+                        Plotly.deleteTraces('chart2', [-2, -1]);
+                        chart2 = Plotly.newPlot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
+                        Plotly.addTraces('chart2', [trace_line, time_line]);
+                    } else {
+                        chart2 = Plotly.plot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
+                        Plotly.addTraces('chart2', [trace_line, time_line]);
+                    }
                 }
             );
 
@@ -1003,11 +964,12 @@
 //                .style({'opacity': '.6', 'fill': outerColors[0], 'visibility': null});
         } else if (update_charts == true) {
             if (chart1) {
-                console.log('destroying chart1');
-                chart1.destroy();
+//                console.log('destroying chart1');
+                Plotly.purge('chart1');
+                chart1 = false;
             }
             if (chart2) {
-                console.log('destroying chart2');
+//                console.log('destroying chart2');
                 Plotly.purge('chart2');
                 chart2 = false;
             }
