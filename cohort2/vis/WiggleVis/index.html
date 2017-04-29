@@ -314,12 +314,16 @@
             <p>
                 <h3 align="center">Time Control</h3>
                 <label for="time">Time</label>
-                <input type="text" id="time" style="border:0; color:#f6931f; font-weight:bold;" value="00:00">
-                <!--<input id="time_input">-->
+                <input type="text" id="time" style="border-width:1; color:#f6931f; width:42px; font-weight:bold;"
+                       value="00:00">
+                <button class="btn btn-warning" id="animate" onclick="animateMap()">Animate</button>
             </p>
              <!--js for jquery control in leaflet sidebar -->
             <script>
-            $(function() {
+                function sleep(ms) {
+                    return new Promise(resolve => setTimeout(resolve, ms));
+                }
+
                 function calc_time(input) {
                     let hours = Math.floor(input / 60);
                     let minutes = (input - (hours * 60 ));
@@ -329,41 +333,85 @@
                     return hours.toString()+':'+minutes.toString();
                 }
 
-                $("#slider-range").slider({
-                    min: 0,
-                    max: 1439,
-                    step: 1,
-                    value: 0,
-                    slide: function(event, ui) {
-                        chart_time = calc_time(ui.value);
-                        $("#time").val( chart_time );
-                        time = Math.floor(ui.value/5);
-                        wiggle_time = ui.value;
-
-                    },
-                    stop: function(event, ui) {
-//                        console.log(time);
-                        update_vis(false);
-                    }
-                });
-
                 function calc_int(input) {
                     let pieces = input.split(":");
                     return parseInt(pieces[0])*60 + parseInt(pieces[1]);
                 }
 
-                $("#time").change(function () {
-//                    console.log(this.value);
-                    chart_time = this.value;
-                    let update = calc_int(this.value);
-                    time = update;
-                    console.log(update);
-                    $("#slider-range").slider("value", update);
-                });
+                async function demo(start) {
+                    let counter = start;
+                    while(do_animation) {
+                        if (counter == 288) {
+                            do_animation = false;
+                            break;
+                        }
 
-                chart_time = calc_time($( "#slider-range" ).slider( "value" ));
-                $("#time").val( chart_time );
-            });
+                        counter += 1;
+                        time = counter;
+                        console.log(time);
+
+                        wiggle_time = time * 5;
+                        console.log(wiggle_time);
+
+                        $("#slider-range").slider("value", wiggle_time);
+                        chart_time = calc_time(wiggle_time);
+                        $("#time").val( chart_time );
+
+                        update_vis(false);
+                        await sleep(100);
+                        console.log('Taking a break...');
+                        console.log('100 ms later');
+
+                    }
+                }
+
+                function animateMap() {
+                   if (! (animate_button_active)) {
+                       $('#animate').addClass('active');
+                       animate_button_active = true;
+                       do_animation = true;
+                       demo(time);
+                   } else {
+                       $('#animate').removeClass('active');
+                       animate_button_active = false;
+                       do_animation = false;
+                   }
+                }
+
+                $(function() {
+                    $("#slider-range").slider({
+                        min: 0,
+                        max: 1439,
+                        step: 1,
+                        value: 0,
+                        slide: function(event, ui) {
+                            chart_time = calc_time(ui.value);
+                            $("#time").val( chart_time );
+                            time = Math.floor(ui.value/5);
+                            wiggle_time = ui.value;
+
+                        },
+                        stop: function(event, ui) {
+    //                        console.log(time);
+                            update_vis(false);
+                        }
+                    });
+
+                    $("#time").change(function () {
+    //                    console.log(this.value);
+                        chart_time = this.value;
+                        let update = calc_int(this.value);
+                        time = Math.floor(update / 60);
+                        console.log(update);
+                        wiggle_time = update;
+                        console.log(time);
+                        $("#slider-range").slider("value", update);
+                        update_vis(false);
+                    });
+
+                    chart_time = calc_time($( "#slider-range" ).slider( "value" ));
+                    $("#time").val( chart_time );
+                });
             </script>
             <div id="slider-range"></div>
         </div>
@@ -399,8 +447,8 @@
 
     //global variables used throughout
     let top_data = {}, x_axis = [], to_draw = {},
-        freeways_select = [],
-        selected_station = '',
+        freeways_select = [], animate_button_active = false,
+        selected_station = '', do_animation = false,
         last_freeway_select = '',
         order = 0, time = 0, wiggle_time = 0, chart_time = '';
     const max_freeway_count = 1;
