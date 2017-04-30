@@ -2,56 +2,36 @@
 <html>
 <meta charset="utf-8">
 <style>
-    body {
-        font: 10px sans-serif;
-    }
-
-    .axis path,
-    .axis line,
-    .axis1 path,
-    .axis1 line {
-        fill: none;
-        stroke: #E6E7E8;
-        shape-rendering: crispEdges;
-    }
-
-    .x.axis path, .x.axis1 path {
-        display: none;
-    }
-
-
-    .legend-box {
-        /*cursor: pointer;*/
-        border: medium solid;
-    }
-</style>
-<style>
     #wrapper
     {
-        width: 40%;
-        height: 640px;
-        float: left;
+        height: 450px;
+        width: 100%;
+        /*width: auto;*/
+        /*overflow: hidden;*/
     }
 
     #map{
-        width: 100%;
-        height: 640px;
+        width: 50%;
+        height: 450px;
         float: left;
     }
     #container {
         position:relative;
-        float: right;
-        height:500px;
-        width:60%;
+        height:300px;
+        width:100%;
     }
     #chart1, #chart2 {
         position:relative;
     }
     #chart1 {
-        top: 0;
+        float: right;
+        width: 50%;
     }
     #chart2 {
-        bottom: 0;
+        margin: auto;
+        top: 0;
+        float: top;
+        width: 80%;
     }
 
     #map_controls {
@@ -59,7 +39,7 @@
         clear:both;
         position: relative;
         left: 30px;
-        width: 600px;
+        width: 784px;
     }
 
     .info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(214, 141, 141, 0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; }
@@ -172,258 +152,256 @@
 </style>
 
 <div>
-    <div id="wrapper">
-        <div id="map" class="sidebar-map">
-        <div id="sidebar" class="sidebar collapsed">
-            <!-- Nav tabs -->
-            <div class="sidebar-tabs">
-                <ul role="tablist">
-                    <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
-                    <li><a href="#map_settings" role="tab"><i class="fa fa-map-o"></i></a></li>
-                </ul>
-            </div>
-
-            <!-- Tab panes -->
-            <div class="sidebar-content">
-                <div class="sidebar-pane" id="home">
-                    <h1 class="sidebar-header">
-                        Traffic Visualization
-                        <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
-                    </h1>
-
-                    <h3>DSE260A Traffic Capstone</h3>
-                    <p>Wiggle Wiggle Wiggle</p>
-
-                    <p>Visualization of Traffic for San Diego (d11) using average main line station day data for 2008 through 2015.</p>
-
-                    <p><br>Select a freeway from the Map Settings tab (map icon) to see data on the map / graph.</p>
-                    <p>The average flow for 2008 to 2015 is shown by the markers and normalized wiggle propagation is shown by the line segments.</p>
-                    <p>North/South bound freeways "start" in the South and "end" in the North.</p>
-                    <p>West/East bound freeways "start" in the West and "end" in the East.</p>
-
-                </div>
-
-                <div class="sidebar-pane" id="map_settings">
-                    <h1 class="sidebar-header">Map Settings
-                        <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
-                    </h1>
-
-                    <div id="freeway_controls" data-toggle="buttons">
-                        <h3 align="center">Freeway Controls</h3>
-                        <div id="freeway" align="center">
-                            <div id="freeway1" align="center">
-                                <button id="5_N" class="btn btn-default">5 N</button>
-                                <button id="5_S" class="btn btn-default">5 S</button>
-                                <button id="8_E" class="btn btn-default">8 E</button>
-                                <button id="8_W" class="btn btn-default">8 W</button>
-                                <button id="15_N" class="btn btn-default">15 N</button>
-                                <button id="15_S" class="btn btn-default">15 S</button>
-                            </div>
-                            <div id="freeway2" align="center">
-                                <button id="52_E" class="btn btn-default">52 E</button>
-                                <button id="52_W" class="btn btn-default">52 W</button>
-                                <button id="54_E" class="btn btn-default">54 E</button>
-                                <button id="54_W" class="btn btn-default">54 W</button>
-                                <button id="56_E" class="btn btn-default">56 E</button>
-                                <button id="56_W" class="btn btn-default">56 W</button>
-                            </div>
-                            <div id="freeway3" align="center">
-                                <button id="78_E" class="btn btn-default">78 E</button>
-                                <button id="78_W" class="btn btn-default">78 W</button>
-                                <button id="94_E" class="btn btn-default">94 E</button>
-                                <button id="94_W" class="btn btn-default">94 W</button>
-                                <button id="125_N" class="btn btn-default">125 N</button>
-                                <button id="125_S" class="btn btn-default">125 S</button>
-                            </div>
-                            <div id="freeway4" align="center">
-                                <button id="163_N" class="btn btn-default">163 N</button>
-                                <button id="163_S" class="btn btn-default">163 S</button>
-                                <button id="805_N" class="btn btn-default">805 N</button>
-                                <button id="805_S" class="btn btn-default">805 S</button>
-                            </div>
-                            <div id="freeway5" align="center">
-                                <button id="905_E" class="btn btn-default">905 E</button>
-                                <button id="905_W" class="btn btn-default">905 W</button>
-                            </div>
-                        </div>
+    <div id="chart2"></div>
+    <div id="container">
+        <div id="option">
+            <button name="resetButton" class="btn btn-xs btn-warning" onclick="resetData()">Reset</button>
+        </div>
+        <div id="chart1"></div>
+        <div id="wrapper">
+            <div id="map" class="sidebar-map">
+                <div id="sidebar" class="sidebar collapsed">
+                    <!-- Nav tabs -->
+                    <div class="sidebar-tabs">
+                        <ul role="tablist">
+                            <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+                            <li><a href="#map_settings" role="tab"><i class="fa fa-map-o"></i></a></li>
+                        </ul>
                     </div>
 
-                    <script>
-                        function activate_button(obj) {
-                            let answer = $(obj).attr('id');
-                            $(obj).removeClass('btn-default');
-                            $(obj).addClass('btn-primary');
-                            $(obj).addClass('active');
-                            meta_data_points[answer].visible = true;
-                            order = 0;
-                        }
+                    <!-- Tab panes -->
+                    <div class="sidebar-content">
+                        <div class="sidebar-pane" id="home">
+                            <h1 class="sidebar-header">
+                                Traffic Visualization
+                                <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                            </h1>
 
-                        function deactivate_button(obj) {
-                            let answer = $(obj).attr('id');
-                            $(obj).removeClass('btn-primary');
-                            $(obj).removeClass('active');
-                            $(obj).addClass('btn-default');
-                            meta_data_points[answer].visible = false;
-                        }
-                        $('.btn').click(function(){
-                            let answer= $(this).attr('id');
-                            last_freeway_select = answer;
-                            console.log(answer);
-                            if($(this).hasClass('btn-default')) {
-                                if (freeways_select.length < max_freeway_count) {
-                                    activate_button(this);
-                                    freeways_select.push([answer, this]);
-                                    selected_station = '';
-                                } else {
-                                    let to_delete = freeways_select.shift();
-                                    deactivate_button(to_delete[1]);
-                                    freeways_select.push([answer, this]);
-                                    activate_button(this);
-                                    selected_station = '';
+                            <h3>DSE260A Traffic Capstone</h3>
+                            <p>Wiggle Wiggle Wiggle</p>
+
+                            <p>Visualization of Traffic for San Diego (d11) using average main line station day data for 2008 through 2015.</p>
+
+                            <p><br>Select a freeway from the Map Settings tab (map icon) to see data on the map / graph.</p>
+                            <p>The average flow for 2008 to 2015 is shown by the markers and normalized wiggle propagation is shown by the line segments.</p>
+                            <p>North/South bound freeways "start" in the South and "end" in the North.</p>
+                            <p>West/East bound freeways "start" in the West and "end" in the East.</p>
+
+                        </div>
+
+                        <div class="sidebar-pane" id="map_settings">
+                            <h1 class="sidebar-header">Map Settings
+                                <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                            </h1>
+
+                            <div id="freeway_controls" data-toggle="buttons">
+                                <h3 align="center">Freeway Controls</h3>
+                                <div id="freeway" align="center">
+                                    <div id="freeway1" align="center">
+                                        <button id="5_N" class="btn btn-default">5 N</button>
+                                        <button id="5_S" class="btn btn-default">5 S</button>
+                                        <button id="8_E" class="btn btn-default">8 E</button>
+                                        <button id="8_W" class="btn btn-default">8 W</button>
+                                        <button id="15_N" class="btn btn-default">15 N</button>
+                                        <button id="15_S" class="btn btn-default">15 S</button>
+                                    </div>
+                                    <div id="freeway2" align="center">
+                                        <button id="52_E" class="btn btn-default">52 E</button>
+                                        <button id="52_W" class="btn btn-default">52 W</button>
+                                        <button id="54_E" class="btn btn-default">54 E</button>
+                                        <button id="54_W" class="btn btn-default">54 W</button>
+                                        <button id="56_E" class="btn btn-default">56 E</button>
+                                        <button id="56_W" class="btn btn-default">56 W</button>
+                                    </div>
+                                    <div id="freeway3" align="center">
+                                        <button id="78_E" class="btn btn-default">78 E</button>
+                                        <button id="78_W" class="btn btn-default">78 W</button>
+                                        <button id="94_E" class="btn btn-default">94 E</button>
+                                        <button id="94_W" class="btn btn-default">94 W</button>
+                                        <button id="125_N" class="btn btn-default">125 N</button>
+                                        <button id="125_S" class="btn btn-default">125 S</button>
+                                    </div>
+                                    <div id="freeway4" align="center">
+                                        <button id="163_N" class="btn btn-default">163 N</button>
+                                        <button id="163_S" class="btn btn-default">163 S</button>
+                                        <button id="805_N" class="btn btn-default">805 N</button>
+                                        <button id="805_S" class="btn btn-default">805 S</button>
+                                    </div>
+                                    <div id="freeway5" align="center">
+                                        <button id="905_E" class="btn btn-default">905 E</button>
+                                        <button id="905_W" class="btn btn-default">905 W</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                function activate_button(obj) {
+                                    let answer = $(obj).attr('id');
+                                    $(obj).removeClass('btn-default');
+                                    $(obj).addClass('btn-primary');
+                                    $(obj).addClass('active');
+                                    meta_data_points[answer].visible = true;
+                                    order = 0;
                                 }
-                            } else {
-                                deactivate_button(this);
-                                freeways_select = freeways_select.filter(function(d) {
-                                    return d[0] != answer;
-                                });
-                            }
+
+                                function deactivate_button(obj) {
+                                    let answer = $(obj).attr('id');
+                                    $(obj).removeClass('btn-primary');
+                                    $(obj).removeClass('active');
+                                    $(obj).addClass('btn-default');
+                                    meta_data_points[answer].visible = false;
+                                }
+                                $('.btn').click(function(){
+                                    let answer= $(this).attr('id');
+                                    last_freeway_select = answer;
+                                    console.log(answer);
+                                    if($(this).hasClass('btn-default')) {
+                                        if (freeways_select.length < max_freeway_count) {
+                                            activate_button(this);
+                                            freeways_select.push([answer, this]);
+                                            selected_station = '';
+                                        } else {
+                                            let to_delete = freeways_select.shift();
+                                            deactivate_button(to_delete[1]);
+                                            freeways_select.push([answer, this]);
+                                            activate_button(this);
+                                            selected_station = '';
+                                        }
+                                    } else {
+                                        deactivate_button(this);
+                                        freeways_select = freeways_select.filter(function(d) {
+                                            return d[0] != answer;
+                                        });
+                                    }
 //                            console.log('new list: ');
 //                            console.log(freeways_select);
 
 //                            $('#freeway_controls .active').each(function(){
 //                                console.log(answer);
 //                            });
-                            update_vis();
-                        });
+                                    update_vis();
+                                });
 
-                        function resetData() {
-                            freeways_select.forEach(function(d) {
-                                deactivate_button(d[1]);
-                            });
-                            freeways_select = [];
-                            order = 0;
-                            update_vis();
-                        }
-                    </script>
+                                function resetData() {
+                                    freeways_select.forEach(function(d) {
+                                        deactivate_button(d[1]);
+                                    });
+                                    freeways_select = [];
+                                    order = 0;
+                                    update_vis();
+                                }
+                            </script>
 
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-        <div id="map_controls">
-            <p>
+            <div id="map_controls">
+                <p>
                 <h3 align="center">Time Control</h3>
                 <label for="time">Time</label>
                 <input type="text" id="time" style="border-width:1; color:#f6931f; width:42px; font-weight:bold;"
                        value="00:00">
                 <button class="btn btn-warning" id="animate" onclick="animateMap()">Animate</button>
-            </p>
-             <!--js for jquery control in leaflet sidebar -->
-            <script>
-                function sleep(ms) {
-                    return new Promise(resolve => setTimeout(resolve, ms));
-                }
-
-                function calc_time(input) {
-                    let hours = Math.floor(input / 60);
-                    let minutes = (input - (hours * 60 ));
-                    if(input == 0) return("00:00");
-                    if(hours.toString().length == 1) hours = '0' + hours;
-                    if(minutes.toString().length == 1) minutes = '0' + minutes;
-                    return hours.toString()+':'+minutes.toString();
-                }
-
-                function calc_int(input) {
-                    let pieces = input.split(":");
-                    return parseInt(pieces[0])*60 + parseInt(pieces[1]);
-                }
-
-                async function demo(start) {
-                    let counter = start;
-                    while(do_animation) {
-                        if (counter == 288) {
-                            do_animation = false;
-                            break;
-                        }
-
-                        counter += 1;
-                        time = counter;
-                        console.log(time);
-
-                        wiggle_time = time * 5;
-                        console.log(wiggle_time);
-
-                        $("#slider-range").slider("value", wiggle_time);
-                        chart_time = calc_time(wiggle_time);
-                        $("#time").val( chart_time );
-
-                        update_vis(false);
-                        await sleep(100);
-                        console.log('Taking a break...');
-                        console.log('100 ms later');
-
+                </p>
+                <!--js for jquery control in leaflet sidebar -->
+                <script>
+                    function sleep(ms) {
+                        return new Promise(resolve => setTimeout(resolve, ms));
                     }
-                }
 
-                function animateMap() {
-                   if (! (animate_button_active)) {
-                       $('#animate').addClass('active');
-                       animate_button_active = true;
-                       do_animation = true;
-                       demo(time);
-                   } else {
-                       $('#animate').removeClass('active');
-                       animate_button_active = false;
-                       do_animation = false;
-                   }
-                }
+                    function calc_time(input) {
+                        let hours = Math.floor(input / 60);
+                        let minutes = (input - (hours * 60 ));
+                        if(input == 0) return("00:00");
+                        if(hours.toString().length == 1) hours = '0' + hours;
+                        if(minutes.toString().length == 1) minutes = '0' + minutes;
+                        return hours.toString()+':'+minutes.toString();
+                    }
 
-                $(function() {
-                    $("#slider-range").slider({
-                        min: 0,
-                        max: 1439,
-                        step: 1,
-                        value: 0,
-                        slide: function(event, ui) {
-                            chart_time = calc_time(ui.value);
+                    function calc_int(input) {
+                        let pieces = input.split(":");
+                        return parseInt(pieces[0])*60 + parseInt(pieces[1]);
+                    }
+
+                    async function demo(start) {
+                        let counter = start;
+                        while(do_animation) {
+                            if (counter == 288) {
+                                do_animation = false;
+                                break;
+                            }
+
+                            counter += 1;
+                            time = counter;
+//                        console.log(time);
+
+                            wiggle_time = time * 5;
+//                        console.log(wiggle_time);
+
+                            $("#slider-range").slider("value", wiggle_time);
+                            chart_time = calc_time(wiggle_time);
                             $("#time").val( chart_time );
-                            time = Math.floor(ui.value/5);
-                            wiggle_time = ui.value;
 
-                        },
-                        stop: function(event, ui) {
-    //                        console.log(time);
                             update_vis(false);
+                            await sleep(100);
+//                        console.log('Taking a break...');
+//                        console.log('100 ms later');
+
                         }
+                    }
+
+                    function animateMap() {
+                        if (! (animate_button_active)) {
+                            $('#animate').addClass('active');
+                            animate_button_active = true;
+                            do_animation = true;
+                            demo(time);
+                        } else {
+                            $('#animate').removeClass('active');
+                            animate_button_active = false;
+                            do_animation = false;
+                        }
+                    }
+
+                    $(function() {
+                        $("#slider-range").slider({
+                            min: 0,
+                            max: 1439,
+                            step: 1,
+                            value: 0,
+                            slide: function(event, ui) {
+                                chart_time = calc_time(ui.value);
+                                $("#time").val( chart_time );
+                                time = Math.floor(ui.value/5);
+                                wiggle_time = ui.value;
+
+                            },
+                            stop: function(event, ui) {
+//                        console.log(time);
+                                update_vis(false);
+                            }
+                        });
+
+                        $("#time").change(function () {
+//                    console.log(this.value);
+                            chart_time = this.value;
+                            let update = calc_int(this.value);
+                            time = Math.floor(update / 60);
+                            console.log(update);
+                            wiggle_time = update;
+                            console.log(time);
+                            $("#slider-range").slider("value", update);
+                            update_vis(false);
+                        });
+
+                        chart_time = calc_time($( "#slider-range" ).slider( "value" ));
+                        $("#time").val( chart_time );
                     });
-
-                    $("#time").change(function () {
-    //                    console.log(this.value);
-                        chart_time = this.value;
-                        let update = calc_int(this.value);
-                        time = Math.floor(update / 60);
-                        console.log(update);
-                        wiggle_time = update;
-                        console.log(time);
-                        $("#slider-range").slider("value", update);
-                        update_vis(false);
-                    });
-
-                    chart_time = calc_time($( "#slider-range" ).slider( "value" ));
-                    $("#time").val( chart_time );
-                });
-            </script>
-            <div id="slider-range"></div>
+                </script>
+                <div id="slider-range"></div>
+            </div>
         </div>
-    </div>
-
-    <div id="container">
-        <div id="option">
-            <button name="resetButton" class="btn btn-xs btn-warning" onclick="resetData()">Reset</button>
-        </div>
-
-        <div id="chart1"></div>
-        <div id="chart2"></div>
     </div>
 </div>
 </body>
