@@ -24,7 +24,7 @@ The following sections highlight focus areas and a subset of exploratory noteboo
 
 | File    | Description |
 |---------|-------------|
-| [data_exploration_with_sensor_health.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/data_exploration_with_sensor_health.ipynb) |  |
+| [data_exploration_with_sensor_health.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/data_exploration_with_sensor_health.ipynb) | Exploratory analysis of traffic meta data, specifically sensor health, measurement accuracy, and the implications of data imputation. |
 | [traffic_flow_speed_occupancy_relationship.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/traffic_flow_speed_occupancy_relationship.ipynb) | Exploratory analysis of flow, speed, and occupancy relationships. |
 | [traffic_flow_speed_occupancy_clustering.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/traffic_flow_speed_occupancy_clustering.ipynb) | Survey of clustering algorithms as applied to traffic data. |
 | [traffic_clustering_i5s.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/traffic_clustering_i5s.ipynb) | Exploration of speed/occupancy/flow classification and clustering for I-5 south.  Includes Birch clustering and heuristic classification. |
