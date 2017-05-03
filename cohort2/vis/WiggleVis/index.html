@@ -388,9 +388,9 @@
                             chart_time = this.value;
                             let update = calc_int(this.value);
                             time = Math.floor(update / 60);
-                            console.log(update);
+//                            console.log(update);
                             wiggle_time = update;
-                            console.log(time);
+//                            console.log(time);
                             $("#slider-range").slider("value", update);
                             update_vis(false);
                         });
@@ -424,7 +424,7 @@
     L.mapbox.accessToken = 'pk.eyJ1IjoiYzZzYW5kZXIiLCJhIjoiY2l6ZWpmaHl3MXYwYTJ3cXBlaXBqeXJwcyJ9.QbYtu1dpRdbLFxfhOkqMmA';
 
     //global variables used throughout
-    let top_data = {}, x_axis = [], to_draw = {},
+    let top_data = {}, seg_data = {}, x_axis = [], to_draw = {},
         freeways_select = [], animate_button_active = false,
         selected_station = '', do_animation = false,
         last_freeway_select = '',
@@ -508,14 +508,17 @@
                         innerColors[0];
     }
 
-    let segmentColors = ['#ca0020','#f4a582','#f7f7f7','#92c5de','#0571b0'];
-    let segment_bins = [.75, .5, 0, -5, -.75];
+//    let segmentColors = ['#ca0020','#f4a582','#f7f7f7','#92c5de','#0571b0'];
+    let segmentColors = ['hsla(50, 0%, 40%, 1)', 'hsla(50, 25%, 40%, 1)', 'hsla(50, 50%, 40%, 1)',
+        'hsla(50, 75%, 40%, 1)', 'hsla(50, 100%, 40%, 1)'];
+//    let segment_bins = [.75, .5, 0, -5, -.75];
+    let segment_bins;
     function segment_scale(d) {
-        return d >= segment_bins[0] ? segmentColors[0] :
-            d >= segment_bins[1] ? segmentColors[1] :
-                d >= segment_bins[2] ? segmentColors[2] :
-                    d >= segment_bins[3] ? segmentColors[3] :
-                        segmentColors[4];
+        return d >= segment_bins[3] ? segmentColors[4] :
+            d >= segment_bins[2] ? segmentColors[3] :
+                d >= segment_bins[1] ? segmentColors[2] :
+                    d >= segment_bins[0] ? segmentColors[1] :
+                        segmentColors[0];
     }
 
     function create_bins(source_data) {
@@ -582,6 +585,16 @@
 //            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
 //            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
 //            .attr('r', 7.5);
+    }
+
+    function highlightSegmentFeature(e) {
+        let layer = e.target;
+
+        layer.setStyle({
+            weight: 12,
+//            color: '#666',
+            fillOpacity: 0.9
+        })
     }
 
     function updateStyle(feature) {
@@ -652,6 +665,15 @@
 //            .attr('r', 2.5);
     }
 
+    function resetSegmentFeature(e) {
+        let layer = e.target;
+        let feature = layer.feature;
+
+        layer.setStyle(updateSegStyle(feature));
+
+//        info.update();
+    }
+
     function clickFeature(e) {
 //        console.log(e);
         let layer = e.target;
@@ -672,6 +694,20 @@
             mouseover: highlightFeature,
             mouseout: resetHighlight,
             click: clickFeature,
+        });
+    }
+
+    function onEachSegmentFeature(feature, layer) {
+//        console.log(feature);
+        // does this feature have a property named popupContent?
+        if (feature.properties && feature.properties.ID) {
+            layer.bindPopup('ID: ' + feature.properties.ID + '\nwiggle: ' +
+                d3.round(feature.properties.wiggles[wiggle_time], 2));
+        }
+
+        layer.on({
+            mouseover: highlightSegmentFeature,
+            mouseout: resetSegmentFeature
         });
     }
 
@@ -697,10 +733,13 @@
 
     function fetch_data() {
         top_data = {};
+        seg_data = {};
 //        console.log(meta_keys);
         meta_keys.forEach(function (fwy_dir) {
 //            elevation_to_draw[fwy_dir] = [];
             top_data[fwy_dir] = [];
+            seg_data[fwy_dir] = [];
+
             if (meta_data_points[fwy_dir].visible) {
                 to_draw[fwy_dir] = { 'stations': [] };
 
@@ -710,6 +749,16 @@
                     top_data[fwy_dir].push(item.properties.Flow[time]);
 //                    elevation_to_draw[fwy_dir].push(d3.round(item.properties.Elevation, 1));
                 });
+
+                console.log('segment_data');
+                console.log(segment_data);
+
+                let seg_min = segment_data[fwy_dir].features[0].properties.min;
+                let seg_max = segment_data[fwy_dir].features[0].properties.max;
+
+                seg_data[fwy_dir].push(seg_min);
+                seg_data[fwy_dir].push(seg_max);
+
 
 //                let partition_keys = [];
 //                if ($('#Weekdays').prop('checked')) {
@@ -729,6 +778,7 @@
                 }
             } else {
                 delete top_data[fwy_dir];
+                delete seg_data[fwy_dir];
             }
         });
     }
@@ -739,6 +789,11 @@
 
         let new_layer, seg_layer;
         inner_bins = create_bins(top_data);
+//        console.log('seg_data');
+//        console.log(seg_data);
+        segment_bins = create_bins(seg_data);
+//        console.log('segment_bins');
+//        console.log(segment_bins);
 
         meta_keys.forEach(function (fwy_dir) {
             if (meta_data_points[fwy_dir].visible) {
@@ -773,7 +828,7 @@
 //                        }
 //                        return L.circleMarker(latlng);
 //                    },
-//                    onEachFeature: onEachFeature
+                    onEachFeature: onEachSegmentFeature
                 });
                 meta_data_points[fwy_dir].seg_layer = seg_layer;
 //                console.log(d3.keys(meta_data_points[fwy_dir]));
@@ -887,6 +942,12 @@
                 to_graph = [],
                 rowLabel = [];
 
+//            var test_color = d3.scale.linear()
+//                .domain([-600, 0, 600])
+//                .range(['red', 'white', 'green']);
+//            console.log('test_color: ');
+//            console.log(test_color);
+
             Plotly.d3.csv("data/heatmaps/wiggle_analysis_" + last_freeway_select + ".csv",
                 function(error, data) {
 //                    console.log(data);
@@ -912,7 +973,46 @@
                         {
                             z: to_graph,
                             x: x_axis,
-                            type: 'heatmap'
+                            type: 'heatmap',
+                            colorscale: [
+//                                [0, 'hsla(50, 100%, 40%, 0)'],
+//                                [.25, 'hsla(50, 100%, 40%, .25)'],
+//                                [.5, 'hsla(50, 100%, 40%, .5)'],
+//                                [.75, 'hsla(50, 100%, 40%, .75)'],
+//                                [1, 'hsla(50, 100%, 40%, 1)'],
+
+                                [0, segmentColors[0]],
+                                [.25, segmentColors[1]],
+                                [.5, segmentColors[2]],
+                                [.75, segmentColors[3]],
+                                [1, segmentColors[4]],
+                            ],
+//                            colorscale: [
+//                                [0, 'rgb(0, 0, 255)'],
+//                                [1./10000, 'rgb(255, 255, 0)'],
+//                                [1./1000, 'rgb(150, 150, 150)'],
+//                                [1./100, 'rgb(100, 100, 100)'],
+//                                [1./10, 'rgb(50, 50, 50)'],
+//                                [1., 'rgb(0, 0, 0)'],
+//                            ],
+//                            colorscale: [test_color],
+//                            colorbar: {
+//                                autotick: false,
+//                                tick0: 0,
+//                                dtick: 1
+//                            }
+//                            colorscale: test_color,
+//                            colorbar: {
+//                                'tick0': 0,
+//                                'tickmode': 'array',
+//                                'tickvals': [-6, -4, -2, 0, 2, 4, 6]
+//                            }
+                            colorbar: {
+//                                'thicknessmode': 'fraction',
+                                'tick0': 0,
+                                'dtick': 2,
+//                                'tickmode': 'array',
+                            }
                         }
                     ];
 
@@ -1014,28 +1114,36 @@
 
                 let default_style = 'width: 20px; height: 20px; background:';
                 let inner_precision = d3.min(inner_bins) < 1 ? 2 : 1;
+                let segment_precision = d3.min(segment_bins) < 1 ? 2 : 1;
                 for (let i = 0; i <= inner_bins.length; i++) {
                     if (i == 0) {
+                        let segment_value = d3.round(segment_bins[i], segment_precision);
                         let inner_value = d3.round(inner_bins[i], inner_precision);
 
                         html_data = 'Legend: <br>';
-                        html_data += '<table><tr><th>Average Flow</th></tr>';
+                        html_data += '<table><tr><th>Wiggle Mag.</th><th>Avg. Flow</th></tr>';
                         html_data += '<tr>' +
+                            '<td><i style="' + default_style + segment_scale(segment_value - .1) + '"></i> < ' + segment_value + '</td>' +
                             '<td><i style="' + default_style + inner_scale(inner_value - .1) + '"></i> < ' + inner_value + '</td>' +
                             '</tr>';
 
                     } else if (i == inner_bins.length) {
+                        let segment_value = d3.round(segment_bins[i - 1], 1);
                         let inner_value = d3.round(inner_bins[i - 1], 1);
 
                         html_data += '<tr>' +
+                            '<td><i style="' + default_style + segment_scale(segment_value) + '"></i> > ' + segment_value + '</td>' +
                             '<td><i style="' + default_style + inner_scale(inner_value) + '"></i> > ' + inner_value + '</td>' +
                             '</tr>';
                     } else {
+                        let seg_from = d3.round(segment_bins[i - 1], segment_precision);
+                        let seg_to = d3.round(segment_bins[i], segment_precision);
                         let inner_from = d3.round(inner_bins[i - 1], inner_precision);
                         let inner_to = d3.round(inner_bins[i], inner_precision);
 
                         html_data += '<tr>' +
-                            '<td><i style="' + default_style + inner_scale(inner_from) + '"></i> [' + inner_from + (inner_to ? '&ndash;' + inner_to : '+') + ')</td>' +
+                            '<td><i style="' + default_style + segment_scale(seg_from) + '"></i> [' + seg_from + (seg_to ? ' to ' + seg_to : '+') + ')</td>' +
+                            '<td><i style="' + default_style + inner_scale(inner_from) + '"></i> [' + inner_from + (inner_to ? ' to ' + inner_to : '+') + ')</td>' +
                             '</tr>';
                     }
                 }
