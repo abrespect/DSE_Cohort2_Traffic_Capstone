@@ -2,57 +2,36 @@
 <html>
 <meta charset="utf-8">
 <style>
-    body {
-        font: 10px sans-serif;
-    }
-
-    .axis path,
-    .axis line,
-    .axis1 path,
-    .axis1 line {
-        fill: none;
-        stroke: #E6E7E8;
-        shape-rendering: crispEdges;
-    }
-
-    .x.axis path, .x.axis1 path {
-        display: none;
-    }
-
-
-    .legend-box {
-        /*cursor: pointer;*/
-        border: medium solid;
-    }
-
-</style>
-<style>
     #wrapper
     {
-        width: 40%;
-        height: 640px;
-        float: left;
+        height: 450px;
+        width: 100%;
+        /*width: auto;*/
+        /*overflow: hidden;*/
     }
 
     #map{
-        width: 100%;
-        height: 640px;
+        width: 50%;
+        height: 450px;
         float: left;
     }
     #container {
         position:relative;
-        float: right;
-        height:500px;
-        width:60%;
+        height:300px;
+        width:100%;
     }
     #chart1, #chart2 {
         position:relative;
     }
     #chart1 {
-        top: 0;
+        float: right;
+        width: 50%;
     }
     #chart2 {
-        bottom: 0;
+        margin: auto;
+        top: 0;
+        float: top;
+        width: 80%;
     }
 
     #map_controls {
@@ -60,6 +39,7 @@
         clear:both;
         position: relative;
         left: 30px;
+        width: 784px;
     }
 
     .info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(214, 141, 141, 0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; }
@@ -163,192 +143,265 @@
     .sidebar-content {
         overflow-y:hidden;
     }
+
+    /*.ui-slider .ui-slider-handle {*/
+        /*height: 35px;*/
+        /*width: 5px;*/
+        /*padding-left: 5px; //add this*/
+    /*}*/
 </style>
 
 <div>
-    <div id="wrapper">
-        <div id="map" class="sidebar-map">
-        <div id="sidebar" class="sidebar collapsed">
-            <!-- Nav tabs -->
-            <div class="sidebar-tabs">
-                <ul role="tablist">
-                    <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
-                    <li><a href="#map_settings" role="tab"><i class="fa fa-map-o"></i></a></li>
-                </ul>
-            </div>
-
-            <!-- Tab panes -->
-            <div class="sidebar-content">
-                <div class="sidebar-pane" id="home">
-                    <h1 class="sidebar-header">
-                        Traffic Visualization
-                        <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
-                    </h1>
-
-                    <h3>DSE260A Traffic Capstone</h3>
-                    <p>Wiggle Wiggle Wiggle</p>
-
-                    <p>Visualization of Traffic for San Diego (d11) using average main line station day data for 2008 through 2015.</p>
-
-                    <p><br>Select a freeway from the Map Settings tab (map icon) to see data on the map / graph.</p>
-                    <p>The average flow for 2008 to 2015 is shown by the markers and normalized wiggle propagation is shown by the line segments.</p>
-                    <p>North/South bound freeways "start" in the South and "end" in the North.</p>
-                    <p>West/East bound freeways "start" in the West and "end" in the East.</p>
-
-                </div>
-
-                <div class="sidebar-pane" id="map_settings">
-                    <h1 class="sidebar-header">Map Settings
-                        <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
-                    </h1>
-
-                    <div id="freeway_controls" data-toggle="buttons">
-                        <h3 align="center">Freeway Controls</h3>
-                        <div id="freeway" align="center">
-                            <div id="freeway1" align="center">
-                                <button id="5_N" class="btn btn-default">5 N</button>
-                                <button id="5_S" class="btn btn-default">5 S</button>
-                                <button id="8_E" class="btn btn-default">8 E</button>
-                                <button id="8_W" class="btn btn-default">8 W</button>
-                                <button id="15_N" class="btn btn-default">15 N</button>
-                                <button id="15_S" class="btn btn-default">15 S</button>
-                            </div>
-                            <div id="freeway2" align="center">
-                                <button id="52_E" class="btn btn-default">52 E</button>
-                                <button id="52_W" class="btn btn-default">52 W</button>
-                                <button id="54_E" class="btn btn-default">54 E</button>
-                                <button id="54_W" class="btn btn-default">54 W</button>
-                                <button id="56_E" class="btn btn-default">56 E</button>
-                                <button id="56_W" class="btn btn-default">56 W</button>
-                            </div>
-                            <div id="freeway3" align="center">
-                                <button id="78_E" class="btn btn-default">78 E</button>
-                                <button id="78_W" class="btn btn-default">78 W</button>
-                                <button id="94_E" class="btn btn-default">94 E</button>
-                                <button id="94_W" class="btn btn-default">94 W</button>
-                                <button id="125_N" class="btn btn-default">125 N</button>
-                                <button id="125_S" class="btn btn-default">125 S</button>
-                            </div>
-                            <div id="freeway4" align="center">
-                                <button id="163_N" class="btn btn-default">163 N</button>
-                                <button id="163_S" class="btn btn-default">163 S</button>
-                                <button id="805_N" class="btn btn-default">805 N</button>
-                                <button id="805_S" class="btn btn-default">805 S</button>
-                            </div>
-                            <div id="freeway5" align="center">
-                                <button id="905_E" class="btn btn-default">905 E</button>
-                                <button id="905_W" class="btn btn-default">905 W</button>
-                            </div>
-                        </div>
+    <div id="chart2"></div>
+    <div id="container">
+        <div id="option">
+            <button name="resetButton" class="btn btn-xs btn-warning" onclick="resetData()">Reset</button>
+        </div>
+        <div id="chart1"></div>
+        <div id="wrapper">
+            <div id="map" class="sidebar-map">
+                <div id="sidebar" class="sidebar collapsed">
+                    <!-- Nav tabs -->
+                    <div class="sidebar-tabs">
+                        <ul role="tablist">
+                            <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+                            <li><a href="#map_settings" role="tab"><i class="fa fa-map-o"></i></a></li>
+                        </ul>
                     </div>
 
-                    <script>
-                        function activate_button(obj) {
-                            let answer = $(obj).attr('id');
-                            $(obj).removeClass('btn-default');
-                            $(obj).addClass('btn-primary');
-                            $(obj).addClass('active');
-                            meta_data_points[answer].visible = true;
-                            order = 0;
-                        }
+                    <!-- Tab panes -->
+                    <div class="sidebar-content">
+                        <div class="sidebar-pane" id="home">
+                            <h1 class="sidebar-header">
+                                Traffic Visualization
+                                <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                            </h1>
 
-                        function deactivate_button(obj) {
-                            let answer = $(obj).attr('id');
-                            $(obj).removeClass('btn-primary');
-                            $(obj).removeClass('active');
-                            $(obj).addClass('btn-default');
-                            meta_data_points[answer].visible = false;
-                        }
-                        $('.btn').click(function(){
-                            let answer= $(this).attr('id');
-                            last_freeway_select = answer;
-                            console.log(answer);
-                            if($(this).hasClass('btn-default')) {
-                                if (freeways_select.length < max_freeway_count) {
-                                    activate_button(this);
-                                    freeways_select.push([answer, this]);
-                                } else {
-                                    let to_delete = freeways_select.shift();
-                                    deactivate_button(to_delete[1]);
-                                    freeways_select.push([answer, this]);
-                                    activate_button(this);
+                            <h3>DSE260A Traffic Capstone</h3>
+                            <p>Wiggle Wiggle Wiggle</p>
+
+                            <p>Visualization of Traffic for San Diego (d11) using average main line station day data for 2008 through 2015.</p>
+
+                            <p><br>Select a freeway from the Map Settings tab (map icon) to see data on the map / graph.</p>
+                            <p>The average flow for 2008 to 2015 is shown by the markers and normalized wiggle propagation is shown by the line segments.</p>
+                            <p>North/South bound freeways "start" in the South and "end" in the North.</p>
+                            <p>West/East bound freeways "start" in the West and "end" in the East.</p>
+
+                        </div>
+
+                        <div class="sidebar-pane" id="map_settings">
+                            <h1 class="sidebar-header">Map Settings
+                                <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                            </h1>
+
+                            <div id="freeway_controls" data-toggle="buttons">
+                                <h3 align="center">Freeway Controls</h3>
+                                <div id="freeway" align="center">
+                                    <div id="freeway1" align="center">
+                                        <button id="5_N" class="btn btn-default">5 N</button>
+                                        <button id="5_S" class="btn btn-default">5 S</button>
+                                        <button id="8_E" class="btn btn-default">8 E</button>
+                                        <button id="8_W" class="btn btn-default">8 W</button>
+                                        <button id="15_N" class="btn btn-default">15 N</button>
+                                        <button id="15_S" class="btn btn-default">15 S</button>
+                                    </div>
+                                    <div id="freeway2" align="center">
+                                        <button id="52_E" class="btn btn-default">52 E</button>
+                                        <button id="52_W" class="btn btn-default">52 W</button>
+                                        <button id="54_E" class="btn btn-default">54 E</button>
+                                        <button id="54_W" class="btn btn-default">54 W</button>
+                                        <button id="56_E" class="btn btn-default">56 E</button>
+                                        <button id="56_W" class="btn btn-default">56 W</button>
+                                    </div>
+                                    <div id="freeway3" align="center">
+                                        <button id="78_E" class="btn btn-default">78 E</button>
+                                        <button id="78_W" class="btn btn-default">78 W</button>
+                                        <button id="94_E" class="btn btn-default">94 E</button>
+                                        <button id="94_W" class="btn btn-default">94 W</button>
+                                        <button id="125_N" class="btn btn-default">125 N</button>
+                                        <button id="125_S" class="btn btn-default">125 S</button>
+                                    </div>
+                                    <div id="freeway4" align="center">
+                                        <button id="163_N" class="btn btn-default">163 N</button>
+                                        <button id="163_S" class="btn btn-default">163 S</button>
+                                        <button id="805_N" class="btn btn-default">805 N</button>
+                                        <button id="805_S" class="btn btn-default">805 S</button>
+                                    </div>
+                                    <div id="freeway5" align="center">
+                                        <button id="905_E" class="btn btn-default">905 E</button>
+                                        <button id="905_W" class="btn btn-default">905 W</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                function activate_button(obj) {
+                                    let answer = $(obj).attr('id');
+                                    $(obj).removeClass('btn-default');
+                                    $(obj).addClass('btn-primary');
+                                    $(obj).addClass('active');
+                                    meta_data_points[answer].visible = true;
+                                    order = 0;
                                 }
-                            } else {
-                                deactivate_button(this);
-                                freeways_select = freeways_select.filter(function(d) {
-                                    return d[0] != answer;
-                                });
-                            }
+
+                                function deactivate_button(obj) {
+                                    let answer = $(obj).attr('id');
+                                    $(obj).removeClass('btn-primary');
+                                    $(obj).removeClass('active');
+                                    $(obj).addClass('btn-default');
+                                    meta_data_points[answer].visible = false;
+                                }
+                                $('.btn').click(function(){
+                                    let answer= $(this).attr('id');
+                                    last_freeway_select = answer;
+                                    console.log(answer);
+                                    if($(this).hasClass('btn-default')) {
+                                        if (freeways_select.length < max_freeway_count) {
+                                            activate_button(this);
+                                            freeways_select.push([answer, this]);
+                                            selected_station = '';
+                                        } else {
+                                            let to_delete = freeways_select.shift();
+                                            deactivate_button(to_delete[1]);
+                                            freeways_select.push([answer, this]);
+                                            activate_button(this);
+                                            selected_station = '';
+                                        }
+                                    } else {
+                                        deactivate_button(this);
+                                        freeways_select = freeways_select.filter(function(d) {
+                                            return d[0] != answer;
+                                        });
+                                    }
 //                            console.log('new list: ');
 //                            console.log(freeways_select);
 
 //                            $('#freeway_controls .active').each(function(){
 //                                console.log(answer);
 //                            });
-                            update_vis();
-                        });
+                                    update_vis();
+                                });
 
-                        function resetData() {
-                            freeways_select.forEach(function(d) {
-                                deactivate_button(d[1]);
-                            });
-                            freeways_select = [];
-                            order = 0;
-                            update_vis();
-                        }
-                    </script>
+                                function resetData() {
+                                    freeways_select.forEach(function(d) {
+                                        deactivate_button(d[1]);
+                                    });
+                                    freeways_select = [];
+                                    order = 0;
+                                    update_vis();
+                                }
+                            </script>
 
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-        <div id="map_controls">
-            <p>
+            <div id="map_controls">
+                <p>
                 <h3 align="center">Time Control</h3>
                 <label for="time">Time</label>
-                <input type="text" id="time" readonly style="border:0; color:#f6931f; font-weight:bold;" value="00:00 to 23:55">
-            </p>
-             <!--js for jquery control in leaflet sidebar -->
-            <script>
-            $(function() {
-                function calc_time(input) {
-                    let hours = Math.floor(input / 60);
-                    let minutes = (input - (hours * 60 ));
-                    if(hours.toString().length == 1) hours = '0' + hours;
-                    if(minutes.toString().length == 1) minutes = '0' + minutes;
-                    return hours.toString()+':'+minutes.toString();
-                }
-
-                $("#slider-range").slider({
-                    min: 0,
-                    max: 1439,
-                    step: 1,
-                    value: 0,
-                    slide: function(event, ui) {
-                        $("#time").val( calc_time(ui.value) );
-                        time = Math.floor(ui.value/5);
-                        wiggle_time = ui.value;
-
-                    },
-                    stop: function(event, ui) {
-//                        console.log(time);
-                        update_vis(false);
+                <input type="text" id="time" style="border-width:1; color:#f6931f; width:42px; font-weight:bold;"
+                       value="00:00">
+                <button class="btn btn-warning" id="animate" onclick="animateMap()">Animate</button>
+                </p>
+                <!--js for jquery control in leaflet sidebar -->
+                <script>
+                    function sleep(ms) {
+                        return new Promise(resolve => setTimeout(resolve, ms));
                     }
-                });
-                $("#time").val( $( "#slider-range" ).slider( "value" ) );
-            });
-            </script>
-            <div id="slider-range"></div>
-        </div>
-    </div>
 
-    <div id="container">
-        <div id="option">
-            <button name="resetButton" class="btn btn-xs btn-warning" onclick="resetData()">Reset</button>
-        </div>
+                    function calc_time(input) {
+                        let hours = Math.floor(input / 60);
+                        let minutes = (input - (hours * 60 ));
+                        if(input == 0) return("00:00");
+                        if(hours.toString().length == 1) hours = '0' + hours;
+                        if(minutes.toString().length == 1) minutes = '0' + minutes;
+                        return hours.toString()+':'+minutes.toString();
+                    }
 
-        <div id="chart1"></div>
-        <div id="chart2"></div>
+                    function calc_int(input) {
+                        let pieces = input.split(":");
+                        return parseInt(pieces[0])*60 + parseInt(pieces[1]);
+                    }
+
+                    async function demo(start) {
+                        let counter = start;
+                        while(do_animation) {
+                            if (counter == 288) {
+                                do_animation = false;
+                                break;
+                            }
+
+                            counter += 1;
+                            time = counter;
+//                        console.log(time);
+
+                            wiggle_time = time * 5;
+//                        console.log(wiggle_time);
+
+                            $("#slider-range").slider("value", wiggle_time);
+                            chart_time = calc_time(wiggle_time);
+                            $("#time").val( chart_time );
+
+                            update_vis(false);
+                            await sleep(100);
+//                        console.log('Taking a break...');
+//                        console.log('100 ms later');
+
+                        }
+                    }
+
+                    function animateMap() {
+                        if (! (animate_button_active)) {
+                            $('#animate').addClass('active');
+                            animate_button_active = true;
+                            do_animation = true;
+                            demo(time);
+                        } else {
+                            $('#animate').removeClass('active');
+                            animate_button_active = false;
+                            do_animation = false;
+                        }
+                    }
+
+                    $(function() {
+                        $("#slider-range").slider({
+                            min: 0,
+                            max: 1439,
+                            step: 1,
+                            value: 0,
+                            slide: function(event, ui) {
+                                chart_time = calc_time(ui.value);
+                                $("#time").val( chart_time );
+                                time = Math.floor(ui.value/5);
+                                wiggle_time = ui.value;
+
+                            },
+                            stop: function(event, ui) {
+//                        console.log(time);
+                                update_vis(false);
+                            }
+                        });
+
+                        $("#time").change(function () {
+//                    console.log(this.value);
+                            chart_time = this.value;
+                            let update = calc_int(this.value);
+                            time = Math.floor(update / 60);
+//                            console.log(update);
+                            wiggle_time = update;
+//                            console.log(time);
+                            $("#slider-range").slider("value", update);
+                            update_vis(false);
+                        });
+
+                        chart_time = calc_time($( "#slider-range" ).slider( "value" ));
+                        $("#time").val( chart_time );
+                    });
+                </script>
+                <div id="slider-range"></div>
+            </div>
+        </div>
     </div>
 </div>
 </body>
@@ -371,11 +424,11 @@
     L.mapbox.accessToken = 'pk.eyJ1IjoiYzZzYW5kZXIiLCJhIjoiY2l6ZWpmaHl3MXYwYTJ3cXBlaXBqeXJwcyJ9.QbYtu1dpRdbLFxfhOkqMmA';
 
     //global variables used throughout
-    let top_data = {}, x_axis = [], to_draw = {},
-        freeways_select = [],
-        selected_station = '',
+    let top_data = {}, seg_data = {}, x_axis = [], to_draw = {},
+        freeways_select = [], animate_button_active = false,
+        selected_station = '', do_animation = false,
         last_freeway_select = '',
-        order = 0, time = 0, wiggle_time = 0;
+        order = 0, time = 0, wiggle_time = 0, chart_time = '';
     const max_freeway_count = 1;
 
     //define a boundary box around CA to limit the map to
@@ -455,14 +508,17 @@
                         innerColors[0];
     }
 
-    let segmentColors = ['#ca0020','#f4a582','#f7f7f7','#92c5de','#0571b0'];
-    let segment_bins = [.75, .5, 0, -5, -.75];
+//    let segmentColors = ['#ca0020','#f4a582','#f7f7f7','#92c5de','#0571b0'];
+    let segmentColors = ['hsla(50, 0%, 40%, 1)', 'hsla(50, 25%, 40%, 1)', 'hsla(50, 50%, 40%, 1)',
+        'hsla(50, 75%, 40%, 1)', 'hsla(50, 100%, 40%, 1)'];
+//    let segment_bins = [.75, .5, 0, -5, -.75];
+    let segment_bins;
     function segment_scale(d) {
-        return d >= segment_bins[0] ? segmentColors[0] :
-            d >= segment_bins[1] ? segmentColors[1] :
-                d >= segment_bins[2] ? segmentColors[2] :
-                    d >= segment_bins[3] ? segmentColors[3] :
-                        segmentColors[4];
+        return d >= segment_bins[3] ? segmentColors[4] :
+            d >= segment_bins[2] ? segmentColors[3] :
+                d >= segment_bins[1] ? segmentColors[2] :
+                    d >= segment_bins[0] ? segmentColors[1] :
+                        segmentColors[0];
     }
 
     function create_bins(source_data) {
@@ -531,18 +587,28 @@
 //            .attr('r', 7.5);
     }
 
+    function highlightSegmentFeature(e) {
+        let layer = e.target;
+
+        layer.setStyle({
+            weight: 12,
+//            color: '#666',
+            fillOpacity: 0.9
+        })
+    }
+
     function updateStyle(feature) {
         let color = '';
         let radius = '';
         let type = feature.properties.Type;
         if (type == 'ML') {
-            color = 'blue';
+            color = 'black';
             radius = 10;
         } else if (type == 'OR') {
             color = 'red';
             radius = 20;
         } else if (type == 'FR') {
-            color = 'black';
+            color = 'blue';
             radius = 20;
         } else {
             color = 'brown';
@@ -550,7 +616,7 @@
         }
 
         return {
-//                            "color": outer_scale(feature.properties.bottom_input),
+//            "color": inner_scale(feature.properties.Flow[time]),
             "color": color,
             "fillColor": inner_scale(feature.properties.Flow[time]),
 //                            "radius": marker_scale(feature.properties.marker),
@@ -599,14 +665,23 @@
 //            .attr('r', 2.5);
     }
 
+    function resetSegmentFeature(e) {
+        let layer = e.target;
+        let feature = layer.feature;
+
+        layer.setStyle(updateSegStyle(feature));
+
+//        info.update();
+    }
+
     function clickFeature(e) {
 //        console.log(e);
         let layer = e.target;
         selected_station = layer.feature.properties.ID;
-        console.log(selected_station);
+//        console.log(selected_station);
         order = layer.feature.properties.Order;
-        console.log(layer.feature.properties);
-        console.log(order);
+//        console.log(layer.feature.properties);
+//        console.log(order);
         if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
             //layer.bringToBack();
             layer.bringToFront();
@@ -619,6 +694,20 @@
             mouseover: highlightFeature,
             mouseout: resetHighlight,
             click: clickFeature,
+        });
+    }
+
+    function onEachSegmentFeature(feature, layer) {
+//        console.log(feature);
+        // does this feature have a property named popupContent?
+        if (feature.properties && feature.properties.ID) {
+            layer.bindPopup('ID: ' + feature.properties.ID + '\nwiggle: ' +
+                d3.round(feature.properties.wiggles[wiggle_time], 2));
+        }
+
+        layer.on({
+            mouseover: highlightSegmentFeature,
+            mouseout: resetSegmentFeature
         });
     }
 
@@ -644,10 +733,13 @@
 
     function fetch_data() {
         top_data = {};
+        seg_data = {};
 //        console.log(meta_keys);
         meta_keys.forEach(function (fwy_dir) {
 //            elevation_to_draw[fwy_dir] = [];
             top_data[fwy_dir] = [];
+            seg_data[fwy_dir] = [];
+
             if (meta_data_points[fwy_dir].visible) {
                 to_draw[fwy_dir] = { 'stations': [] };
 
@@ -657,6 +749,16 @@
                     top_data[fwy_dir].push(item.properties.Flow[time]);
 //                    elevation_to_draw[fwy_dir].push(d3.round(item.properties.Elevation, 1));
                 });
+
+                console.log('segment_data');
+                console.log(segment_data);
+
+                let seg_min = segment_data[fwy_dir].features[0].properties.min;
+                let seg_max = segment_data[fwy_dir].features[0].properties.max;
+
+                seg_data[fwy_dir].push(seg_min);
+                seg_data[fwy_dir].push(seg_max);
+
 
 //                let partition_keys = [];
 //                if ($('#Weekdays').prop('checked')) {
@@ -674,31 +776,9 @@
                 if (selected_station == '') {
                     selected_station = stations[order];
                 }
-
-//                stations.forEach(function (id) {
-//                    let raw_top_data = [];
-
-//                    partition_keys.forEach(function (part) {
-//                        if (raw_top_data.length == 0 && top_input != 'elevation' && id in data_array[fwy_dir][part][top_input]) {
-////                            raw_top_data = data_array[fwy_dir][part][top_input][id].slice(start_time, end_time + 1);
-//                            raw_top_data = data_array[fwy_dir][part][top_input][id];
-//                        } else if (top_input != 'elevation' && id in data_array[fwy_dir][part][top_input]) {
-////                            let new_data = data_array[fwy_dir][part][top_input][id].slice(start_time, end_time + 1);
-//                            let new_data = data_array[fwy_dir][part][top_input][id];
-//                            raw_top_data = raw_top_data.concat(new_data);
-//                        }
-//
-//                    });
-//                    if (top_input != 'elevation') {
-//                        top_data[fwy_dir].push(d3.round(d3.mean(raw_top_data, function(d) { return +d; }), 1));
-//                    }
-//                    meta_data_points[fwy_dir]
-//                    top_data[fwy_dir].push()
-//                });
-//                console.log("top_data");
-//                console.log(top_data);
             } else {
                 delete top_data[fwy_dir];
+                delete seg_data[fwy_dir];
             }
         });
     }
@@ -709,17 +789,14 @@
 
         let new_layer, seg_layer;
         inner_bins = create_bins(top_data);
+//        console.log('seg_data');
+//        console.log(seg_data);
+        segment_bins = create_bins(seg_data);
+//        console.log('segment_bins');
+//        console.log(segment_bins);
 
         meta_keys.forEach(function (fwy_dir) {
             if (meta_data_points[fwy_dir].visible) {
-
-//                for (let index = 0; index < meta_data_points[fwy_dir].data.features.length; index++) {
-//                    let insert_point = meta_data_points[fwy_dir].data.features[index].properties;
-//                    insert_point['top_input'] = top_data[fwy_dir][index];
-////                    insert_point['bottom_input'] = bottom_data[fwy_dir][index];
-////                    insert_point['marker'] = marker_data[fwy_dir][index];
-//                }
-
                 new_layer = L.geoJSON(meta_data_points[fwy_dir].data, {
                     style: function (feature) {
                         return updateStyle(feature)
@@ -751,7 +828,7 @@
 //                        }
 //                        return L.circleMarker(latlng);
 //                    },
-//                    onEachFeature: onEachFeature
+                    onEachFeature: onEachSegmentFeature
                 });
                 meta_data_points[fwy_dir].seg_layer = seg_layer;
 //                console.log(d3.keys(meta_data_points[fwy_dir]));
@@ -781,28 +858,15 @@
         }
 
         if (freeways_select.length != 0) {
-//            let chart1_data = {'original': [], 'wt': []};
-//            d3.csv('data/stations/' + selected_station + '.csv', function(error, data) {
-//                data.forEach(function(row) {
-////                    console.log(row);
-////                    chart2_data.push([row.original, row.wt]);
-//                    chart1_data['original'].push(+row.original);
-//                    chart1_data['wt'].push(+row.wt);
-//                });
-//            });
-//            console.log(chart1_data);
-
             let original_line = [];
             let wt_line = [];
-//            let x_values = [];
-//            let counter = 0;
-            console.log(selected_station);
+//            console.log(selected_station);
 
+            let max_value = 0;
             Plotly.d3.csv('data/stations/' + selected_station + '.csv',
                 function(error, data) {
                     data.forEach(function (row) {
-//                        x_values.push(counter);
-//                        counter += 1;
+                        max_value = Math.max(max_value, +row.original, +row.wt);
                         original_line.push(+row.original);
                         wt_line.push(+row.wt);
                     });
@@ -845,66 +909,28 @@
                         }
                     };
 
-                    Plotly.newPlot('chart1', chart_data, layout);
+                    let time_line = {
+                        x: [chart_time, chart_time],
+                        y: [-max_value, max_value],
+                        type: 'scatter',
+                        line : {
+                            dash: 'dash',
+                            color: 'rgb(0, 0, 0)',
+                            width: 5
+                        },
+                        name: 'time line'
+                    };
+
+                    if (chart1) {
+                        Plotly.deleteTraces('chart1', [-1]);
+                        chart1 = Plotly.newPlot('chart1', chart_data, layout);
+                        Plotly.addTraces('chart1', [time_line]);
+                    } else {
+                        chart1 = Plotly.plot('chart1', chart_data, layout);
+                        Plotly.addTraces('chart1', [time_line]);
+                    }
                 }
             );
-
-//            chart1 = c3.generate({
-//                bindto: '#chart1',
-//                data: {
-//                    json: chart1_data,
-//                    mimeType: 'json'
-//                },
-//                    url: 'data/stations/' + selected_station + '.csv',
-//                    mimeType: 'csv',
-//                    keys: {
-//                        x: 'x',
-//                        value: ['original', 'wt']
-//                    },
-//                colors: chart1_colors,
-//                onclick: function (d, i) {
-//                        //console.log("onclick", d, i);
-//                        //                        console.log('clicked on: ' + d.id + ' ' + d.x);
-//                        //                        let freeway_meta_data = meta_data_points[d.id];
-//                        //                        console.log(freeway_meta_data.data.features);
-//                        //                        let coordinates = freeway_meta_data.data.features[d.x].geometry.coordinates;
-//                        //                        map.setView([coordinates[1], coordinates[0]], map.getZoom());
-//                    }
-//                    //onmouseover: function (d, i) { console.log("onmouseover", d, i); }
-//                },
-//                legend: {
-//                    position: 'right'
-//                },
-//                zoom: {
-//                    enabled: true
-//                },
-//                subchart: {
-//                    show: true
-//                },
-//                axis: {
-//                    x: {
-//                        label: 'Each 5 minute interval scaled 5 times',
-//                        type: 'category',
-//                        categories: x_axis,
-//                        tick: {
-//                            centered: true,
-//                            culling: {
-//                                max: 23 // the number of tick texts will be adjusted to less than this value
-//                            },
-//                            fit: true,
-//                            rotate: 45,
-//                            multiline: false,
-//                        }
-//                    }
-//                    //                    },
-//                    //                    y: {
-//                    //                        label: top_input
-//                    //                    }
-//                },
-//                title: {
-//                    text: 'Station: ' + selected_station
-//                }
-//            });
 
             //update the background colors using d3 since c3 doesn't support it
 //            d3.select('#chart1').select('.c3-zoom-rect')
@@ -916,9 +942,15 @@
                 to_graph = [],
                 rowLabel = [];
 
+//            var test_color = d3.scale.linear()
+//                .domain([-600, 0, 600])
+//                .range(['red', 'white', 'green']);
+//            console.log('test_color: ');
+//            console.log(test_color);
+
             Plotly.d3.csv("data/heatmaps/wiggle_analysis_" + last_freeway_select + ".csv",
                 function(error, data) {
-                    //console.log(data);
+//                    console.log(data);
 
 //                    let header = d3.keys(data[0]);
 //                    console.log(header);
@@ -936,12 +968,51 @@
                         });
                     });
 //                    console.log(to_graph);
-
+//                    console.log(rowLabel.length - 1);
                     let heatmap_data = [
                         {
                             z: to_graph,
                             x: x_axis,
-                            type: 'heatmap'
+                            type: 'heatmap',
+                            colorscale: [
+//                                [0, 'hsla(50, 100%, 40%, 0)'],
+//                                [.25, 'hsla(50, 100%, 40%, .25)'],
+//                                [.5, 'hsla(50, 100%, 40%, .5)'],
+//                                [.75, 'hsla(50, 100%, 40%, .75)'],
+//                                [1, 'hsla(50, 100%, 40%, 1)'],
+
+                                [0, segmentColors[0]],
+                                [.25, segmentColors[1]],
+                                [.5, segmentColors[2]],
+                                [.75, segmentColors[3]],
+                                [1, segmentColors[4]],
+                            ],
+//                            colorscale: [
+//                                [0, 'rgb(0, 0, 255)'],
+//                                [1./10000, 'rgb(255, 255, 0)'],
+//                                [1./1000, 'rgb(150, 150, 150)'],
+//                                [1./100, 'rgb(100, 100, 100)'],
+//                                [1./10, 'rgb(50, 50, 50)'],
+//                                [1., 'rgb(0, 0, 0)'],
+//                            ],
+//                            colorscale: [test_color],
+//                            colorbar: {
+//                                autotick: false,
+//                                tick0: 0,
+//                                dtick: 1
+//                            }
+//                            colorscale: test_color,
+//                            colorbar: {
+//                                'tick0': 0,
+//                                'tickmode': 'array',
+//                                'tickvals': [-6, -4, -2, 0, 2, 4, 6]
+//                            }
+                            colorbar: {
+//                                'thicknessmode': 'fraction',
+                                'tick0': 0,
+                                'dtick': 2,
+//                                'tickmode': 'array',
+                            }
                         }
                     ];
 
@@ -968,20 +1039,16 @@
                                 family: 'Times',
                                 size: 14,
                                 color: '#7f7f7f'
-                            }
-                        }
+                            },
+                            range: [0, rowLabel.length - 1]
+                        },
+                        showlegend: false
                     };
 
                     let defaultPlotlyConfiguration = { modeBarButtonsToRemove: ['sendDataToCloud', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d'],
                         displaylogo: false, showTips: true };
 
-                    if (chart2) {
-                        Plotly.deleteTraces('chart2', 1);
-                        chart2 = Plotly.newPlot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
-                    } else {
-                        chart2 = Plotly.plot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
-                    }
-
+//                    console.log('chart_time: ' + chart_time);
                     let trace_line = {
                         x: [x_axis[0], x_axis[1439]],
                         y: [order, order],
@@ -992,7 +1059,27 @@
                             width: 5
                         }
                     };
-                    Plotly.addTraces('chart2', trace_line);
+
+                    time_line = {
+//                        x: [time, time],
+                        x: [chart_time, chart_time],
+                        y: [0, rowLabel.length - 1],
+                        type: 'scatter',
+                        line : {
+                            dash: 'dash',
+                            color: 'rgb(0, 0, 0)',
+                            width: 5
+                        }
+                    };
+
+                    if (chart2) {
+                        Plotly.deleteTraces('chart2', [-2, -1]);
+                        chart2 = Plotly.newPlot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
+                        Plotly.addTraces('chart2', [trace_line, time_line]);
+                    } else {
+                        chart2 = Plotly.plot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
+                        Plotly.addTraces('chart2', [trace_line, time_line]);
+                    }
                 }
             );
 
@@ -1003,11 +1090,12 @@
 //                .style({'opacity': '.6', 'fill': outerColors[0], 'visibility': null});
         } else if (update_charts == true) {
             if (chart1) {
-                console.log('destroying chart1');
-                chart1.destroy();
+//                console.log('destroying chart1');
+                Plotly.purge('chart1');
+                chart1 = false;
             }
             if (chart2) {
-                console.log('destroying chart2');
+//                console.log('destroying chart2');
                 Plotly.purge('chart2');
                 chart2 = false;
             }
@@ -1026,28 +1114,36 @@
 
                 let default_style = 'width: 20px; height: 20px; background:';
                 let inner_precision = d3.min(inner_bins) < 1 ? 2 : 1;
+                let segment_precision = d3.min(segment_bins) < 1 ? 2 : 1;
                 for (let i = 0; i <= inner_bins.length; i++) {
                     if (i == 0) {
+                        let segment_value = d3.round(segment_bins[i], segment_precision);
                         let inner_value = d3.round(inner_bins[i], inner_precision);
 
                         html_data = 'Legend: <br>';
-                        html_data += '<table><tr><th>Average Flow</th></tr>';
+                        html_data += '<table><tr><th>Wiggle Mag.</th><th>Avg. Flow</th></tr>';
                         html_data += '<tr>' +
+                            '<td><i style="' + default_style + segment_scale(segment_value - .1) + '"></i> < ' + segment_value + '</td>' +
                             '<td><i style="' + default_style + inner_scale(inner_value - .1) + '"></i> < ' + inner_value + '</td>' +
                             '</tr>';
 
                     } else if (i == inner_bins.length) {
+                        let segment_value = d3.round(segment_bins[i - 1], 1);
                         let inner_value = d3.round(inner_bins[i - 1], 1);
 
                         html_data += '<tr>' +
+                            '<td><i style="' + default_style + segment_scale(segment_value) + '"></i> > ' + segment_value + '</td>' +
                             '<td><i style="' + default_style + inner_scale(inner_value) + '"></i> > ' + inner_value + '</td>' +
                             '</tr>';
                     } else {
+                        let seg_from = d3.round(segment_bins[i - 1], segment_precision);
+                        let seg_to = d3.round(segment_bins[i], segment_precision);
                         let inner_from = d3.round(inner_bins[i - 1], inner_precision);
                         let inner_to = d3.round(inner_bins[i], inner_precision);
 
                         html_data += '<tr>' +
-                            '<td><i style="' + default_style + inner_scale(inner_from) + '"></i> [' + inner_from + (inner_to ? '&ndash;' + inner_to : '+') + ')</td>' +
+                            '<td><i style="' + default_style + segment_scale(seg_from) + '"></i> [' + seg_from + (seg_to ? ' to ' + seg_to : '+') + ')</td>' +
+                            '<td><i style="' + default_style + inner_scale(inner_from) + '"></i> [' + inner_from + (inner_to ? ' to ' + inner_to : '+') + ')</td>' +
                             '</tr>';
                     }
                 }
