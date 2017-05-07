@@ -19,6 +19,7 @@ The following sections highlight focus areas and a subset of exploratory noteboo
 | [wiggles_speed_flow_occupancy.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggles_speed_flow_occupancy.ipynb) | Analysis of wiggles for flow, speed, and occupancy. |
 | [wiggle_ramp_relationships2.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggle_ramp_relationships2.ipynb) | Exploration and analysis of on-ramp/off-ramp wiggles (mean flow) in relation to main-line wiggles. |
 | [wiggles_across_multiple_years.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggles_across_multiple_years.ipynb) | Exploration and visualization of wiggles and mean flow across multiple years. |
+| [wiggle_magnitude_weekend_weekday.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggle_magnitude_weekend_weekday.ipynb) | Analysis of weekend vs. weekday wiggle magnitudes. |
 
 ## Other
 
