@@ -35,11 +35,12 @@
     }
 
     #map_controls {
-        float: left;
+        float: top;
         clear:both;
         position: relative;
         left: 30px;
         width: 784px;
+        padding-bottom: 20px;
     }
 
     .info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(214, 141, 141, 0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; }
@@ -155,7 +156,112 @@
     <div id="chart2"></div>
     <div id="container">
         <div id="option">
-            <button name="resetButton" class="btn btn-xs btn-warning" onclick="resetData()">Reset</button>
+            <div id="map_controls">
+                <p>
+                <h3 align="center">Controls</h3>
+                <button name="resetButton" class="btn btn-warning" onclick="resetData()">Reset</button>
+                <label for="time">Time</label>
+                <input type="text" id="time" style="border-width:1; color:#f6931f; width:60px; font-weight:bold;"
+                       value="00:00">
+                <button class="btn btn-primary" id="animate" onclick="animateMap()">Animate</button>
+                </p>
+                <!--js for jquery control in leaflet sidebar -->
+                <script>
+                    function sleep(ms) {
+                        return new Promise(resolve => setTimeout(resolve, ms));
+                    }
+
+                    function calc_time(input) {
+                        let hours = Math.floor(input / 60);
+                        let minutes = (input - (hours * 60 ));
+                        if(input == 0) return("00:00");
+                        if(hours.toString().length == 1) hours = '0' + hours;
+                        if(minutes.toString().length == 1) minutes = '0' + minutes;
+                        return hours.toString()+':'+minutes.toString();
+                    }
+
+                    function calc_int(input) {
+                        let pieces = input.split(":");
+                        return parseInt(pieces[0])*60 + parseInt(pieces[1]);
+                    }
+
+                    async function demo(start) {
+                        let counter = start;
+                        while(do_animation) {
+                            if (counter == 288) {
+                                do_animation = false;
+                                break;
+                            }
+
+                            counter += 1;
+                            time = counter;
+//                        console.log(time);
+
+                            wiggle_time = time * 5;
+//                        console.log(wiggle_time);
+
+                            $("#slider-range").slider("value", wiggle_time);
+                            chart_time = calc_time(wiggle_time);
+                            $("#time").val( chart_time );
+
+                            update_vis(false);
+                            await sleep(100);
+//                        console.log('Taking a break...');
+//                        console.log('100 ms later');
+
+                        }
+                    }
+
+                    function animateMap() {
+                        if (! (animate_button_active)) {
+                            $('#animate').addClass('active');
+                            animate_button_active = true;
+                            do_animation = true;
+                            demo(time);
+                        } else {
+                            $('#animate').removeClass('active');
+                            animate_button_active = false;
+                            do_animation = false;
+                        }
+                    }
+
+                    $(function() {
+                        $("#slider-range").slider({
+                            min: 0,
+                            max: 1439,
+                            step: 1,
+                            value: 0,
+                            slide: function(event, ui) {
+                                chart_time = calc_time(ui.value);
+                                $("#time").val( chart_time );
+                                time = Math.floor(ui.value/5);
+                                wiggle_time = ui.value;
+
+                            },
+                            stop: function(event, ui) {
+//                        console.log(time);
+                                update_vis(false);
+                            }
+                        });
+
+                        $("#time").change(function () {
+//                    console.log(this.value);
+                            chart_time = this.value;
+                            let update = calc_int(this.value);
+                            time = Math.floor(update / 60);
+//                            console.log(update);
+                            wiggle_time = update;
+//                            console.log(time);
+                            $("#slider-range").slider("value", update);
+                            update_vis(false);
+                        });
+
+                        chart_time = calc_time($( "#slider-range" ).slider( "value" ));
+                        $("#time").val( chart_time );
+                    });
+                </script>
+                <div id="slider-range"></div>
+            </div>
         </div>
         <div id="chart1"></div>
         <div id="wrapper">
@@ -295,111 +401,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div id="map_controls">
-                <p>
-                <h3 align="center">Time Control</h3>
-                <label for="time">Time</label>
-                <input type="text" id="time" style="border-width:1; color:#f6931f; width:42px; font-weight:bold;"
-                       value="00:00">
-                <button class="btn btn-warning" id="animate" onclick="animateMap()">Animate</button>
-                </p>
-                <!--js for jquery control in leaflet sidebar -->
-                <script>
-                    function sleep(ms) {
-                        return new Promise(resolve => setTimeout(resolve, ms));
-                    }
-
-                    function calc_time(input) {
-                        let hours = Math.floor(input / 60);
-                        let minutes = (input - (hours * 60 ));
-                        if(input == 0) return("00:00");
-                        if(hours.toString().length == 1) hours = '0' + hours;
-                        if(minutes.toString().length == 1) minutes = '0' + minutes;
-                        return hours.toString()+':'+minutes.toString();
-                    }
-
-                    function calc_int(input) {
-                        let pieces = input.split(":");
-                        return parseInt(pieces[0])*60 + parseInt(pieces[1]);
-                    }
-
-                    async function demo(start) {
-                        let counter = start;
-                        while(do_animation) {
-                            if (counter == 288) {
-                                do_animation = false;
-                                break;
-                            }
-
-                            counter += 1;
-                            time = counter;
-//                        console.log(time);
-
-                            wiggle_time = time * 5;
-//                        console.log(wiggle_time);
-
-                            $("#slider-range").slider("value", wiggle_time);
-                            chart_time = calc_time(wiggle_time);
-                            $("#time").val( chart_time );
-
-                            update_vis(false);
-                            await sleep(100);
-//                        console.log('Taking a break...');
-//                        console.log('100 ms later');
-
-                        }
-                    }
-
-                    function animateMap() {
-                        if (! (animate_button_active)) {
-                            $('#animate').addClass('active');
-                            animate_button_active = true;
-                            do_animation = true;
-                            demo(time);
-                        } else {
-                            $('#animate').removeClass('active');
-                            animate_button_active = false;
-                            do_animation = false;
-                        }
-                    }
-
-                    $(function() {
-                        $("#slider-range").slider({
-                            min: 0,
-                            max: 1439,
-                            step: 1,
-                            value: 0,
-                            slide: function(event, ui) {
-                                chart_time = calc_time(ui.value);
-                                $("#time").val( chart_time );
-                                time = Math.floor(ui.value/5);
-                                wiggle_time = ui.value;
-
-                            },
-                            stop: function(event, ui) {
-//                        console.log(time);
-                                update_vis(false);
-                            }
-                        });
-
-                        $("#time").change(function () {
-//                    console.log(this.value);
-                            chart_time = this.value;
-                            let update = calc_int(this.value);
-                            time = Math.floor(update / 60);
-//                            console.log(update);
-                            wiggle_time = update;
-//                            console.log(time);
-                            $("#slider-range").slider("value", update);
-                            update_vis(false);
-                        });
-
-                        chart_time = calc_time($( "#slider-range" ).slider( "value" ));
-                        $("#time").val( chart_time );
-                    });
-                </script>
-                <div id="slider-range"></div>
             </div>
         </div>
     </div>
@@ -888,6 +889,13 @@
 
                     let layout = {
                         title: 'Station: ' + selected_station,
+                        margin: {
+                            l: 50,
+                            r: 50,
+                            b: 55,
+                            t: 30,
+                            pad: 4
+                        },
                         xaxis: {
                             title: 'Time scaled 5x',
                             titlefont: {
@@ -940,7 +948,9 @@
 
             let i = 0,
                 to_graph = [],
-                rowLabel = [];
+                rowLabel = [],
+                rowRange = [];
+
 
 //            var test_color = d3.scale.linear()
 //                .domain([-600, 0, 600])
@@ -956,24 +966,58 @@
 //                    console.log(header);
 
                     let keys = d3.keys(data[0]).filter(function (key) {
-                        return (key !== "Station") & (key !== 'ID');
+                        return (key !== "Station") & (key !== 'ID') & (key !== 'Name');
                     });
+//                    console.log('keys');
 //                    console.log(keys);
 
+                    let counter = 0;
                     to_graph = data.map(function(row) {
-                        rowLabel.push(row.Station);
+//                        rowLabel.push(row.Station);
+                        rowLabel.push(row.Name);
+                        rowRange.push(+counter);
+                        counter += 1;
                         return keys.map(function (key) {
                             return +row[key];
 
                         });
                     });
+//                    console.log('to_graph');
 //                    console.log(to_graph);
+//                    console.log(rowLabel);
 //                    console.log(rowLabel.length - 1);
+//                    console.log(rowRange);
+//                    let dtick = d3.round(rowLabel.length/10, 0);
+                    let dtick = 5;
+                    let rowLabel_copy = [];
+                    if ( rowLabel.length > 20 ) {
+                        for (let idx = 0; idx < rowLabel.length; idx++ ) {
+                            if (idx % 5 == 0) {
+                                rowLabel_copy.push(rowLabel[idx]);
+                            } else {
+                                rowLabel_copy.push('');
+                            }
+                        }
+                    } else {
+                        rowLabel_copy = rowLabel;
+                    }
+                    let text_labels = [];
+                    for (let idx = 0; idx < rowLabel.length; idx++ ) {
+                        let name_array = [];
+                        for (let idx2 = 0; idx2 < 1440; idx2++ ) {
+                            name_array.push(rowLabel[idx])
+                        }
+                        text_labels.push(name_array);
+                    }
+//                    console.log('dtick: ' + dtick);
+//                    console.log('rowLabel_copy: ' + rowLabel_copy);
                     let heatmap_data = [
                         {
                             z: to_graph,
                             x: x_axis,
+//                            y: rowLabel,
                             type: 'heatmap',
+                            text: text_labels,
                             colorscale: [
 //                                [0, 'hsla(50, 100%, 40%, 0)'],
 //                                [.25, 'hsla(50, 100%, 40%, .25)'],
@@ -1019,6 +1063,15 @@
                     let layout = {
                         modeBarButtonsToRemove: ['pan2d'],
                         title: 'Heatmap for ' + last_freeway_select,
+                        annotations: [],
+                        margin: {
+                            l: 200,
+                            r: 50,
+                            b: 50,
+                            t: 30,
+                            pad: 4
+                        },
+                        height: 600,
                         xaxis: {
                             fixedrange: true,
                             title: 'Time scaled 5x',
@@ -1040,10 +1093,23 @@
                                 size: 14,
                                 color: '#7f7f7f'
                             },
-                            range: [0, rowLabel.length - 1]
+                            range: [0, rowLabel.length - 1],
+                            tickvals: rowRange,
+//                            ticktext: rowLabel,
+                            ticktext: rowLabel_copy,
+                            dtick: 5,
+//                            autotick: false,
+//                            ticks: 'outside',
+//                            tickmode: 'array',
+//                            tickangle: 15,
                         },
                         showlegend: false
                     };
+
+//                    for (let idx = 0; idx < rowLabel.length; idx++){
+//                        console.log(to_graph[idx]);
+//
+//                    }
 
                     let defaultPlotlyConfiguration = { modeBarButtonsToRemove: ['sendDataToCloud', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d'],
                         displaylogo: false, showTips: true };
@@ -1057,7 +1123,8 @@
                             dash: 'dash',
                             color: 'rgb(0, 0, 0)',
                             width: 5
-                        }
+                        },
+                        name: 'station line'
                     };
 
                     time_line = {
@@ -1069,7 +1136,8 @@
                             dash: 'dash',
                             color: 'rgb(0, 0, 0)',
                             width: 5
-                        }
+                        },
+                        name: 'time line'
                     };
 
                     if (chart2) {
