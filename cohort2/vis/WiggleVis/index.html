@@ -12,7 +12,7 @@
 
     #map{
         width: 50%;
-        height: 450px;
+        height: 100%;
         float: left;
     }
     #container {
@@ -43,7 +43,13 @@
         padding-bottom: 20px;
     }
 
-    .info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(214, 141, 141, 0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; }
+    .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif; background: white;
+        background: rgba(214, 141, 141, 0.8);
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        border-radius: 5px;
+    }
     .info h4 { margin: 0 0 5px; color: #222; }
     .legend { text-align: left; line-height: 18px; color: #222; }
     .legend i { float: left; margin-right: 8px; opacity: 0.9; }
@@ -129,6 +135,9 @@
     .leaflet-left .leaflet-control {
         margin-left: 50px;
     }
+    .sidebar {
+        width: 80%;
+    }
     .sidebar-tabs {
         height: 480px;
         overflow-y:hidden;
@@ -204,6 +213,9 @@
                             chart_time = calc_time(wiggle_time);
                             $("#time").val( chart_time );
 
+                            update_station_trace();
+                            update_heatmap_traces();
+
                             update_vis(false);
                             await sleep(100);
 //                        console.log('Taking a break...');
@@ -239,13 +251,14 @@
 
                             },
                             stop: function(event, ui) {
-//                        console.log(time);
+                                update_station_trace();
+                                update_heatmap_traces();
                                 update_vis(false);
                             }
                         });
 
                         $("#time").change(function () {
-//                    console.log(this.value);
+//                            console.log(this.value);
                             chart_time = this.value;
                             let update = calc_int(this.value);
                             time = Math.floor(update / 60);
@@ -253,6 +266,8 @@
                             wiggle_time = update;
 //                            console.log(time);
                             $("#slider-range").slider("value", update);
+                            update_station_trace();
+                            update_heatmap_traces();
                             update_vis(false);
                         });
 
@@ -304,38 +319,40 @@
                                 <h3 align="center">Freeway Controls</h3>
                                 <div id="freeway" align="center">
                                     <div id="freeway1" align="center">
-                                        <button id="5_N" class="btn btn-default">5 N</button>
-                                        <button id="5_S" class="btn btn-default">5 S</button>
-                                        <button id="8_E" class="btn btn-default">8 E</button>
-                                        <button id="8_W" class="btn btn-default">8 W</button>
-                                        <button id="15_N" class="btn btn-default">15 N</button>
-                                        <button id="15_S" class="btn btn-default">15 S</button>
+                                        <button id="5_N" class="btn btn-default fwy">5 N</button>
+                                        <button id="5_S" class="btn btn-default fwy">5 S</button>
+                                        <button id="8_E" class="btn btn-default fwy">8 E</button>
+                                        <button id="8_W" class="btn btn-default fwy">8 W</button>
                                     </div>
                                     <div id="freeway2" align="center">
-                                        <button id="52_E" class="btn btn-default">52 E</button>
-                                        <button id="52_W" class="btn btn-default">52 W</button>
-                                        <button id="54_E" class="btn btn-default">54 E</button>
-                                        <button id="54_W" class="btn btn-default">54 W</button>
-                                        <button id="56_E" class="btn btn-default">56 E</button>
-                                        <button id="56_W" class="btn btn-default">56 W</button>
+                                        <button id="15_N" class="btn btn-default fwy">15 N</button>
+                                        <button id="15_S" class="btn btn-default fwy">15 S</button>
+                                        <button id="52_E" class="btn btn-default fwy">52 E</button>
+                                        <button id="52_W" class="btn btn-default fwy">52 W</button>
                                     </div>
                                     <div id="freeway3" align="center">
-                                        <button id="78_E" class="btn btn-default">78 E</button>
-                                        <button id="78_W" class="btn btn-default">78 W</button>
-                                        <button id="94_E" class="btn btn-default">94 E</button>
-                                        <button id="94_W" class="btn btn-default">94 W</button>
-                                        <button id="125_N" class="btn btn-default">125 N</button>
-                                        <button id="125_S" class="btn btn-default">125 S</button>
+                                        <button id="54_E" class="btn btn-default fwy">54 E</button>
+                                        <button id="54_W" class="btn btn-default fwy">54 W</button>
+                                        <button id="56_E" class="btn btn-default fwy">56 E</button>
+                                        <button id="56_W" class="btn btn-default fwy">56 W</button>
                                     </div>
                                     <div id="freeway4" align="center">
-                                        <button id="163_N" class="btn btn-default">163 N</button>
-                                        <button id="163_S" class="btn btn-default">163 S</button>
-                                        <button id="805_N" class="btn btn-default">805 N</button>
-                                        <button id="805_S" class="btn btn-default">805 S</button>
+                                        <button id="78_E" class="btn btn-default fwy">78 E</button>
+                                        <button id="78_W" class="btn btn-default fwy">78 W</button>
+                                        <button id="94_E" class="btn btn-default fwy">94 E</button>
+                                        <button id="94_W" class="btn btn-default fwy">94 W</button>
                                     </div>
                                     <div id="freeway5" align="center">
-                                        <button id="905_E" class="btn btn-default">905 E</button>
-                                        <button id="905_W" class="btn btn-default">905 W</button>
+                                        <button id="125_N" class="btn btn-default fwy">125 N</button>
+                                        <button id="125_S" class="btn btn-default fwy">125 S</button>
+                                        <button id="163_N" class="btn btn-default fwy">163 N</button>
+                                        <button id="163_S" class="btn btn-default fwy">163 S</button>
+                                    </div>
+                                    <div id="freeway6" align="center">
+                                        <button id="805_N" class="btn btn-default fwy">805 N</button>
+                                        <button id="805_S" class="btn btn-default fwy">805 S</button>
+                                        <button id="905_E" class="btn btn-default fwy">905 E</button>
+                                        <button id="905_W" class="btn btn-default fwy">905 W</button>
                                     </div>
                                 </div>
                             </div>
@@ -357,10 +374,10 @@
                                     $(obj).addClass('btn-default');
                                     meta_data_points[answer].visible = false;
                                 }
-                                $('.btn').click(function(){
+                                $('.fwy').click(function(){
                                     let answer= $(this).attr('id');
                                     last_freeway_select = answer;
-                                    console.log(answer);
+//                                    console.log(answer);
                                     if($(this).hasClass('btn-default')) {
                                         if (freeways_select.length < max_freeway_count) {
                                             activate_button(this);
@@ -428,7 +445,7 @@
     let top_data = {}, seg_data = {}, x_axis = [], to_draw = {},
         freeways_select = [], animate_button_active = false,
         selected_station = '', do_animation = false,
-        last_freeway_select = '',
+        last_freeway_select = '', rowLabel = [], max_value = 0,
         order = 0, time = 0, wiggle_time = 0, chart_time = '';
     const max_freeway_count = 1;
 
@@ -510,8 +527,10 @@
     }
 
 //    let segmentColors = ['#ca0020','#f4a582','#f7f7f7','#92c5de','#0571b0'];
-    let segmentColors = ['hsla(50, 0%, 40%, 1)', 'hsla(50, 25%, 40%, 1)', 'hsla(50, 50%, 40%, 1)',
-        'hsla(50, 75%, 40%, 1)', 'hsla(50, 100%, 40%, 1)'];
+//    let segmentColors = ['hsla(50, 0%, 40%, 1)', 'hsla(50, 25%, 40%, 1)', 'hsla(50, 50%, 40%, 1)',
+//        'hsla(50, 75%, 40%, 1)', 'hsla(50, 100%, 40%, 1)'];
+    // colorbrewer2.org 5-class Grey
+    let segmentColors = ['#f7f7f7','#cccccc','#969696','#636363','#252525'];
 //    let segment_bins = [.75, .5, 0, -5, -.75];
     let segment_bins;
     function segment_scale(d) {
@@ -521,6 +540,10 @@
                     d >= segment_bins[0] ? segmentColors[1] :
                         segmentColors[0];
     }
+
+    //0 = red, last = blue
+    //RdBu diverging 5 class from colorbrewer2.org
+    let speedColors = ['#ca0020','#f4a582','#f7f7f7','#92c5de','#0571b0'];
 
     function create_bins(source_data) {
         let keys = d3.keys(source_data);
@@ -651,19 +674,6 @@
 
         //call update to clear the info box
         info.update();
-
-//        let value = layer.feature.properties.Order;
-//        let fwy_dir = layer.feature.properties.key;
-//        let new_fwy_dir = fwy_dir.replace('_', '-');
-
-//        d3.select('#chart1')
-//            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
-//            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
-//            .attr('r', 2.5);
-//        d3.select('#chart2')
-//            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
-//            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
-//            .attr('r', 2.5);
     }
 
     function resetSegmentFeature(e) {
@@ -682,12 +692,13 @@
 //        console.log(selected_station);
         order = layer.feature.properties.Order;
 //        console.log(layer.feature.properties);
-//        console.log(order);
+//        console.log('order: ' + order);
         if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
             //layer.bringToBack();
             layer.bringToFront();
         }
-        update_vis();
+        update_heatmap_traces();
+        load_station_chart();
     }
 
     function onEachFeature(feature, layer) {
@@ -714,6 +725,25 @@
 
     let markers, legend, chart1, chart2;
     let meta_keys = d3.keys(meta_data_points);
+    let time_line = {
+        type: 'scatter',
+        line : {
+            dash: 'dash',
+            color: 'rgb(0, 0, 0)',
+            width: 5
+        },
+        name: 'time line'
+    };
+
+    let trace_line = {
+        type: 'scatter',
+        line : {
+            dash: 'dash',
+            color: 'rgb(0, 0, 0)',
+            width: 5
+        },
+        name: 'station line'
+    };
 
     function remove_layers() {
         meta_keys.forEach(function(meta_key) {
@@ -751,8 +781,8 @@
 //                    elevation_to_draw[fwy_dir].push(d3.round(item.properties.Elevation, 1));
                 });
 
-                console.log('segment_data');
-                console.log(segment_data);
+//                console.log('segment_data');
+//                console.log(segment_data);
 
                 let seg_min = segment_data[fwy_dir].features[0].properties.min;
                 let seg_max = segment_data[fwy_dir].features[0].properties.max;
@@ -784,7 +814,7 @@
         });
     }
 
-    function create_layers(update_charts=true) {
+    function create_layers() {
         remove_layers();
         fetch_data();
 
@@ -837,10 +867,100 @@
         });
     }
 
+    function load_station_chart() {
+        let original_line = [];
+        let wt_line = [];
+        Plotly.d3.csv('data/stations/' + selected_station + '.csv',
+            function(error, data) {
+                data.forEach(function (row) {
+                    max_value = Math.max(max_value, +row.original, +row.wt);
+                    original_line.push(+row.original);
+                    wt_line.push(+row.wt);
+                });
+
+                let chart_data = [
+                    {
+                        y: original_line,
+                        x: x_axis,
+                        type: 'scatter',
+                        name: 'original'
+                    },
+                    {
+                        y: wt_line,
+                        x: x_axis,
+                        type: 'scatter',
+                        'name': 'wt'
+                    }
+                ];
+
+                let layout = {
+                    title: 'Station: ' + selected_station,
+                    margin: {
+                        l: 50,
+                        r: 50,
+                        b: 75,
+                        t: 50,
+                        pad: 4
+                    },
+                    xaxis: {
+                        title: 'Time scaled 5x',
+                        titlefont: {
+                            family: 'Times',
+                            size: 14,
+                            color: '#7f7f7f'
+                        },
+                        range: [0, 1439],
+                        autotick: false,
+                        ticks: 'outside',
+                        dtick: 60,
+                    },
+                    yaxis: {
+                        titlefont: {
+                            family: 'Times',
+                            size: 14,
+                            color: '#7f7f7f'
+                        }
+                    }
+                };
+
+                time_line['x'] = [chart_time, chart_time];
+                time_line['y'] = [-max_value, max_value];
+
+                if (chart1) {
+                    Plotly.deleteTraces('chart1', [-1]);
+                    chart1 = Plotly.newPlot('chart1', chart_data, layout);
+                    Plotly.addTraces('chart1', [time_line]);
+                } else {
+                    chart1 = Plotly.plot('chart1', chart_data, layout);
+                    Plotly.addTraces('chart1', [time_line]);
+                }
+            }
+        );
+    }
+
+    function update_station_trace() {
+        Plotly.deleteTraces('chart1', [-1]);
+        time_line['x'] = [chart_time, chart_time];
+        time_line['y'] = [-max_value, max_value];
+        Plotly.addTraces('chart1', [time_line]);
+    }
+
+    function update_heatmap_traces() {
+//        console.log('order ' + order);
+        trace_line['y'] = [order, order];
+        trace_line['x'] = [x_axis[0], x_axis[1439]];
+//        console.log(trace_line);
+
+        time_line['x'] = [chart_time, chart_time];
+        time_line['y'] = [0, rowLabel.length - 1];
+        Plotly.deleteTraces('chart2', [-2, -1]);
+        Plotly.addTraces('chart2', [trace_line, time_line]);
+    }
+
     function update_vis(update_charts=true) {
 //        console.log('update_charts: ' + update_charts);
 //        console.log(update_charts == true);
-        create_layers(update_charts);
+        create_layers();
 
         markers = L.markerClusterGroup({ disableClusteringAtZoom: 13 });
         meta_keys.forEach(function(meta_key) {
@@ -859,303 +979,206 @@
         }
 
         if (freeways_select.length != 0) {
-            let original_line = [];
-            let wt_line = [];
 //            console.log(selected_station);
 
-            let max_value = 0;
-            Plotly.d3.csv('data/stations/' + selected_station + '.csv',
-                function(error, data) {
-                    data.forEach(function (row) {
-                        max_value = Math.max(max_value, +row.original, +row.wt);
-                        original_line.push(+row.original);
-                        wt_line.push(+row.wt);
-                    });
+            if (update_charts == true) {
+//                console.log('updating charts');
+                load_station_chart();
 
-                    let chart_data = [
-                        {
-                            y: original_line,
-                            x: x_axis,
-                            type: 'scatter',
-                            name: 'original'
-                        },
-                        {
-                            y: wt_line,
-                            x: x_axis,
-                            type: 'scatter',
-                            'name': 'wt'
-                        }
-                    ];
-
-                    let layout = {
-                        title: 'Station: ' + selected_station,
-                        margin: {
-                            l: 50,
-                            r: 50,
-                            b: 55,
-                            t: 30,
-                            pad: 4
-                        },
-                        xaxis: {
-                            title: 'Time scaled 5x',
-                            titlefont: {
-                                family: 'Times',
-                                size: 14,
-                                color: '#7f7f7f'
-                            },
-                            range: [0, 1439],
-                            autotick: false,
-                            ticks: 'outside',
-                            dtick: 60,
-                        },
-                        yaxis: {
-                            titlefont: {
-                                family: 'Times',
-                                size: 14,
-                                color: '#7f7f7f'
-                            }
-                        }
-                    };
-
-                    let time_line = {
-                        x: [chart_time, chart_time],
-                        y: [-max_value, max_value],
-                        type: 'scatter',
-                        line : {
-                            dash: 'dash',
-                            color: 'rgb(0, 0, 0)',
-                            width: 5
-                        },
-                        name: 'time line'
-                    };
-
-                    if (chart1) {
-                        Plotly.deleteTraces('chart1', [-1]);
-                        chart1 = Plotly.newPlot('chart1', chart_data, layout);
-                        Plotly.addTraces('chart1', [time_line]);
-                    } else {
-                        chart1 = Plotly.plot('chart1', chart_data, layout);
-                        Plotly.addTraces('chart1', [time_line]);
-                    }
-                }
-            );
-
-            //update the background colors using d3 since c3 doesn't support it
+                //update the background colors using d3 since c3 doesn't support it
 //            d3.select('#chart1').select('.c3-zoom-rect')
 //                .style({'opacity': '.6', 'fill': innerColors[0]});
 //            d3.select('#chart1').select('.background')
 //                .style({'opacity': '.6', 'fill': innerColors[0], 'visibility': null});
 
-            let i = 0,
-                to_graph = [],
-                rowLabel = [],
-                rowRange = [];
+                let i = 0,
+                    to_graph = [], speed_to_graph = [],
+                    rowRange = [],
+                    text_labels = [],
+                    rowLabel_copy = [];
 
+                Plotly.d3.csv("data/heatmaps/speed_" + last_freeway_select + ".csv",
+                    function (speed_error, speed_data) {
 
-//            var test_color = d3.scale.linear()
-//                .domain([-600, 0, 600])
-//                .range(['red', 'white', 'green']);
-//            console.log('test_color: ');
-//            console.log(test_color);
+                        Plotly.d3.csv("data/heatmaps/wiggle_analysis_" + last_freeway_select + ".csv",
+                            function (error, data) {
+                                //                            console.log(data);
+                                let header = d3.keys(data[0]);
+                                //                            console.log(header);
 
-            Plotly.d3.csv("data/heatmaps/wiggle_analysis_" + last_freeway_select + ".csv",
-                function(error, data) {
-//                    console.log(data);
+                                let keys = d3.keys(data[0]).filter(function (key) {
+                                    return (key !== "Station") & (key !== 'ID') & (key !== 'Name');
+                                });
+                                //                            console.log('keys');
+                                //                            console.log(keys);
 
-//                    let header = d3.keys(data[0]);
-//                    console.log(header);
+                                let counter = 0;
+                                rowRange = [];
+                                rowLabel = [];
+                                to_graph = data.map(function (row) {
+                                    //                        rowLabel.push(row.Station);
+                                    rowLabel.push(row.Name);
+                                    rowRange.push(+counter);
+                                    counter += 1;
+                                    return keys.map(function (key) {
+                                        return +row[key];
 
-                    let keys = d3.keys(data[0]).filter(function (key) {
-                        return (key !== "Station") & (key !== 'ID') & (key !== 'Name');
-                    });
-//                    console.log('keys');
-//                    console.log(keys);
+                                    });
+                                });
 
-                    let counter = 0;
-                    to_graph = data.map(function(row) {
-//                        rowLabel.push(row.Station);
-                        rowLabel.push(row.Name);
-                        rowRange.push(+counter);
-                        counter += 1;
-                        return keys.map(function (key) {
-                            return +row[key];
+                                speed_to_graph = speed_data.map(function (row) {
+                                    return keys.map(function (key) {
+                                        return +row[key];
 
-                        });
-                    });
-//                    console.log('to_graph');
-//                    console.log(to_graph);
-//                    console.log(rowLabel);
-//                    console.log(rowLabel.length - 1);
-//                    console.log(rowRange);
-//                    let dtick = d3.round(rowLabel.length/10, 0);
-                    let dtick = 5;
-                    let rowLabel_copy = [];
-                    if ( rowLabel.length > 20 ) {
-                        for (let idx = 0; idx < rowLabel.length; idx++ ) {
-                            if (idx % 5 == 0) {
-                                rowLabel_copy.push(rowLabel[idx]);
-                            } else {
-                                rowLabel_copy.push('');
+                                    });
+                                });
+                                //                            console.log('to_graph');
+                                //                            console.log(to_graph);
+                                //                            console.log(rowLabel);
+                                //                            console.log(rowLabel.length - 1);
+                                //                            console.log(rowRange);
+                                //                            let dtick = d3.round(rowLabel.length/10, 0);
+                                //                            let dtick = 5;
+                                rowLabel_copy = [];
+                                if (rowLabel.length > 20) {
+                                    for (let idx = 0; idx < rowLabel.length; idx++) {
+                                        if (idx % 5 == 0) {
+                                            rowLabel_copy.push(rowLabel[idx]);
+                                        } else {
+                                            rowLabel_copy.push('');
+                                        }
+                                    }
+                                } else {
+                                    rowLabel_copy = rowLabel;
+                                }
+                                text_labels = [];
+                                for (let idx = 0; idx < rowLabel.length; idx++) {
+                                    let name_array = [];
+                                    for (let idx2 = 0; idx2 < 1440; idx2++) {
+                                        name_array.push(rowLabel[idx])
+                                    }
+                                    text_labels.push(name_array);
+                                }
+                                let heatmap_data = [
+                                    {
+                                        opacity: '1',
+                                        z: to_graph,
+                                        x: x_axis,
+                                        //                            y: rowLabel,
+                                        type: 'heatmap',
+                                        text: text_labels,
+                                        colorscale: [
+                                            [0, segmentColors[0]],
+                                            [.25, segmentColors[1]],
+                                            [.5, segmentColors[2]],
+                                            [.75, segmentColors[3]],
+                                            [1, segmentColors[4]],
+                                        ],
+                                        colorbar: {
+                                            opacity: '.5',
+                                            tick0: 0,
+                                            dtick: 2,
+                                        },
+                                        name: 'wiggle'
+                                    },
+                                    {
+                                        zaxis: 'z2',
+                                        opacity: '.4',
+                                        z: speed_to_graph,
+                                        x: x_axis,
+                                        type: 'heatmap',
+                                        text: text_labels,
+                                        colorscale: [
+                                            [0, speedColors[0]],
+                                            [.25, speedColors[1]],
+                                            [.5, speedColors[2]],
+                                            [.75, speedColors[3]],
+                                            [1, speedColors[4]],
+                                        ],
+                                        colorbar: {
+                                            opacity: '.5',
+                                            tick0: 0,
+                                            dtick: 2,
+                                            x: 1.1,
+                                        },
+                                        name: 'speed',
+                                        legendgroup: 'speed_group'
+                                    }
+                                ];
+
+                                let layout = {
+                                    modeBarButtonsToRemove: ['pan2d'],
+                                    title: 'Heatmap for ' + last_freeway_select,
+                                    annotations: [],
+                                    margin: {
+                                        l: 200,
+                                        r: 50,
+                                        b: 75,
+                                        t: 50,
+                                        pad: 4
+                                    },
+                                    height: 600,
+                                    xaxis: {
+                                        fixedrange: true,
+                                        title: 'Time scaled 5x',
+                                        titlefont: {
+                                            family: 'Times',
+                                            size: 14,
+                                            color: '#7f7f7f'
+                                        },
+                                        range: [0, 1439],
+                                        autotick: false,
+                                        ticks: 'outside',
+                                        dtick: 60,
+                                    },
+                                    yaxis: {
+                                        //                            fixedrange: true,
+                                        title: 'Stations in order',
+                                        titlefont: {
+                                            family: 'Times',
+                                            size: 14,
+                                            color: '#7f7f7f'
+                                        },
+                                        range: [0, rowLabel.length - 1],
+                                        tickvals: rowRange,
+                                        //                            ticktext: rowLabel,
+                                        ticktext: rowLabel_copy,
+                                        dtick: 5,
+                                        //                            autotick: false,
+                                        //                            ticks: 'outside',
+                                        //                            tickmode: 'array',
+                                        //                            tickangle: 15,
+                                    },
+                                    showlegend: false
+                                };
+
+                                let defaultPlotlyConfiguration = {
+                                    modeBarButtonsToRemove: ['sendDataToCloud', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d'],
+                                    displaylogo: false, showTips: true
+                                };
+
+                                //                    console.log('chart_time: ' + chart_time);
+//                                console.log('order ' + order);
+                                trace_line['y'] = [order, order];
+                                trace_line['x'] = [x_axis[0], x_axis[1439]];
+//                                console.log(trace_line);
+
+                                time_line['x'] = [chart_time, chart_time];
+                                time_line['y'] = [0, rowLabel.length - 1];
+
+                                if (chart2) {
+                                    Plotly.deleteTraces('chart2', [-2, -1]);
+                                    chart2 = Plotly.newPlot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
+                                    Plotly.addTraces('chart2', [trace_line, time_line]);
+                                } else {
+                                    chart2 = Plotly.plot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
+                                    Plotly.addTraces('chart2', [trace_line, time_line]);
+                                }
                             }
-                        }
-                    } else {
-                        rowLabel_copy = rowLabel;
-                    }
-                    let text_labels = [];
-                    for (let idx = 0; idx < rowLabel.length; idx++ ) {
-                        let name_array = [];
-                        for (let idx2 = 0; idx2 < 1440; idx2++ ) {
-                            name_array.push(rowLabel[idx])
-                        }
-                        text_labels.push(name_array);
-                    }
-//                    console.log('dtick: ' + dtick);
-//                    console.log('rowLabel_copy: ' + rowLabel_copy);
-                    let heatmap_data = [
-                        {
-                            z: to_graph,
-                            x: x_axis,
-//                            y: rowLabel,
-                            type: 'heatmap',
-                            text: text_labels,
-                            colorscale: [
-//                                [0, 'hsla(50, 100%, 40%, 0)'],
-//                                [.25, 'hsla(50, 100%, 40%, .25)'],
-//                                [.5, 'hsla(50, 100%, 40%, .5)'],
-//                                [.75, 'hsla(50, 100%, 40%, .75)'],
-//                                [1, 'hsla(50, 100%, 40%, 1)'],
+                        );
+                    });
+            }
 
-                                [0, segmentColors[0]],
-                                [.25, segmentColors[1]],
-                                [.5, segmentColors[2]],
-                                [.75, segmentColors[3]],
-                                [1, segmentColors[4]],
-                            ],
-//                            colorscale: [
-//                                [0, 'rgb(0, 0, 255)'],
-//                                [1./10000, 'rgb(255, 255, 0)'],
-//                                [1./1000, 'rgb(150, 150, 150)'],
-//                                [1./100, 'rgb(100, 100, 100)'],
-//                                [1./10, 'rgb(50, 50, 50)'],
-//                                [1., 'rgb(0, 0, 0)'],
-//                            ],
-//                            colorscale: [test_color],
-//                            colorbar: {
-//                                autotick: false,
-//                                tick0: 0,
-//                                dtick: 1
-//                            }
-//                            colorscale: test_color,
-//                            colorbar: {
-//                                'tick0': 0,
-//                                'tickmode': 'array',
-//                                'tickvals': [-6, -4, -2, 0, 2, 4, 6]
-//                            }
-                            colorbar: {
-//                                'thicknessmode': 'fraction',
-                                'tick0': 0,
-                                'dtick': 2,
-//                                'tickmode': 'array',
-                            }
-                        }
-                    ];
-
-                    let layout = {
-                        modeBarButtonsToRemove: ['pan2d'],
-                        title: 'Heatmap for ' + last_freeway_select,
-                        annotations: [],
-                        margin: {
-                            l: 200,
-                            r: 50,
-                            b: 50,
-                            t: 30,
-                            pad: 4
-                        },
-                        height: 600,
-                        xaxis: {
-                            fixedrange: true,
-                            title: 'Time scaled 5x',
-                            titlefont: {
-                                family: 'Times',
-                                size: 14,
-                                color: '#7f7f7f'
-                            },
-                            range: [0, 1439],
-                            autotick: false,
-                            ticks: 'outside',
-                            dtick: 60,
-                        },
-                        yaxis: {
-//                            fixedrange: true,
-                            title: 'Stations in order',
-                            titlefont: {
-                                family: 'Times',
-                                size: 14,
-                                color: '#7f7f7f'
-                            },
-                            range: [0, rowLabel.length - 1],
-                            tickvals: rowRange,
-//                            ticktext: rowLabel,
-                            ticktext: rowLabel_copy,
-                            dtick: 5,
-//                            autotick: false,
-//                            ticks: 'outside',
-//                            tickmode: 'array',
-//                            tickangle: 15,
-                        },
-                        showlegend: false
-                    };
-
-//                    for (let idx = 0; idx < rowLabel.length; idx++){
-//                        console.log(to_graph[idx]);
-//
-//                    }
-
-                    let defaultPlotlyConfiguration = { modeBarButtonsToRemove: ['sendDataToCloud', 'hoverClosestCartesian', 'hoverCompareCartesian', 'pan2d'],
-                        displaylogo: false, showTips: true };
-
-//                    console.log('chart_time: ' + chart_time);
-                    let trace_line = {
-                        x: [x_axis[0], x_axis[1439]],
-                        y: [order, order],
-                        type: 'scatter',
-                        line : {
-                            dash: 'dash',
-                            color: 'rgb(0, 0, 0)',
-                            width: 5
-                        },
-                        name: 'station line'
-                    };
-
-                    time_line = {
-//                        x: [time, time],
-                        x: [chart_time, chart_time],
-                        y: [0, rowLabel.length - 1],
-                        type: 'scatter',
-                        line : {
-                            dash: 'dash',
-                            color: 'rgb(0, 0, 0)',
-                            width: 5
-                        },
-                        name: 'time line'
-                    };
-
-                    if (chart2) {
-                        Plotly.deleteTraces('chart2', [-2, -1]);
-                        chart2 = Plotly.newPlot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
-                        Plotly.addTraces('chart2', [trace_line, time_line]);
-                    } else {
-                        chart2 = Plotly.plot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
-                        Plotly.addTraces('chart2', [trace_line, time_line]);
-                    }
-                }
-            );
-
-            //update the background colors using d3 since c3 doesn't support it
-//            d3.select('#chart2').select('.c3-zoom-rect')
-//                .style({'opacity': '.6', 'fill': outerColors[0]});
-//            d3.select('#chart2').select('.background')
-//                .style({'opacity': '.6', 'fill': outerColors[0], 'visibility': null});
         } else if (update_charts == true) {
             if (chart1) {
 //                console.log('destroying chart1');
