@@ -6,10 +6,10 @@ The following sections highlight focus areas and a subset of exploratory noteboo
 
 | File    | Description |
 |---------|-------------|
-| [fft_notebook.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/fft_notebook.ipynb) | Discussion of Fourier transforms and application to traffic data. |
-| [FFTandWavelets.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/FFTandWavelets.ipynb) | Initial exploration of Fourier transforms as applied to traffic flow. Brief look at wavelets (continued in the notebook below). |
-| [wavelet_notebook.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wavelet_notebook.ipynb) | Initial exploration into wavelets, wavelet transformation, and wavelet scale/shift. |
-| [wavelets_exploration_on_wiggles2.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wavelets_exploration_on_wiggles2.ipynb) | Exploration of wavelet forms and wavelet tuning as applied to the mean flow. Wavelet transform is then used to extract mean flow wiggles and visualize as wave propagation in time/space. |
+| [learning_fft.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/learning_fft.ipynb) | Discussion of Fourier transforms and application to traffic data. |
+| [learning_fft_wavelets.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/learning_fft_wavelets.ipynb) | Initial exploration of Fourier transforms as applied to traffic flow. Brief look at wavelets (continued in the notebook below). |
+| [learning_wavelet.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/learning_wavelet.ipynb) | Initial exploration into wavelets, wavelet transformation, and wavelet scale/shift. |
+| [wiggles_wavelets_exploration2.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggles_wavelets_exploration2.ipynb) | Exploration of wavelet forms and wavelet tuning as applied to the mean flow. Wavelet transform is then used to extract mean flow wiggles and visualize as wave propagation in time/space. |
 
 ## Wiggles
 
@@ -19,7 +19,7 @@ The following sections highlight focus areas and a subset of exploratory noteboo
 | [wiggles_speed_flow_occupancy.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggles_speed_flow_occupancy.ipynb) | Analysis of wiggles for flow, speed, and occupancy. |
 | [wiggle_ramp_relationships2.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggle_ramp_relationships2.ipynb) | Exploration and analysis of on-ramp/off-ramp wiggles (mean flow) in relation to main-line wiggles. |
 | [wiggles_across_multiple_years.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggles_across_multiple_years.ipynb) | Exploration and visualization of wiggles and mean flow across multiple years. |
-| [wiggle_magnitude_weekend_weekday.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggle_magnitude_weekend_weekday.ipynb) | Analysis of weekend vs. weekday wiggle magnitudes. |
+| [wiggles_magnitude_weekend_weekday.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggles_magnitude_weekend_weekday.ipynb) | Analysis of weekend vs. weekday wiggle magnitudes. |
 
 ## Other
 
