@@ -46,7 +46,7 @@
     .info {
         padding: 6px 8px;
         font: 14px/16px Arial, Helvetica, sans-serif; background: white;
-        background: rgba(214, 141, 141, 0.8);
+        background: rgba(253,174,107, 0.8);
         box-shadow: 0 0 15px rgba(0,0,0,0.2);
         border-radius: 5px;
     }
@@ -411,6 +411,11 @@
                                     });
                                     freeways_select = [];
                                     order = 0;
+                                    chart_time = '00:00';
+                                    wiggle_time = 0;
+                                    time = 0;
+                                    $("#slider-range").slider("value", wiggle_time);
+                                    $("#time").val( chart_time );
                                     update_vis();
                                 }
                             </script>
@@ -498,7 +503,7 @@
     // ****************************************
     // control that shows station info on hover
     // ****************************************
-    let info = L.control();
+    let info = L.control({position: 'topleft'});
     info.onAdd = function () {
         this._div = L.DomUtil.create('div', 'info');
         this.update();
@@ -1078,6 +1083,7 @@
                                             opacity: '.5',
                                             tick0: 0,
                                             dtick: 2,
+                                            title: 'Wiggle'
                                         },
                                         name: 'wiggle'
                                     },
@@ -1100,6 +1106,7 @@
                                             tick0: 0,
                                             dtick: 2,
                                             x: 1.1,
+                                            title: 'Speed'
                                         },
                                         name: 'speed',
                                         legendgroup: 'speed_group'
