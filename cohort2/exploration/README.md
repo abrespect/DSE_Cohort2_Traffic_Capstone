@@ -3,7 +3,8 @@
 The following sections highlight focus areas and a subset of exploratory notebooks for each.
 
 ## Visualization
-|File     | Description |
+
+| File    | Description |
 |---------|-------------|
 | [WiggleVis](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/index.html#map_settings) | Visualization of Wiggle and Speed |
 
