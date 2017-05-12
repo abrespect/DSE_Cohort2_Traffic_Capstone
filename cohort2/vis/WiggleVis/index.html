@@ -34,13 +34,27 @@
         width: 80%;
     }
 
+    .ui-slider {
+        width: 840px;
+        left: 10px;
+    }
+
+    #time {
+        padding-left: 15px;
+        padding-right: 5px;
+    }
+
+    #animate {
+        margin-left: 15px;
+    }
     #map_controls {
         float: top;
         clear:both;
         position: relative;
-        left: 30px;
-        width: 784px;
+        /*left: 30px;*/
+        width: 1280px;
         padding-bottom: 20px;
+        padding-left: 30px;
     }
 
     .info {
@@ -166,14 +180,14 @@
     <div id="container">
         <div id="option">
             <div id="map_controls">
-                <p>
-                <h3 align="center">Controls</h3>
+                <!--<div>-->
                 <button name="resetButton" class="btn btn-warning" onclick="resetData()">Reset</button>
                 <label for="time">Time</label>
-                <input type="text" id="time" style="border-width:1; color:#f6931f; width:60px; font-weight:bold;"
+                <input type="text" id="time" style="border-width:1; color:#f6931f; width:80px; font-weight:bold;"
                        value="00:00">
+                <button id="slider-range"></button>
                 <button class="btn btn-primary" id="animate" onclick="animateMap()">Animate</button>
-                </p>
+                <!--</div>-->
                 <!--js for jquery control in leaflet sidebar -->
                 <script>
                     function sleep(ms) {
@@ -203,7 +217,9 @@
                             }
 
                             counter += 1;
+
                             time = counter;
+                            console.log('in animation: ' + time);
 //                        console.log(time);
 
                             wiggle_time = time * 5;
@@ -215,10 +231,26 @@
 
                             update_station_trace();
                             update_heatmap_traces();
+                            update_geomap();
 
-                            update_vis(false);
-                            await sleep(100);
-//                        console.log('Taking a break...');
+                            console.log(rowLabel.length);
+                            let sleep_value = 10;
+                            if (rowLabel.length > 50) {
+                                sleep_value = .1;
+                            }
+                            else if (rowLabel.length > 25) {
+                                sleep_value = 1;
+                            }
+                            else if (rowLabel.length > 10) {
+                                sleep_value = 5;
+                            }
+                            console.log(sleep_value);
+                            await sleep(sleep_value);
+
+                            //sleep 10 is good for 54E (length 3)
+                            //sleep 5 is good for 56E (length 14)
+                            //sleep 1 for others?
+                            console.log('Taking a break...');
 //                        console.log('100 ms later');
 
                         }
@@ -253,29 +285,28 @@
                             stop: function(event, ui) {
                                 update_station_trace();
                                 update_heatmap_traces();
-                                update_vis(false);
+                                update_geomap();
                             }
                         });
 
                         $("#time").change(function () {
-//                            console.log(this.value);
                             chart_time = this.value;
                             let update = calc_int(this.value);
                             time = Math.floor(update / 60);
-//                            console.log(update);
                             wiggle_time = update;
-//                            console.log(time);
                             $("#slider-range").slider("value", update);
                             update_station_trace();
                             update_heatmap_traces();
-                            update_vis(false);
+                            update_geomap();
+
+//                            console.log('time: ' + time);
+//                            console.log('wiggle_time: ' + wiggle_time);
                         });
 
                         chart_time = calc_time($( "#slider-range" ).slider( "value" ));
                         $("#time").val( chart_time );
                     });
                 </script>
-                <div id="slider-range"></div>
             </div>
         </div>
         <div id="chart1"></div>
@@ -602,22 +633,15 @@
 //        }
 
         info.update(layer.feature.properties);
-
-//        let value = layer.feature.properties.Order;
-//        let fwy_dir = layer.feature.properties.key;
-//        let new_fwy_dir = fwy_dir.replace('_', '-');
-//        d3.select('#chart1')
-//            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
-//            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
-//            .attr('r', 7.5);
-//        d3.select('#chart2')
-//            .select(".c3-chart-line.c3-target.c3-target-" + new_fwy_dir)
-//            .select(".c3-shape.c3-shape-" + value + '.c3-circle.c3-circle-' + value)
-//            .attr('r', 7.5);
     }
 
     function highlightSegmentFeature(e) {
         let layer = e.target;
+        let feature = e.target.feature;
+        if (feature.properties && feature.properties.ID) {
+            layer.bindPopup('ID: ' + feature.properties.ID + '\nwiggle: ' +
+                d3.round(feature.properties.wiggles[wiggle_time], 2));
+        }
 
         layer.setStyle({
             weight: 12,
@@ -664,6 +688,9 @@
 //        console.log('typeof: ' + (typeof feature.properties.wiggles[wiggle_time] == 'number'));
 //        console.log('check gt 0: ' + (feature.properties.wiggles[wiggle_time] > 0));
 //        console.log('check lt 0: ' + (feature.properties.wiggles[wiggle_time] < 0));
+//        console.log('wiggle_time: ' + wiggle_time);
+//        console.log('value: ' + feature.properties.wiggles[wiggle_time]);
+//        console.log('seg_value: ' + segment_scale(feature.properties.wiggles[wiggle_time]));
         return {
             "color": segment_scale(feature.properties.wiggles[wiggle_time]),
             "opacity": 1,
@@ -707,21 +734,59 @@
     }
 
     function onEachFeature(feature, layer) {
+//        console.log(layer);
+//        layer.setStyle(updateStyle(feature));
         layer.on({
             mouseover: highlightFeature,
             mouseout: resetHighlight,
             click: clickFeature,
+//            slide: function () {
+//                $("#slider-range").slider({
+//                    min: 0,
+//                    max: 1439,
+//                    step: 1,
+//                    value: 0,
+//                    slide: function (event, ui) {
+//                        chart_time = calc_time(ui.value);
+//                        $("#time").val(chart_time);
+//                        time = Math.floor(ui.value / 5);
+//                        wiggle_time = ui.value;
+//
+//                    },
+//                    stop: function (event, ui) {
+//                        update_station_trace();
+//                        update_heatmap_traces();
+//                        //                                update_vis(false);
+//                        console.log('new_layer');
+//                        console.log(new_layer);
+//                        console.log('seg_layer');
+//                        console.log(seg_layer);
+//                        //                                seg_layer.onEachFeature(seg_layer.toGeoJSON())
+//                    }
+//                });
+//
+//                $("#time").change(function () {
+//                    //                            console.log(this.value);
+//                    chart_time = this.value;
+//                    let update = calc_int(this.value);
+//                    time = Math.floor(update / 60);
+//                    //                            console.log(update);
+//                    wiggle_time = update;
+//                    //                            console.log(time);
+//                    $("#slider-range").slider("value", update);
+//                    update_station_trace();
+//                    update_heatmap_traces();
+//                    //                            update_vis(false);
+//                });
+//
+//                chart_time = calc_time($("#slider-range").slider("value"));
+//                $("#time").val(chart_time);
+//            }
         });
     }
 
     function onEachSegmentFeature(feature, layer) {
 //        console.log(feature);
-        // does this feature have a property named popupContent?
-        if (feature.properties && feature.properties.ID) {
-            layer.bindPopup('ID: ' + feature.properties.ID + '\nwiggle: ' +
-                d3.round(feature.properties.wiggles[wiggle_time], 2));
-        }
-
         layer.on({
             mouseover: highlightSegmentFeature,
             mouseout: resetSegmentFeature
@@ -737,7 +802,7 @@
             color: 'rgb(0, 0, 0)',
             width: 5
         },
-        name: 'time line'
+        name: 'Time Line'
     };
 
     let trace_line = {
@@ -819,11 +884,11 @@
         });
     }
 
+    let new_layer, seg_layer;
     function create_layers() {
         remove_layers();
         fetch_data();
 
-        let new_layer, seg_layer;
         inner_bins = create_bins(top_data);
 //        console.log('seg_data');
 //        console.log(seg_data);
@@ -888,13 +953,13 @@
                         y: original_line,
                         x: x_axis,
                         type: 'scatter',
-                        name: 'original'
+                        name: 'Original'
                     },
                     {
                         y: wt_line,
                         x: x_axis,
                         type: 'scatter',
-                        'name': 'wt'
+                        'name': 'Wavelet Transform'
                     }
                 ];
 
@@ -960,6 +1025,18 @@
         time_line['y'] = [0, rowLabel.length - 1];
         Plotly.deleteTraces('chart2', [-2, -1]);
         Plotly.addTraces('chart2', [trace_line, time_line]);
+    }
+
+    function update_geomap() {
+        for (let key in seg_layer._layers) {
+            let value = seg_layer._layers[key];
+            value.fire('mouseout');
+        };
+
+        for (let key in new_layer._layers) {
+            let value = new_layer._layers[key];
+            value.fire('mouseout');
+        };
     }
 
     function update_vis(update_charts=true) {
