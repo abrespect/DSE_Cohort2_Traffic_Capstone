@@ -181,7 +181,7 @@
         <div id="option">
             <div id="map_controls">
                 <!--<div>-->
-                <button name="resetButton" class="btn btn-warning" onclick="resetData()">Reset</button>
+                <button id="resetButton" name="resetButton" class="btn btn-warning" onclick="resetData()">Reset</button>
                 <label for="time">Time</label>
                 <input type="text" id="time" style="border-width:1; color:#f6931f; width:80px; font-weight:bold;"
                        value="00:00">
@@ -288,6 +288,8 @@
                                 update_geomap();
                             }
                         });
+
+                        disable_map_controls();
 
                         $("#time").change(function () {
                             chart_time = this.value;
@@ -405,6 +407,7 @@
                                     $(obj).addClass('btn-default');
                                     meta_data_points[answer].visible = false;
                                 }
+
                                 $('.fwy').click(function(){
                                     let answer= $(this).attr('id');
                                     last_freeway_select = answer;
@@ -414,6 +417,7 @@
                                             activate_button(this);
                                             freeways_select.push([answer, this]);
                                             selected_station = '';
+                                            enable_map_controls();
                                         } else {
                                             let to_delete = freeways_select.shift();
                                             deactivate_button(to_delete[1]);
@@ -426,6 +430,9 @@
                                         freeways_select = freeways_select.filter(function(d) {
                                             return d[0] != answer;
                                         });
+                                        if (freeways_select.length == 0) {
+                                            disable_map_controls();
+                                        }
                                     }
 //                            console.log('new list: ');
 //                            console.log(freeways_select);
@@ -447,6 +454,7 @@
                                     time = 0;
                                     $("#slider-range").slider("value", wiggle_time);
                                     $("#time").val( chart_time );
+                                    disable_map_controls();
                                     update_vis();
                                 }
                             </script>
@@ -480,7 +488,7 @@
     //global variables used throughout
     let top_data = {}, seg_data = {}, x_axis = [], to_draw = {},
         freeways_select = [], animate_button_active = false,
-        selected_station = '', do_animation = false,
+        selected_station = '', selected_station_name = '', do_animation = false,
         last_freeway_select = '', rowLabel = [], max_value = 0,
         order = 0, time = 0, wiggle_time = 0, chart_time = '';
     const max_freeway_count = 1;
@@ -721,6 +729,7 @@
 //        console.log(e);
         let layer = e.target;
         selected_station = layer.feature.properties.ID;
+        selected_station_name = layer.feature.properties.Name;
 //        console.log(selected_station);
         order = layer.feature.properties.Order;
 //        console.log(layer.feature.properties);
@@ -740,48 +749,6 @@
             mouseover: highlightFeature,
             mouseout: resetHighlight,
             click: clickFeature,
-//            slide: function () {
-//                $("#slider-range").slider({
-//                    min: 0,
-//                    max: 1439,
-//                    step: 1,
-//                    value: 0,
-//                    slide: function (event, ui) {
-//                        chart_time = calc_time(ui.value);
-//                        $("#time").val(chart_time);
-//                        time = Math.floor(ui.value / 5);
-//                        wiggle_time = ui.value;
-//
-//                    },
-//                    stop: function (event, ui) {
-//                        update_station_trace();
-//                        update_heatmap_traces();
-//                        //                                update_vis(false);
-//                        console.log('new_layer');
-//                        console.log(new_layer);
-//                        console.log('seg_layer');
-//                        console.log(seg_layer);
-//                        //                                seg_layer.onEachFeature(seg_layer.toGeoJSON())
-//                    }
-//                });
-//
-//                $("#time").change(function () {
-//                    //                            console.log(this.value);
-//                    chart_time = this.value;
-//                    let update = calc_int(this.value);
-//                    time = Math.floor(update / 60);
-//                    //                            console.log(update);
-//                    wiggle_time = update;
-//                    //                            console.log(time);
-//                    $("#slider-range").slider("value", update);
-//                    update_station_trace();
-//                    update_heatmap_traces();
-//                    //                            update_vis(false);
-//                });
-//
-//                chart_time = calc_time($("#slider-range").slider("value"));
-//                $("#time").val(chart_time);
-//            }
         });
     }
 
@@ -842,11 +809,12 @@
             seg_data[fwy_dir] = [];
 
             if (meta_data_points[fwy_dir].visible) {
-                to_draw[fwy_dir] = { 'stations': [] };
+                to_draw[fwy_dir] = { 'stations': [], 'names': [] };
 
                 //get station ids in order
                 meta_data_points[fwy_dir].data.features.forEach(function (item) {
                     to_draw[fwy_dir]['stations'].push(item.properties.ID);
+                    to_draw[fwy_dir]['names'].push(item.properties.Name);
                     top_data[fwy_dir].push(item.properties.Flow[time]);
 //                    elevation_to_draw[fwy_dir].push(d3.round(item.properties.Elevation, 1));
                 });
@@ -876,6 +844,7 @@
                 let stations = to_draw[fwy_dir]['stations'];
                 if (selected_station == '') {
                     selected_station = stations[order];
+                    selected_station_name = to_draw[fwy_dir]['names'][order];
                 }
             } else {
                 delete top_data[fwy_dir];
@@ -959,12 +928,12 @@
                         y: wt_line,
                         x: x_axis,
                         type: 'scatter',
-                        'name': 'Wavelet Transform'
+                        name: 'Wavelet Transform'
                     }
                 ];
 
                 let layout = {
-                    title: 'Station: ' + selected_station,
+                    title: 'Station: ' + selected_station + ' ' + selected_station_name,
                     margin: {
                         l: 50,
                         r: 50,
@@ -1037,6 +1006,20 @@
             let value = new_layer._layers[key];
             value.fire('mouseout');
         };
+    }
+
+    function disable_map_controls() {
+        $('#resetButton').addClass('disabled');
+        $( "#slider-range" ).slider( "disable" );
+        $('#time').attr('disabled', 'disabled');
+        $('#animate').addClass('disabled');
+    }
+
+    function enable_map_controls() {
+        $('#resetButton').removeClass('disabled');
+        $( "#slider-range" ).slider( "enable" );
+        $('#time').removeAttr('disabled');
+        $('#animate').removeClass('disabled');
     }
 
     function update_vis(update_charts=true) {
