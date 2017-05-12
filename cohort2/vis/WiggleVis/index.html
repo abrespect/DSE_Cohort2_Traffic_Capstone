@@ -34,7 +34,7 @@
         width: 80%;
     }
 
-    .ui-slider {
+    #slider-range {
         width: 840px;
         left: 10px;
     }
@@ -139,7 +139,7 @@
     <!-- load d3/c3/plotly -->
     <script src="d3.v3.min.js" charset="utf-8"></script>
     <script src="c3-0.4.11/c3.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="plotly_v1.27.0/plotly-latest.min.js"></script>
 </head>
 
 <body>
@@ -185,7 +185,7 @@
                 <label for="time">Time</label>
                 <input type="text" id="time" style="border-width:1; color:#f6931f; width:80px; font-weight:bold;"
                        value="00:00">
-                <button id="slider-range"></button>
+                <div id="slider-range" style="display:inline-block"></div>
                 <button class="btn btn-primary" id="animate" onclick="animateMap()">Animate</button>
                 <!--</div>-->
                 <!--js for jquery control in leaflet sidebar -->
@@ -219,7 +219,7 @@
                             counter += 1;
 
                             time = counter;
-                            console.log('in animation: ' + time);
+//                            console.log('in animation: ' + time);
 //                        console.log(time);
 
                             wiggle_time = time * 5;
@@ -233,7 +233,7 @@
                             update_heatmap_traces();
                             update_geomap();
 
-                            console.log(rowLabel.length);
+//                            console.log(rowLabel.length);
                             let sleep_value = 10;
                             if (rowLabel.length > 50) {
                                 sleep_value = .1;
@@ -244,7 +244,7 @@
                             else if (rowLabel.length > 10) {
                                 sleep_value = 5;
                             }
-                            console.log(sleep_value);
+//                            console.log(sleep_value);
                             await sleep(sleep_value);
 
                             //sleep 10 is good for 54E (length 3)
@@ -280,7 +280,6 @@
                                 $("#time").val( chart_time );
                                 time = Math.floor(ui.value/5);
                                 wiggle_time = ui.value;
-
                             },
                             stop: function(event, ui) {
                                 update_station_trace();
@@ -289,24 +288,21 @@
                             }
                         });
 
-                        disable_map_controls();
-
                         $("#time").change(function () {
                             chart_time = this.value;
                             let update = calc_int(this.value);
-                            time = Math.floor(update / 60);
+                            time = Math.floor(update/5);
                             wiggle_time = update;
                             $("#slider-range").slider("value", update);
                             update_station_trace();
                             update_heatmap_traces();
                             update_geomap();
-
-//                            console.log('time: ' + time);
-//                            console.log('wiggle_time: ' + wiggle_time);
                         });
 
                         chart_time = calc_time($( "#slider-range" ).slider( "value" ));
                         $("#time").val( chart_time );
+
+                        disable_map_controls();
                     });
                 </script>
             </div>
@@ -486,7 +482,7 @@
     L.mapbox.accessToken = 'pk.eyJ1IjoiYzZzYW5kZXIiLCJhIjoiY2l6ZWpmaHl3MXYwYTJ3cXBlaXBqeXJwcyJ9.QbYtu1dpRdbLFxfhOkqMmA';
 
     //global variables used throughout
-    let top_data = {}, seg_data = {}, x_axis = [], to_draw = {},
+    let top_data = {}, seg_data = {}, top_range = {}, x_axis = [], to_draw = {},
         freeways_select = [], animate_button_active = false,
         selected_station = '', selected_station_name = '', do_animation = false,
         last_freeway_select = '', rowLabel = [], max_value = 0,
@@ -676,6 +672,11 @@
             radius = 20;
         }
 
+//        console.log('in update name: ' + feature.properties.Name);
+//        console.log('in update flow: ' + feature.properties.Flow);
+//        console.log('in update chart time: ' + chart_time);
+//        console.log('in update time: ' + time);
+//        console.log('in update flow: ' + feature.properties.Flow[time]);
         return {
 //            "color": inner_scale(feature.properties.Flow[time]),
             "color": color,
@@ -802,13 +803,15 @@
     function fetch_data() {
         top_data = {};
         seg_data = {};
+        top_range = {};
 //        console.log(meta_keys);
         meta_keys.forEach(function (fwy_dir) {
-//            elevation_to_draw[fwy_dir] = [];
             top_data[fwy_dir] = [];
             seg_data[fwy_dir] = [];
+            top_range[fwy_dir] = [];
 
             if (meta_data_points[fwy_dir].visible) {
+//                console.log('visible: ' + fwy_dir);
                 to_draw[fwy_dir] = { 'stations': [], 'names': [] };
 
                 //get station ids in order
@@ -816,8 +819,12 @@
                     to_draw[fwy_dir]['stations'].push(item.properties.ID);
                     to_draw[fwy_dir]['names'].push(item.properties.Name);
                     top_data[fwy_dir].push(item.properties.Flow[time]);
-//                    elevation_to_draw[fwy_dir].push(d3.round(item.properties.Elevation, 1));
+//                    console.log(item.properties.Name);
+//                    console.log(item.properties.Flow);
+                    top_range[fwy_dir].push(d3.min(item.properties.Flow));
+                    top_range[fwy_dir].push(d3.max(item.properties.Flow));
                 });
+//                console.log(top_range[fwy_dir]);
 
 //                console.log('segment_data');
 //                console.log(segment_data);
@@ -858,7 +865,11 @@
         remove_layers();
         fetch_data();
 
-        inner_bins = create_bins(top_data);
+
+//        inner_bins = create_bins(top_data);
+//        console.log(top_range);
+        inner_bins = create_bins(top_range);
+//        console.log(inner_bins);
 //        console.log('seg_data');
 //        console.log(seg_data);
         segment_bins = create_bins(seg_data);
@@ -977,14 +988,14 @@
         );
     }
 
-    function update_station_trace() {
+    async function update_station_trace() {
         Plotly.deleteTraces('chart1', [-1]);
         time_line['x'] = [chart_time, chart_time];
         time_line['y'] = [-max_value, max_value];
         Plotly.addTraces('chart1', [time_line]);
     }
 
-    function update_heatmap_traces() {
+    async function update_heatmap_traces() {
 //        console.log('order ' + order);
         trace_line['y'] = [order, order];
         trace_line['x'] = [x_axis[0], x_axis[1439]];
@@ -996,7 +1007,7 @@
         Plotly.addTraces('chart2', [trace_line, time_line]);
     }
 
-    function update_geomap() {
+    async function update_geomap() {
         for (let key in seg_layer._layers) {
             let value = seg_layer._layers[key];
             value.fire('mouseout');
