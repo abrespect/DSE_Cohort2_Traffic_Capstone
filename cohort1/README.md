@@ -17,23 +17,23 @@ Group Members
 Advisor:
 * Yoav Freund
 
-Reports
----------
+## Reports
+
 | Location      | Description   |
 | ------------- | -------------  |
 | final/doc/FinalReport.pdf | Final Report |
 | final/doc/FinalPresentation.pdf | Final Presentation  |
 
-Buckets
----------
+## Buckets
+
 | Location      | Description  |
 | ------------- | ------------- |
 | s3://dse-team2-2014/dse_traffic | Directory containing original downloaded traffic files |
 | s3://dse-team2-2014/pivot_output_#{year} | Directory containing Pivot Output Files from parsing downloaded traffic files  |   
 | s3://dse-team2-2014/regression | Directory containing files used for Elastic Net Regression |  
 
-Source Code
-------------
+## Source Code
+
 | Location      | Description   |
 | ------------- | -------------  |
 | ml/scala/traffic | Maven Project for Machine Learning, Pivoting Scala Code |

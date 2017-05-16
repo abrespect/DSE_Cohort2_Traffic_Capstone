@@ -47,22 +47,24 @@ Each team member contributed to the analysis, code development, and documentatio
 
 | Languages | Repositories & Collaboration | Cloud |
 | --------- | ---------------------------- | ----- |
-| Python <br/>Javascript<br/>HTML<br/>CSS<br/>Spark | GitHub<br/><ul><li>[Cohort 1](https://github.com/conwaywong/dse_capstone)</li><li>[Cohort 2](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone)</li></ul>[KanbanFlow](https://kanbanflow.com/board/39b5b82d84b139d7bef8e203f9b72794)<br/>Google Docs| Amazon S3<br/><ul><li>[Cohort 1](https://console.aws.amazon.com/s3/home?region=us-west-2#&bucket=dse-team2-2014&prefix=)</li><li>[Cohort 2](https://console.aws.amazon.com/s3/home?region=us-west-2#&bucket=dse-team1-2015&prefix=)</li></ul>[Amazon Web Services](https://console.aws.amazon.com/s3/home?region=us-west-2#&bucket=dse-team1-2015&prefix=)<br/>[Databricks](http://tinyurl.com/dsedb)<br/>[Cyberduck](https://cyberduck.io/?l=en) |
+| Python <br/>Javascript<br/>HTML<br/>CSS<br/>Spark | GitHub<br/>&nbsp;&nbsp;&nbsp;- [Cohort 1](https://github.com/conwaywong/dse_capstone)<br/>&nbsp;&nbsp;&nbsp;- [Cohort 2](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone)<br/>[KanbanFlow](https://kanbanflow.com/board/39b5b82d84b139d7bef8e203f9b72794)<br/>Google Docs| Amazon S3<br/>&nbsp;&nbsp;&nbsp;- [Cohort 1](https://console.aws.amazon.com/s3/home?region=us-west-2#&bucket=dse-team2-2014&prefix=)<br/>&nbsp;&nbsp;&nbsp;- [Cohort 2](https://console.aws.amazon.com/s3/home?region=us-west-2#&bucket=dse-team1-2015&prefix=)<br/>[Amazon Web Services](https://console.aws.amazon.com/s3/home?region=us-west-2#&bucket=dse-team1-2015&prefix=)<br/>[Databricks](http://tinyurl.com/dsedb)<br/>[Cyberduck](https://cyberduck.io/?l=en) |
 
 ## Resources
 
 ### Reports
+
 | Location      | Description   |
 | ------------- | -------------  |
 | cohort2/documents/final_report.pdf | Final Report |
-| cohort2/documents/final_report.? | Final Presentation  |    
+| cohort2/documents/final_report.? | Final Presentation |
 
 ### Buckets
+
 | Location      | Description   |
 | ------------- | -------------  |
 | s3://dse-team2-2014/dse_traffic | Directory containing original downloaded traffic files for 2008 to 2015 |
-| s3://dse-team2-2014/pivot_output_#{year} | Directory containing Pivot Output Files from parsing downloaded traffic files  |     
-| s3://dse-team2-2014/regression | Directory containing files used for Elastic Net Regression     |
+| s3://dse-team2-2014/pivot_output_#{year} | Directory containing Pivot Output Files from parsing downloaded traffic files |
+| s3://dse-team2-2014/regression | Directory containing files used for Elastic Net Regression |
 | s3://dse-team1-2015/dse_traffic | Directory containing original downloaded traffic files for 2016 |
 
 ### Directory Structure
