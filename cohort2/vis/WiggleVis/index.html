@@ -549,7 +549,7 @@
                 '<b>' + props.Name + '</b><br />ID: ' + props.ID + ' <br />Freeway/Dir: ' + props.key + '<br/>' +
                 'Lanes: ' + props.Lanes + '<br />Abs_PM: ' +
                 props.Abs_PM + '<br />Average Flow: ' + d3.round(props.Flow[time], 1) +
-                '<br/>Type: ' + props.Type +
+                '<br/>Type: ' + props.Type + '<br/>Adjacent Stations: ' + props.Labels +
                 '<br/>Freeway Station Order: ' + props.Order
                 : 'Hover over a Station');
     };
@@ -976,12 +976,16 @@
                 time_line['x'] = [chart_time, chart_time];
                 time_line['y'] = [-max_value, max_value];
 
+                let myPlot = document.getElementById('chart1');
+
                 if (chart1) {
                     Plotly.deleteTraces('chart1', [-1]);
                     chart1 = Plotly.newPlot('chart1', chart_data, layout);
+                    myPlot.on('plotly_click', chart_click);
                     Plotly.addTraces('chart1', [time_line]);
                 } else {
                     chart1 = Plotly.plot('chart1', chart_data, layout);
+                    myPlot.on('plotly_click', chart_click);
                     Plotly.addTraces('chart1', [time_line]);
                 }
             }
@@ -1031,6 +1035,24 @@
         $( "#slider-range" ).slider( "enable" );
         $('#time').removeAttr('disabled');
         $('#animate').removeClass('disabled');
+    }
+
+    function chart_click(data) {
+//        console.log(data);
+//        console.log(data.points[0].x);
+
+        chart_time = data.points[0].x;
+        $("#time").val( chart_time );
+        let update = calc_int(chart_time);
+        time = Math.floor(update/5);
+//        console.log(time);
+        wiggle_time = update;
+//        console.log(wiggle_time);
+        $("#slider-range").slider("value", update);
+
+        update_station_trace();
+        update_heatmap_traces();
+        update_geomap();
     }
 
     function update_vis(update_charts=true) {
@@ -1244,12 +1266,16 @@
                                 time_line['x'] = [chart_time, chart_time];
                                 time_line['y'] = [0, rowLabel.length - 1];
 
+                                let myPlot = document.getElementById('chart2');
+
                                 if (chart2) {
                                     Plotly.deleteTraces('chart2', [-2, -1]);
                                     chart2 = Plotly.newPlot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
+                                    myPlot.on('plotly_click', chart_click);
                                     Plotly.addTraces('chart2', [trace_line, time_line]);
                                 } else {
                                     chart2 = Plotly.plot('chart2', heatmap_data, layout, defaultPlotlyConfiguration);
+                                    myPlot.on('plotly_click', chart_click);
                                     Plotly.addTraces('chart2', [trace_line, time_line]);
                                 }
                             }
