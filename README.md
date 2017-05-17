@@ -26,6 +26,6 @@ As part of the [UCSD MAS DSE](http://jacobsschool.ucsd.edu/mas/dse/) program, tw
   - Traffic State Classification
   - Traffic Modeling
   - Flow Oscillation ("wiggles")
-4. [Visualizations](cohort2/documents/report/Visualizations.md)
-  - Oscillation Visualizations ("wiggles")
+4. [Interactive Visualizations](cohort2/documents/report/Visualizations.md)
+  - [Oscillation Visualizations ("wiggles")](cohort2/vis/WiggleVis/index.html)
   - Sensor Health

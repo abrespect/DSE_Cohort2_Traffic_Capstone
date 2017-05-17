@@ -1,5 +1,6 @@
 Introduction
 ====
+Introduction | [Data](documents/report/Data.md) | [Exploratory Analysis](exploration/) | [Interactive Visualizations](documents/report/Visualizations.md)
 
 ## Abstract
 
@@ -78,3 +79,5 @@ See Wiki for more information
 | cohort2/documents/ | directory to hold documents |
 | cohort2/trafficpassion/ | directory for python code related to final presentations, papers, and other files not related to exploration. |
 | cohort2/config | directory for virtualenv configurations, anaconda environments, etc |
+| cohort2/images | directory for related imagery |
+| cohort2/vis | directory hosting the primary visualization for the project [WiggleVis](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/index.html#map_settings) |
