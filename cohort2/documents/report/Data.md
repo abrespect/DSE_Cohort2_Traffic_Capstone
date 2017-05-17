@@ -1,6 +1,5 @@
 Data
 ====
-
 [Introduction](../../) | Data | [Exploratory Analysis](../../exploration/) | [Interactive Visualizations](Visualizations.md)
 
 ## Data source

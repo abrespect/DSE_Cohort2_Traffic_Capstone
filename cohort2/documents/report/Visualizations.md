@@ -1,6 +1,5 @@
 Interactive Visualizations
 ====
-
 [Introduction](../../) | [Data](Data.md) | [Exploratory Analysis](../../exploration/) | Interactive Visualizations
 
 ## Oscillation Visualizations ("wiggles")

@@ -1,6 +1,5 @@
 Exploration
 ====
-
 [Introduction](../) | [Data](../documents/report/Data.md) | Exploratory Analysis | [Interactive Visualizations](../documents/report/Visualizations.md)
 
 ## Wavelets
