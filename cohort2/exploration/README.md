@@ -12,7 +12,7 @@ Fourier transform analysis of the mean flow waveform indicates there are several
 
 | Related Links |
 | ----- |
-| [wiggles_wavelets_exploration2.ipynb](wiggles_wavelets_exploration2.ipynb) |
+| [wiggles_wavelets_exploration2.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggles_wavelets_exploration2.ipynb) |
 | [Wiggle/Wavelet Visualization](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/index.html#map_settings) |
 
 ### On-Ramp/Off-Ramp Oscillations
@@ -25,7 +25,7 @@ We have hypothesized these wiggles are an artifact of the natural rhythm of trav
 
 | Related Links |
 | ----- |
-| [wiggle_ramp_relationships2.ipynb](wiggle_ramp_relationships2.ipynb) |
+| [wiggle_ramp_relationships2.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggle_ramp_relationships2.ipynb) |
 
 ### Weekend vs. Weekday Oscillations
 
@@ -37,7 +37,7 @@ If the flow oscillations are due mostly to drivers attempting to arrive at their
 
 | Related Links |
 | ----- |
-| [wiggles_magnitude_weekend_weekday.ipynb](wiggles_magnitude_weekend_weekday.ipynb) |
+| [wiggles_magnitude_weekend_weekday.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggles_magnitude_weekend_weekday.ipynb) |
 
 ## Traffic Modeling
 
@@ -49,7 +49,7 @@ Given the set of attributes in the traffic data, we conduct exploratory analysis
 
 | Related Links |
 | ----- |
-| [traffic_flow_speed_occupancy_relationship.ipynb](traffic_flow_speed_occupancy_relationship.ipynb) |
+| [traffic_flow_speed_occupancy_relationship.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/traffic_flow_speed_occupancy_relationship.ipynb) |
 
 ### Traffic State Clustering
 
@@ -59,8 +59,8 @@ The traffic data provides three distinct dimensions: flow, occupancy, and speed.
 
 | Related Links |
 | ----- |
-| [traffic_flow_speed_occupancy_clustering.ipynb](traffic_flow_speed_occupancy_clustering.ipynb) |
-| [traffic_clustering_i5s.ipynb](raffic_clustering_i5s.ipynb) |
+| [traffic_flow_speed_occupancy_clustering.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/traffic_flow_speed_occupancy_clustering.ipynb) |
+| [traffic_clustering_i5s.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/traffic_clustering_i5s.ipynb) |
 | [Heuristic Cluster Heatmap Visualization](https://public.tableau.com/profile/josh.duclos#!/vizhome/HeuristicClusterHeatmap/TimeScrub) |
 
 ### Fundamental Diagram of Traffic
@@ -75,7 +75,7 @@ The fundamental diagram of traffic captures the characteristic elements of traff
 
 | Related Links |
 | ----- |
-| [traffic_fundamental_diagram.ipynb](traffic_fundamental_diagram.ipynb) |
+| [traffic_fundamental_diagram.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/traffic_fundamental_diagram.ipynb) |
 
 ### Sensor Health
 
@@ -85,7 +85,7 @@ The data set as retrieved from PeMS contains data from a number of failed or fai
 
 | Related Links |
 | ----- |
-| [data_exploration_with_sensor_health.ipynb](data_exploration_with_sensor_health.ipynb) |
+| [data_exploration_with_sensor_health.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/data_exploration_with_sensor_health.ipynb) |
 | [Sensor Health Visualization](https://public.tableau.com/profile/chris.sanders#!/vizhome/Station_day_analysis/Story1) |
 
 ### Computer Vision Jam Identification
@@ -96,7 +96,7 @@ Traffic flow, when visualized in a heatmap by time and location, provides an int
 
 | Related Links |
 | ----- |
-| [traffic_jam_exploration.ipynb](traffic_jam_exploration.ipynb) |
+| [traffic_jam_exploration.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/traffic_jam_exploration.ipynb) |
 
 ### Traffic Flow Prediction
 
@@ -106,7 +106,7 @@ In this exploration, we introduce an ensemble model for traffic flow prediction.
 
 | Related Links |
 | ----- |
-| [traffic_prediction_model.ipynb](traffic_prediction_model.ipynb) |
+| [traffic_prediction_model.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/traffic_prediction_model.ipynb) |
 
 ### Traffic Statistics
 
@@ -116,7 +116,7 @@ In reviewing the heatmap for speed, it was observed that parts of the patterns a
 
 | Related Links |
 | ----- |
-| [traffic_statistics.ipynb](traffic_statistics.ipynb) |
+| [traffic_statistics.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/traffic_statistics.ipynb) |
 
 
 ## Jupyter Notebook List
