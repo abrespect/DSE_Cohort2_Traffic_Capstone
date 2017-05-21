@@ -197,6 +197,13 @@
                     function calc_time(input) {
                         let hours = Math.floor(input / 60);
                         let minutes = (input - (hours * 60 ));
+                        if (low_res) {
+                            minutes = Math.ceil(minutes/5)*5;
+                            if (minutes == 60) {
+                                hours += 1;
+                                minutes = 0;
+                            }
+                        }
                         if(input == 0) return("00:00");
                         if(hours.toString().length == 1) hours = '0' + hours;
                         if(minutes.toString().length == 1) minutes = '0' + minutes;
@@ -205,7 +212,7 @@
 
                     function calc_int(input) {
                         let pieces = input.split(":");
-                        return parseInt(pieces[0])*60 + parseInt(pieces[1]);
+                        return parseInt(pieces[0])*60 + Math.ceil(parseInt(pieces[1])/5)*5;
                     }
 
                     async function demo(start) {
@@ -250,7 +257,7 @@
                             //sleep 10 is good for 54E (length 3)
                             //sleep 5 is good for 56E (length 14)
                             //sleep 1 for others?
-                            console.log('Taking a break...');
+//                            console.log('Taking a break...');
 //                        console.log('100 ms later');
 
                         }
@@ -272,7 +279,7 @@
                     $(function() {
                         $("#slider-range").slider({
                             min: 0,
-                            max: 1439,
+                            max: 1435,
                             step: 1,
                             value: 0,
                             slide: function(event, ui) {
@@ -282,6 +289,9 @@
                                 wiggle_time = ui.value;
                             },
                             stop: function(event, ui) {
+//                                console.log('val: ' + ui.value);
+//                                console.log('time: ' + time);
+//                                console.log('chart_time: ' + chart_time);
                                 update_station_trace();
                                 update_heatmap_traces();
                                 update_geomap();
@@ -289,11 +299,23 @@
                         });
 
                         $("#time").change(function () {
-                            chart_time = this.value;
+//                            console.log('val: ' + this.value);
                             let update = calc_int(this.value);
+//                            console.log('update: ' + update);
+                            if (update < 0 || update > 1439) {
+                                update = 0;
+                                this.value = '00:00';
+                                alert("Invalid input. 00:00 to 23:55");
+                            }
+                            chart_time = calc_time(update);
+//                            console.log('chart_time: ' + chart_time);
+
                             time = Math.floor(update/5);
+//                            console.log('time: ' + time);
                             wiggle_time = update;
+//                            console.log('wiggle_time: ' + wiggle_time);
                             $("#slider-range").slider("value", update);
+                            $("#time").val( chart_time );
                             update_station_trace();
                             update_heatmap_traces();
                             update_geomap();
@@ -316,6 +338,7 @@
                         <ul role="tablist">
                             <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
                             <li><a href="#map_settings" role="tab"><i class="fa fa-map-o"></i></a></li>
+                            <li><a href="#marker_settings" role="tab"><i class="fa fa-gear"></i></a></li>
                         </ul>
                     </div>
 
@@ -454,7 +477,57 @@
                                     update_vis();
                                 }
                             </script>
+                        </div>
 
+                        <div class="sidebar-pane" id="marker_settings">
+                            <h1 class="sidebar-header">Settings
+                                <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                            </h1>
+
+                            <script>
+                                $( function() {
+                                    $( $(':radio[name=res_control]') ).checkboxradio();
+                                    $( "#radio_group" ).controlgroup();
+                                } );
+                            </script>
+
+                            <form id="control_form">
+                                <div>
+                                    <h3 align="center">Controls</h3>
+                                    <fieldset id="res_control">
+                                        <legend>Select a resolution: </legend>
+                                        <label for="high_res">High Resolution</label>
+                                        <input type="radio" name="res_control" id="high_res" value="high_res">
+                                        <label for="low_res">Low Resolution</label>
+                                        <input type="radio" name="res_control" id="low_res" value="low_res"
+                                               checked="checked">
+                                    </fieldset>
+                                </div>
+                            </form>
+
+                            <script>
+                                function check() {
+                                    console.log('res_control: ' + $('input[name=res_control]:checked', '#control_form').val());
+                                }
+//                                check();
+                                $( $("[type=radio]") ).change(function() {
+//                                    check();
+                                    if ($('input[name=res_control]:checked', '#control_form').val() == "low_res") {
+                                        low_res = true;
+                                        max_x = 287;
+                                        x_axis_to_draw = x_axis_mod5;
+                                        title = 'Time';
+                                        dtick = 12;
+                                    } else {
+                                        low_res = false;
+                                        max_x = 1439;
+                                        x_axis_to_draw = x_axis;
+                                        title = 'Time scaled 5x';
+                                        dtick = 60;
+                                    }
+                                    update_vis(true);
+                                });
+                            </script>
                         </div>
                     </div>
                 </div>
@@ -482,11 +555,11 @@
     L.mapbox.accessToken = 'pk.eyJ1IjoiYzZzYW5kZXIiLCJhIjoiY2l6ZWpmaHl3MXYwYTJ3cXBlaXBqeXJwcyJ9.QbYtu1dpRdbLFxfhOkqMmA';
 
     //global variables used throughout
-    let top_data = {}, seg_data = {}, top_range = {}, x_axis = [], to_draw = {},
-        freeways_select = [], animate_button_active = false,
-        selected_station = '', selected_station_name = '', do_animation = false,
-        last_freeway_select = '', rowLabel = [], max_value = 0,
-        order = 0, time = 0, wiggle_time = 0, chart_time = '';
+    let top_data = {}, seg_data = {}, top_range = {}, x_axis = [], x_axis_mod5 = [], to_draw = {},
+        freeways_select = [], animate_button_active = false, x_axis_to_draw = [], low_res = true,
+        selected_station = '', selected_station_name = '', do_animation = false, max_x = 287,
+        last_freeway_select = '', rowLabel = [], max_value = 0, title = 'Time',
+        order = 0, time = 0, wiggle_time = 0, chart_time = '', dtick = 12;
     const max_freeway_count = 1;
 
     //define a boundary box around CA to limit the map to
@@ -516,12 +589,22 @@
 
     L.control.layers(baseLayers).addTo(map);
 
+    let cnt = 0;
     Plotly.d3.csv("data/heatmaps/x_axis.csv",
         function(error, data) {
             data.forEach(function (d) {
                 x_axis.push(d.x);
+                if (cnt % 5 == 0) {
+                    x_axis_mod5.push(d.x);
+                }
+                cnt += 1;
             });
     });
+    if (low_res) {
+        x_axis_to_draw = x_axis_mod5;
+    } else {
+        x_axis_to_draw = x_axis;
+    }
 
     let sidebar = L.control.sidebar('sidebar').addTo(map);
     sidebar.open('home');
@@ -918,8 +1001,10 @@
     }
 
     function load_station_chart() {
-        let original_line = [];
-        let wt_line = [];
+        let original_line = [],
+            original_line_mod = [],
+            wt_line = [],
+            wt_line_mod = [];
         Plotly.d3.csv('data/stations/' + selected_station + '.csv',
             function(error, data) {
                 data.forEach(function (row) {
@@ -928,16 +1013,35 @@
                     wt_line.push(+row.wt);
                 });
 
+                let draw_original, draw_wt;
+                if (low_res) {
+//                    console.log("configuring station chart for low res");
+                    let counter = -1;
+                    data.forEach(function (row) {
+                        counter += 1;
+                        if (counter % 5 == 0) {
+                            original_line_mod.push(+row.original);
+                            wt_line_mod.push(+row.wt);
+                        }
+                    });
+                    draw_original = original_line_mod;
+                    draw_wt = wt_line_mod;
+                } else {
+//                    console.log("configuring station chart for high res");
+                    draw_original = original_line;
+                    draw_wt = wt_line;
+                }
+
                 let chart_data = [
                     {
-                        y: original_line,
-                        x: x_axis,
+                        y: draw_original,
+                        x: x_axis_to_draw,
                         type: 'scatter',
                         name: 'Original'
                     },
                     {
-                        y: wt_line,
-                        x: x_axis,
+                        y: draw_wt,
+                        x: x_axis_to_draw,
                         type: 'scatter',
                         name: 'Wavelet Transform'
                     }
@@ -953,16 +1057,16 @@
                         pad: 4
                     },
                     xaxis: {
-                        title: 'Time scaled 5x',
+                        title: title,
                         titlefont: {
                             family: 'Times',
                             size: 14,
                             color: '#7f7f7f'
                         },
-                        range: [0, 1439],
+                        range: [0, max_x],
                         autotick: false,
                         ticks: 'outside',
-                        dtick: 60,
+                        dtick: dtick,
                     },
                     yaxis: {
                         titlefont: {
@@ -1091,6 +1195,7 @@
 
                 let i = 0,
                     to_graph = [], speed_to_graph = [],
+                    to_graph_mod5 = [], speed_to_graph_mod5 = [],
                     rowRange = [],
                     text_labels = [],
                     rowLabel_copy = [];
@@ -1101,7 +1206,7 @@
                         Plotly.d3.csv("data/heatmaps/wiggle_analysis_" + last_freeway_select + ".csv",
                             function (error, data) {
                                 //                            console.log(data);
-                                let header = d3.keys(data[0]);
+//                                let header = d3.keys(data[0]);
                                 //                            console.log(header);
 
                                 let keys = d3.keys(data[0]).filter(function (key) {
@@ -1130,13 +1235,41 @@
 
                                     });
                                 });
-                                //                            console.log('to_graph');
-                                //                            console.log(to_graph);
-                                //                            console.log(rowLabel);
-                                //                            console.log(rowLabel.length - 1);
-                                //                            console.log(rowRange);
-                                //                            let dtick = d3.round(rowLabel.length/10, 0);
-                                //                            let dtick = 5;
+
+                                let draw_speed, draw_graph;
+                                if (low_res) {
+                                    to_graph_mod5 = data.map(function (row) {
+                                        let foo = keys.map(function (key) {
+                                            if (+key % 5 == 0) {
+                                                return +row[key];
+                                            }
+                                        });
+                                        return foo.filter(function(val) {
+                                            if (val) {
+                                                return val
+                                            }
+                                        })
+                                    });
+                                    draw_graph = to_graph_mod5;
+
+                                    speed_to_graph_mod5 = speed_data.map(function (row) {
+                                        let foo = keys.map(function (key) {
+                                            if (+key % 5 == 0) {
+                                                return +row[key];
+                                            }
+                                        });
+                                        return foo.filter(function(val) {
+                                            if (val) {
+                                                return val
+                                            }
+                                        })
+                                    });
+                                    draw_speed = speed_to_graph_mod5;
+                                } else {
+                                    draw_graph = to_graph;
+                                    draw_speed = speed_to_graph;
+                                }
+
                                 rowLabel_copy = [];
                                 if (rowLabel.length > 20) {
                                     for (let idx = 0; idx < rowLabel.length; idx++) {
@@ -1160,8 +1293,8 @@
                                 let heatmap_data = [
                                     {
                                         opacity: '1',
-                                        z: to_graph,
-                                        x: x_axis,
+                                        z: draw_graph,
+                                        x: x_axis_to_draw,
                                         //                            y: rowLabel,
                                         type: 'heatmap',
                                         text: text_labels,
@@ -1183,8 +1316,8 @@
                                     {
                                         zaxis: 'z2',
                                         opacity: '.4',
-                                        z: speed_to_graph,
-                                        x: x_axis,
+                                        z: draw_speed,
+                                        x: x_axis_to_draw,
                                         type: 'heatmap',
                                         text: text_labels,
                                         colorscale: [
@@ -1220,16 +1353,16 @@
                                     height: 600,
                                     xaxis: {
                                         fixedrange: true,
-                                        title: 'Time scaled 5x',
+                                        title: title,
                                         titlefont: {
                                             family: 'Times',
                                             size: 14,
                                             color: '#7f7f7f'
                                         },
-                                        range: [0, 1439],
+                                        range: [0, max_x],
                                         autotick: false,
                                         ticks: 'outside',
-                                        dtick: 60,
+                                        dtick: dtick,
                                     },
                                     yaxis: {
                                         //                            fixedrange: true,
