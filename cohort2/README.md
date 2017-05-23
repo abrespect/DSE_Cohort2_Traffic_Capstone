@@ -80,4 +80,4 @@ See Wiki for more information
 | cohort2/trafficpassion/ | directory for python code related to final presentations, papers, and other files not related to exploration. |
 | cohort2/config | directory for virtualenv configurations, anaconda environments, etc |
 | cohort2/images | directory for related imagery |
-| cohort2/vis | directory hosting the primary visualization for the project [WiggleVis](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/index.html#map_settings) |
+| cohort2/vis | directory hosting the primary visualization for the project [WiggleVis](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/index.html#map_settings) and [SegmentVis](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/segmentVis.html)|

@@ -49,6 +49,7 @@ The "Raw" dashboard provides an interactive display of the raw data (flow, occup
 | Link    | Description |
 |---------|-------------|
 | [WiggleVis](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/index.html#map_settings) | Visualization of Wiggle and Speed |
+| [SegmentVis](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/segmentVis.html) | Visualization of Wiggle without heatmaps
 | [HeuristicClusterHeatmap](https://public.tableau.com/profile/josh.duclos#!/vizhome/HeuristicClusterHeatmap/TimeScrub) | Heatmaps to exploration classification of traffic in Tableau |
 | [Wiggles_AllStations_Weekdays](https://public.tableau.com/profile/miki.hardisty#!/vizhome/Wiggles_AllStations_Weekdays/Dashboard1) | Tableau Dashboard to visualize difference in wiggle flow and mean wiggle |
 | [Traffic_Wiggles](https://public.tableau.com/profile/miki.hardisty#!/vizhome/traffic_wiggles/Dashboard1) | Tableau Dashboard to visualize the average smoothed vector over a freeway |
