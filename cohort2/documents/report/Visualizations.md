@@ -4,11 +4,17 @@ Interactive Visualizations
 
 ### Oscillation Propagation
 
-[![Oscillation Propagation Visualization](../../images/vis_wiggle_small.jpg)](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/index.html#map_settings)
+[![Faceted Oscillation Propagation Visualization](../../images/vis_wiggle_small.jpg)](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/index.html#map_settings)
 
-[_Oscillation Propagation Visualization_](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/index.html#map_settings)
+[_Faceted Oscillation Propagation Visualization_](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/index.html#map_settings)
 
-This visualization is the primary focus of our efforts.  It provides an interactive visual representation of the traffic flow oscillations in three facets.  The top facet is a heatmap that the displays the flow oscillations overlaid with the mean speed on the axes of time and location.  Another facet gives a geographic overview of sensor stations and the oscillation magnitude (color channel) at a single time point.  Using the animation controls, it is possible to view the wave of oscillation magnitudes move across the stations.  The final facet displays the mean oscillations and mean flow for a single station.
+This visualization is the primary focus of our efforts.  It provides an interactive visual representation of the traffic flow oscillations in three facets.  The top facet is a heatmap that the displays the flow oscillations overlaid with the mean speed on the axes of time and location.  Using this facet, it is possible to identify patterns of oscillation propagation skew as related to changes in speed. Another facet gives a geographic overview of sensor stations and the oscillation magnitude (color channel) at a single time point.  Using the animation controls, it is possible to view the wave of oscillation magnitudes move across the stations.  The final facet displays the mean oscillations and mean flow for a single station.
+
+[![Oscillation Propagation](../../images/vis_wiggle_segment_small.jpg)](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/segmentVis.html)
+
+As the title implies, the geographic oscillation propagation visualization provides a focus on the positional aspect of the oscillation magnitudes over time.  The time controls (animation) allow the user to view waves of the magnitudes move through the highway system.  This visualization is a more performant version of the geographic facet in the _Faceted Oscillation Propagation Visualization_ above.
+
+[_Geographic Oscillation Propagation_](https://mas-dse-c6sander.github.io/DSE_Cohort2_Traffic_Capstone/cohort2/vis/WiggleVis/segmentVis.html)
 
 ### Traffic Classification Heatmap
 
