@@ -25,7 +25,7 @@ We have hypothesized these wiggles are an artifact of the natural rhythm of trav
 
 | Related Links |
 | ----- |
-| [wiggle_ramp_relationships2.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggle_ramp_relationships2.ipynb) |
+| [wiggles_ramp_relationship.ipynb](https://github.com/mas-dse-c6sander/DSE_Cohort2_Traffic_Capstone/blob/master/cohort2/exploration/wiggles_ramp_relationship.ipynb) |
 
 ### Weekend vs. Weekday Oscillations
 

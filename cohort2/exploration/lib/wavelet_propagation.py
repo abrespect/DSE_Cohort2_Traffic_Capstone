@@ -13,11 +13,11 @@ import matplotlib.dates as mdates
 import datetime as dt
 import wavelet_lib as wl
 
-data_dir = "../../../data/"
-data_5min_path = data_dir + "5min/2015/d11/"
+data_dir = "../data/External/"
+data_5min_path = data_dir + "station_5min/2015/d11/"
 meta_path = data_dir + "meta/2015/d11/"
 
-df = pd.read_csv( data_dir + '2015_station_days_with_meta.csv', usecols=range(1,20))
+df = pd.read_csv( data_dir + '2015_station_days_with_meta.csv.zip', usecols=range(1,20))
 df = df.ix[df['Partition'] == 'Weekdays']
 flow_df = df.pivot(index='Station', columns='Time', values='Flow')
 
