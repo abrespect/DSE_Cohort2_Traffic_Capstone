@@ -2,6 +2,11 @@ Exploration
 ====
 [Introduction](../) | [Data](../documents/report/Data.md) | Exploratory Analysis | [Interactive Visualizations](../documents/report/Visualizations.md)
 
+## Data Engineering
+All the below featured notebooks should run with the appropriate python modules installed and the S3 directory located at dse-team1-2015/share_data/External copied into ./cohort2/data/External.
+
+All other notebooks should run with appropriate tweaking.
+
 ## Flow Oscillation ("Wiggles")
 
 ### Wavelet Application to Flow
